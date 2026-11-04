@@ -179,3 +179,7 @@ P1 已提供默认关闭的独立 Maintenance：在 Trace2Skill 验证后，按�
 P2 已实现默认关闭的 BM25 检索、整文件预算筛选与一次路由五路共享。完整 references 仍可通过 Bash 读取，不改变 P1 迁移、Selector 或正式评分。默认最多 2 个文件，完整注入 SkillContext 上限 4000 tokens。
 
 当前尚未为 `gpt-6-luna`、`qwen3.8-max`、`qwen3.8-flash` 建立可信的本地精确 tokenizer 映射，因此这些模型开启 strict 路由会明确失败，不会退回字符估算。预算与并行集成已用标明 `test_only` 的离线计数器验证，不代表真实模型 token 精度。实现和支持矩阵见 [P2 说明](docs/skill_routing_p2.md)，回归与 Mock 示例见 [P2 验收报告](docs/skill_routing_p2_validation.md)。P3 整理和 P4 读取审计尚未实现。
+
+## P2.1：显式 estimated TokenCounter
+
+新增可用于探索实验的本地 BPE 估算模式，固定 `tiktoken==0.14.0`、`o200k_base` 词表 SHA256，并显式绑定模型、提供商和接口地址。三份 `routing-estimated-*.yaml` 配置预留 25% 余量：4000 的配置预算使用 3200 个代理 BPE tokens 作为筛选上限。运行时不联网计数，不自动从 strict 降级；真实模型计数误差尚未校准，不能宣称严格满足 4000 tokens。三个模型的 strict 仍安全失败。安装、启动配置、研究依据及 306 项回归结果见 [P2.1 说明](docs/skill_routing_p21_tokenizer.md)。未开始 P3。

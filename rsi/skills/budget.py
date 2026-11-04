@@ -1,4 +1,4 @@
-"""Whole-file SkillContext budgets. Never approximate a target tokenizer."""
+"""Whole-file budgets with explicit strict/estimated counter selection."""
 from dataclasses import dataclass
 from typing import Protocol
 
@@ -34,16 +34,22 @@ UNSUPPORTED_MODELS = {
 }
 
 
-def token_counter(model_config):
+def token_counter(model_config, *, mode="strict", estimated=None):
+    if mode == "estimated":
+        from rsi.skills.tokenizers import EstimatedCounter
+        return EstimatedCounter(model_config, estimated)
+    if mode != "strict" or estimated is not None:
+        raise BudgetError("counter_unavailable", "Invalid counter mode or strict/estimated configuration mix.")
     name = model_config.get('name')
     raise BudgetError('counter_unavailable', UNSUPPORTED_MODELS.get(name,
         f'No verified strict TokenCounter registered for {name!r}.'))
 
 
-def check_counter(counter, model):
+def check_counter(counter, model, *, mode="strict"):
+    allowed = ("exact_text", "test_only") if mode == "strict" else ("estimated",) if mode == "estimated" else ()
     info = getattr(counter, 'info', None)
     if (not isinstance(info, CounterInfo) or info.model != model or not info.identity
-            or not info.statement or info.accuracy not in ('exact_text', 'test_only')):
+            or not info.statement or info.accuracy not in allowed):
         raise BudgetError('counter_unavailable', 'Counter must identify the exact solver model and accuracy.')
     # test_only can only arrive through explicit Python dependency injection. No config switch
     # enables it, and the default factory never returns a synthetic counter.

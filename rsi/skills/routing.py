@@ -24,7 +24,7 @@ DEFAULTS = {'enabled': False, 'retrieval_method': 'bm25', 'top_k': 2,
 
 def settings(config):
     block = config.get('skill_routing', {})
-    if not isinstance(block, dict) or block.keys() - DEFAULTS.keys():
+    if not isinstance(block, dict) or block.keys() - (DEFAULTS.keys() | {'estimated_counter'}):
         raise ValueError('Invalid skill_routing configuration')
     value = DEFAULTS | block
     for key in ('enabled', 'allow_zero_matches'):
@@ -33,8 +33,13 @@ def settings(config):
     for key, maximum in (('top_k', 1000), ('max_initial_skill_tokens', 1000000)):
         if type(value[key]) is not int or not 1 <= value[key] <= maximum:
             raise ValueError(f'skill_routing.{key} must be an integer in [1, {maximum}]')
-    if value['retrieval_method'] != 'bm25' or value['budget_mode'] != 'strict':
-        raise ValueError('Only BM25 retrieval and strict budget_mode are supported')
+    if value['retrieval_method'] != 'bm25' or value['budget_mode'] not in ('strict', 'estimated'):
+        raise ValueError('Only BM25 retrieval and strict/estimated budget modes are supported')
+    if value['budget_mode'] == 'estimated':
+        from rsi.skills.tokenizers import validate_estimated
+        validate_estimated(config.get('model', {}), value.get('estimated_counter'))
+    elif 'estimated_counter' in block:
+        raise ValueError('estimated_counter is forbidden in strict mode')
     bm = value['bm25']
     if not isinstance(bm, dict) or bm.keys() - {'k1', 'b'}:
         raise ValueError('Invalid skill_routing.bm25 configuration')
@@ -166,9 +171,17 @@ def route(task, skill, config, *, folder=None, counter_factory=None):
                                                        'condition': candidate.exclusion})
             else:
                 eligible.append(candidate.path)
-        counter = (counter_factory or token_counter)(config['model'])
-        record['counter'] = asdict(check_counter(counter, config['model']['name']))
-        selection = select_context(files, eligible, counter, budget_limit=record['budget_limit'], top_k=options['top_k'])
+        counter = counter_factory(config['model']) if counter_factory else token_counter(
+            config['model'], mode=options['budget_mode'], estimated=options.get('estimated_counter'))
+        record['counter'] = asdict(check_counter(counter, config['model']['name'], mode=options['budget_mode']))
+        selection_limit = record['budget_limit']
+        if options['budget_mode'] == 'estimated':
+            from rsi.skills.tokenizers import effective_limit
+            selection_limit = effective_limit(selection_limit, options['estimated_counter']['safety_margin'])
+            record['estimated_budget'] = {
+                'effective_limit': selection_limit, 'safety_margin': options['estimated_counter']['safety_margin'],
+                'strict_guarantee': False, 'unit': 'proxy BPE tokens; not provider usage'}
+        selection = select_context(files, eligible, counter, budget_limit=selection_limit, top_k=options['top_k'])
         record['core_tokens'] = selection.core_tokens
         if not eligible and not options['allow_zero_matches']:
             raise BudgetError('zero_matches_disallowed', 'No applicable positive BM25 match.')
