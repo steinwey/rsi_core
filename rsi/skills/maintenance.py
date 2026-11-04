@@ -254,4 +254,3 @@ def maintain_candidate(base, changes, config, folder, *, model_factory=Model):
                    'target_met': len(files.get('SKILL.md', '')) <= options['root_target_chars'] if 'files' in locals() else False,
                    'events': len(events),
                    'candidate_hash': digest(files) if status == 'accepted' else None})
-
