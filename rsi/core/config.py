@@ -147,6 +147,9 @@ def load_config(path, *, framework=None):
     if config['skill_maintenance'].get('enabled'):
         from rsi.skills.maintenance import settings
         config['skill_maintenance'] = settings(config)
+    if config['skill_routing'].get('enabled'):
+        from rsi.skills.routing import settings as routing_settings
+        config['skill_routing'] = routing_settings(config)
     blocks = model_configs(config)
     for block in (*blocks.values(), config.get("wandb") or {}):
         if isinstance(block, dict) and any(key in block for key in ("api_key", "key")):

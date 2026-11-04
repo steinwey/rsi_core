@@ -173,3 +173,9 @@ checkpoint schema 5 在评分和学习结束后原子提交，保存当前 Skill
 ## P1：可选的主文件经验迁移
 
 P1 已提供默认关闭的独立 Maintenance：在 Trace2Skill 验证后，按完整章节原文搬移、覆盖校验和独立依赖审查缩短超限主文件。默认硬限制 10000 字符、目标 8000 字符、辅助文件上限 5000 字符；沿用 P0 原子版本事务。迁移失败保留旧 Skill，基础设施故障留待恢复。配置、保守解析边界与回退方法见 [P1 说明](docs/skill_routing_p1.md)，测试结果见 [P1 验收报告](docs/skill_routing_p1_validation.md)。求解路由、周期整理和自主读取审计尚未实现。
+
+## P2：可选的 BM25 初始经验路由
+
+P2 已实现默认关闭的 BM25 检索、整文件预算筛选与一次路由五路共享。完整 references 仍可通过 Bash 读取，不改变 P1 迁移、Selector 或正式评分。默认最多 2 个文件，完整注入 SkillContext 上限 4000 tokens。
+
+当前尚未为 `gpt-6-luna`、`qwen3.8-max`、`qwen3.8-flash` 建立可信的本地精确 tokenizer 映射，因此这些模型开启 strict 路由会明确失败，不会退回字符估算。预算与并行集成已用标明 `test_only` 的离线计数器验证，不代表真实模型 token 精度。实现和支持矩阵见 [P2 说明](docs/skill_routing_p2.md)，回归与 Mock 示例见 [P2 验收报告](docs/skill_routing_p2_validation.md)。P3 整理和 P4 读取审计尚未实现。

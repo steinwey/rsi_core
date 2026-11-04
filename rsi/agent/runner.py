@@ -21,21 +21,29 @@ from rsi.skills.supervision import build_all_supervision
 from rsi.skills.directory import directory_schema, read_skill_directory
 from rsi.skills.maintenance import settings as maintenance_settings, maintain_candidate
 from rsi.core.common import digest
+from rsi.skills.routing import route as route_skill
 
 
-def run_group(task, folder, skill, config, *, backend_factory=make_backend, model_factory=Model):
+def run_group(task, folder, skill, config, *, backend_factory=make_backend, model_factory=Model, counter_factory=None):
     mode = validate_execution_mode(config)
     count = config['rollouts']
     workers = min(count, config.get('rollout_workers', count))
     folder = Path(folder)
     folder.mkdir(parents=True, exist_ok=False)
+    # Only the raw, pre-prepare prompt is visible to retrieval. No scoring fields are passed.
+    routing = None
+    execution_options = {}
+    if config.get('skill_routing', {}).get('enabled', False):
+        routing = route_skill({'id': task['id'], 'prompt': task['prompt']}, skill, config,
+                             folder=folder, counter_factory=counter_factory)
+        execution_options['skill_context'] = routing.context
     task = get_framework(config).prepare_task(task, skill, config, folder)
     started, pairs = time.monotonic(), []
     try:
         progress(f"  {task['id']}: generating {count} independent rollout(s), at most {workers} concurrent, skill {skill.name}")
         with ThreadPoolExecutor(max_workers=workers) as pool:
             futures = [pool.submit(execute_one, task, i, folder / f'rollout-{i}', skill,
-                                   config, backend_factory, model_factory) for i in range(count)]
+                                   config, backend_factory, model_factory, **execution_options) for i in range(count)]
             failures = []
             for future in futures:
                 try:
@@ -109,6 +117,11 @@ def run_group(task, folder, skill, config, *, backend_factory=make_backend, mode
                   'graded_rollouts': list(scores), 'success': None if training else scores[chosen]['success'], 'skill_version': skill.name, 'seconds': time.monotonic()-started,
                   'selector_usage': selector_usage,
                   'skill_injected_rollouts': sum(r['skill_injected'] for r in results)}
+        if routing is not None:
+            report['skill_routing'] = {
+                'route_id': routing.context.route_id, 'context_hash': routing.context.context_hash,
+                'index_hash': routing.context.index_hash,
+                'route_file_sha256': hashlib.sha256((folder / 'skill-route.json').read_bytes()).hexdigest()}
         for key in ('input_tokens', 'output_tokens'):
             report[key] = (sum(r['usage'][key] + r.get('action_repair_usage', {}).get(key, 0) for r in results)
                            + selector_usage[key])
@@ -129,7 +142,7 @@ def run_group(task, folder, skill, config, *, backend_factory=make_backend, mode
 
 
 def run_experiment(tasks, config, output=None, *, runs_dir=None, label=None, resume=False,
-                   backend_factory=make_backend, model_factory=Model):
+                   backend_factory=make_backend, model_factory=Model, counter_factory=None):
     schema = directory_schema(config)
     maintenance = maintenance_settings(config)
     from rsi.benchmarks.evo_swe import validate_order
@@ -177,10 +190,10 @@ def run_experiment(tasks, config, output=None, *, runs_dir=None, label=None, res
             state = initialize(output, tasks, config, seed.current().name)
         print(f'Run output: {output}', flush=True)
         store = SkillStore(output / 'skills', seed.current(), directory_schema=schema, maintenance=maintenance)
-        return _continue_experiment(tasks, config, output, seed, store, state, backend_factory, model_factory)
+        return _continue_experiment(tasks, config, output, seed, store, state, backend_factory, model_factory, counter_factory)
 
 
-def _continue_experiment(tasks, config, output, seed, store, state, backend_factory, model_factory):
+def _continue_experiment(tasks, config, output, seed, store, state, backend_factory, model_factory, counter_factory=None):
     reports = [entry['report'] for entry in state['completed']]
     try:
         update_run(output, status='running', error=None, tools_hash=store.tools_hash)
@@ -201,7 +214,8 @@ def _continue_experiment(tasks, config, output, seed, store, state, backend_fact
             if not integrity['passed']:
                 raise RuntimeError(integrity['error'])
             folder = output / safe_id(task['id'])
-            report, results, evidence = run_group(task, folder, skill, config, backend_factory=backend_factory, model_factory=model_factory)
+            report, results, evidence = run_group(task, folder, skill, config, backend_factory=backend_factory,
+                                                  model_factory=model_factory, counter_factory=counter_factory)
             if not config['evolve'] and report['success'] is None:
                 raise RuntimeError('Scoring did not complete; task remains uncommitted for resume')
             group_seconds = time.monotonic() - task_started

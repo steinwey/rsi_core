@@ -32,7 +32,7 @@ def skill_prompt(skill):
             f"Available scripts:\n{tools}\n\n" + (skill / "SKILL.md").read_text(encoding="utf-8").strip())
 
 def execute_one(task, index, folder, skill, config, backend_factory=make_backend,
-                model_factory: ModelFactory = Model):
+                model_factory: ModelFactory = Model, *, skill_context=None):
     from minisweagent.agents.default import LimitsExceeded
     validate_action_protocol(config)
     folder.mkdir(parents=True, exist_ok=False)
@@ -42,6 +42,19 @@ def execute_one(task, index, folder, skill, config, backend_factory=make_backend
               "skill_version": skill.name, "skill_injected": False,
               "tools_hash": digest(immutable(read_skill_directory(skill, directory_schema=directory_schema(config))))}
     try:
+        if config.get('skill_routing', {}).get('enabled', False):
+            from rsi.skills.index import sha
+            from rsi.skills.directory import INDEX_PATH
+            from rsi.skills.budget import SkillContext
+            files = read_skill_directory(skill, directory_schema=1)
+            if (not isinstance(skill_context, SkillContext) or skill_context.skill_version != skill.name
+                    or digest(files) != skill.name or sha(files[INDEX_PATH]) != skill_context.index_hash
+                    or sha(skill_context.text) != skill_context.context_hash or not skill_context.route_id):
+                raise ValueError('Missing or inconsistent frozen SkillContext')
+            result.update(route_id=skill_context.route_id, context_hash=skill_context.context_hash,
+                          index_hash=skill_context.index_hash, initial_skill_tokens=skill_context.initial_skill_tokens)
+        elif skill_context is not None:
+            raise ValueError('Frozen SkillContext supplied while routing is disabled')
         backend = backend_factory(task, folder, config)
         install_skill(backend.env, skill, directory_schema=directory_schema(config))
         model = model_factory(config["model"])
@@ -87,7 +100,7 @@ def execute_one(task, index, folder, skill, config, backend_factory=make_backend
         agent = TimedAgent(model, env, action_format_limit=config.get('action_format_max_consecutive', 3),
                            action_repair=repair_action if config.get('action_format_repair_enabled', False) else None,
                            action_log=folder / 'action-protocol.jsonl', **settings)
-        guide = skill_prompt(skill)
+        guide = skill_context.text if skill_context is not None else skill_prompt(skill)
         result["status"], result["submission"] = agent.run(task["prompt"], rsi_skill=guide)
         result["artifact"] = backend.artifact()
     except Exception as exc:
