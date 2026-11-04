@@ -85,12 +85,16 @@ def directory_schema(config):
     schema = block.get('schema', 0)
     if type(schema) is not int or schema not in (0, 1):
         raise ValueError('skill_directory.schema must be 0 or 1')
-    for key in ('skill_maintenance', 'reference_maintenance', 'skill_routing'):
+    for key in ('reference_maintenance', 'skill_routing'):
         value = config.get(key, {})
         if not isinstance(value, dict) or value.keys() - {'enabled'} or type(value.get('enabled', False)) is not bool:
             raise ValueError(f'Invalid {key} configuration')
         if value.get('enabled', False):
             raise ValueError(f'{key} is not implemented in P0')
+    from rsi.skills.maintenance import settings
+    maintenance = settings(config)
+    if maintenance['enabled'] and schema != 1:
+        raise ValueError('Maintenance requires the P0 directory schema 1')
     if schema and config.get('skill_update_method', 'trace2skill') != 'trace2skill':
         raise ValueError('Managed Skill directories require Trace2Skill')
     return schema

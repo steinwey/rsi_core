@@ -1,4 +1,5 @@
 """Five independent solvers, preselected accuracy and selectable Skill learning."""
+import hashlib
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -17,7 +18,9 @@ from rsi.experiment.checkpoints import run_lock, initialize, resume_request, pub
 from rsi.skills.store import SkillStore, SkillProposalRejected, document_gate, functional_gate, load_initial_skill
 from rsi.frameworks import evolve_skill, get_framework
 from rsi.skills.supervision import build_all_supervision
-from rsi.skills.directory import directory_schema
+from rsi.skills.directory import directory_schema, read_skill_directory
+from rsi.skills.maintenance import settings as maintenance_settings, maintain_candidate
+from rsi.core.common import digest
 
 
 def run_group(task, folder, skill, config, *, backend_factory=make_backend, model_factory=Model):
@@ -128,6 +131,7 @@ def run_group(task, folder, skill, config, *, backend_factory=make_backend, mode
 def run_experiment(tasks, config, output=None, *, runs_dir=None, label=None, resume=False,
                    backend_factory=make_backend, model_factory=Model):
     schema = directory_schema(config)
+    maintenance = maintenance_settings(config)
     from rsi.benchmarks.evo_swe import validate_order
     validate_execution_mode(config)
     validate_action_protocol(config)
@@ -147,7 +151,7 @@ def run_experiment(tasks, config, output=None, *, runs_dir=None, label=None, res
             if config != saved_config or tasks != groups[0]:
                 raise ValueError('Resume must use the saved tasks and configuration without overrides')
             seed_files, _ = load_initial_skill(output / 'initial-skill', directory_schema=schema)
-            seed = SkillStore(output / 'initial-skill', seed_files, directory_schema=schema)
+            seed = SkillStore(output / 'initial-skill', seed_files, directory_schema=schema, maintenance=maintenance)
             publish(output, state)
             archive_incomplete(output, tasks, len(state['completed']))
         else:
@@ -155,11 +159,24 @@ def run_experiment(tasks, config, output=None, *, runs_dir=None, label=None, res
             write_json(output / 'task-manifest.json', tasks)
             write_json(output / 'upstreams.lock.json', read_json(ROOT / 'upstreams.lock.json'))
             write_json(output / 'initial-skill-source.json', source)
-            seed = SkillStore(output / 'initial-skill', files, directory_schema=schema)
-            SkillStore(output / 'skills', seed.current(), directory_schema=schema)
+            if maintenance['enabled']:
+                try:
+                    result = maintain_candidate(files, {}, config, output / 'bootstrap-maintenance', model_factory=model_factory)
+                except BaseException as exc:
+                    update_run(output, status='failed' if isinstance(exc, Exception) else 'interrupted',
+                               error=f'{type(exc).__name__}: {exc}')
+                    raise
+                files = result['files']
+                source['derived_version'] = source['version'] = digest(files)
+                write_json(output / 'initial-skill-source.json', source)
+                update_run(output, initial_skill_version=digest(files), current_skill_version=digest(files),
+                           initial_skill_source=source,
+                           bootstrap_maintenance_usage=read_json(output / 'bootstrap-maintenance/usage.json')['total'])
+            seed = SkillStore(output / 'initial-skill', files, directory_schema=schema, maintenance=maintenance)
+            SkillStore(output / 'skills', seed.current(), directory_schema=schema, maintenance=maintenance)
             state = initialize(output, tasks, config, seed.current().name)
         print(f'Run output: {output}', flush=True)
-        store = SkillStore(output / 'skills', seed.current(), directory_schema=schema)
+        store = SkillStore(output / 'skills', seed.current(), directory_schema=schema, maintenance=maintenance)
         return _continue_experiment(tasks, config, output, seed, store, state, backend_factory, model_factory)
 
 
@@ -180,7 +197,7 @@ def _continue_experiment(tasks, config, output, seed, store, state, backend_fact
             task_started = time.monotonic()
             progress(f"[{number}/{len(tasks)}] {task['id']}")
             skill = store.current()
-            integrity = document_gate(skill, store.fixed_files, directory_schema=store.directory_schema)
+            integrity = document_gate(skill, store.fixed_files, directory_schema=store.directory_schema, maintenance=store.maintenance)
             if not integrity['passed']:
                 raise RuntimeError(integrity['error'])
             folder = output / safe_id(task['id'])
@@ -202,8 +219,13 @@ def _continue_experiment(tasks, config, output, seed, store, state, backend_fact
                     proposal = evolve_skill(task, results, skill, config, model_factory, folder=folder,
                                       supervision=supervision, prepared_evidence=evidence)
                     if proposal['changes']:
-                        candidate, diff = store.propose(proposal['changes'], expected_base_version=skill.name)
-                        gate = document_gate(candidate, store.fixed_files, check_consistency=True, directory_schema=store.directory_schema)
+                        changes, managed = proposal['changes'], None
+                        if store.maintenance['enabled']:
+                            result = maintain_candidate(read_skill_directory(skill, directory_schema=1), changes,
+                                config, folder / 'maintenance', model_factory=model_factory)
+                            changes, managed = result['changes'], result['managed_changes']
+                        candidate, diff = store.propose(changes, managed_changes=managed, expected_base_version=skill.name)
+                        gate = document_gate(candidate, store.fixed_files, check_consistency=True, directory_schema=store.directory_schema, maintenance=store.maintenance)
                         accepted = gate['passed'] and candidate != skill
                         update = {'accepted': accepted, 'decision': 'document_checks_passed' if accepted else 'unchanged_candidate',
                                   'reason': proposal['reason'], 'document_gate': gate,
@@ -233,6 +255,18 @@ def _continue_experiment(tasks, config, output, seed, store, state, backend_fact
                 update[f'{method}_usage'] = read_json(usage_path)['total']
                 for key in ('input_tokens', 'output_tokens'):
                     report[key] += update[f'{method}_usage'][key]
+                report['tokens'] = report['input_tokens'] + report['output_tokens']
+            maintenance_path = folder / 'maintenance/usage.json'
+            if maintenance_path.exists():
+                update['maintenance_usage'] = read_json(maintenance_path)['total']
+                update['maintenance'] = read_json(folder / 'maintenance/validation.json')
+                update['maintenance_artifacts'] = {
+                    path.relative_to(output).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+                    for path in sorted((folder / 'maintenance').glob('*.json'))
+                    if path.name in {'input.json', 'normalized-input.json', 'output.json', 'coverage.json',
+                                     'normalization.json', 'validation.json', 'usage.json'}}
+                for key in ('input_tokens', 'output_tokens'):
+                    report[key] += update['maintenance_usage'][key]
                 report['tokens'] = report['input_tokens'] + report['output_tokens']
             update.update(before_skill_version=skill.name, after_skill_version=after_version)
             report['group_seconds'] = group_seconds

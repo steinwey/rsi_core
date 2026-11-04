@@ -169,3 +169,7 @@ checkpoint schema 5 在评分和学习结束后原子提交，保存当前 Skill
 ## P0：可选的 Skill 索引与版本事务
 
 新增目录模式默认关闭。新 Trace2Skill 运行可显式设置 `skill_directory: {schema: 1}`，启用程序管理的 `routing/index.yaml`、完整目录原子物化、安装校验和 Checkpoint Schema 6。旧模式及 Schema 5 恢复保持兼容；迁移、检索、整理功能尚未实现，不能开启。接口、限制与安全回退命令见 [P0 说明](docs/skill_routing_p0.md)。
+
+## P1：可选的主文件经验迁移
+
+P1 已提供默认关闭的独立 Maintenance：在 Trace2Skill 验证后，按完整章节原文搬移、覆盖校验和独立依赖审查缩短超限主文件。默认硬限制 10000 字符、目标 8000 字符、辅助文件上限 5000 字符；沿用 P0 原子版本事务。迁移失败保留旧 Skill，基础设施故障留待恢复。配置、保守解析边界与回退方法见 [P1 说明](docs/skill_routing_p1.md)，测试结果见 [P1 验收报告](docs/skill_routing_p1_validation.md)。求解路由、周期整理和自主读取审计尚未实现。

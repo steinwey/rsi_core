@@ -144,6 +144,9 @@ def load_config(path, *, framework=None):
     for feature in ('skill_maintenance', 'reference_maintenance', 'skill_routing'):
         config.setdefault(feature, {'enabled': False})
     config.setdefault('skill_directory', {'schema': 0})
+    if config['skill_maintenance'].get('enabled'):
+        from rsi.skills.maintenance import settings
+        config['skill_maintenance'] = settings(config)
     blocks = model_configs(config)
     for block in (*blocks.values(), config.get("wandb") or {}):
         if isinstance(block, dict) and any(key in block for key in ("api_key", "key")):

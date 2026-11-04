@@ -111,11 +111,11 @@ def validate_index(files):
     return data
 
 
-def build_index(files, previous=None):
-    """No inferred success provenance. Preserve metadata only for identical content.
+def build_index(files, previous=None, *, source_files=None):
+    """No inferred success provenance; unchanged files retain their metadata.
 
-    P0 generates no units or evidence claims. Future trusted evidence adapters may
-    extend this builder; LLM output is never a managed-file edit.
+    The default is P0-compatible. P1 can supply source_files to preserve existing
+    origins on verified append-only changes. LLM output is never a managed edit.
     """
     old = {e['path']: e for e in previous['entries']} if previous else {}
     entries = []
@@ -130,6 +130,15 @@ def build_index(files, previous=None):
                      'keywords': [path.removeprefix('references/').removesuffix('.md')],
                      'applies_when': ['Consult the document for its applicability conditions.'],
                      'exclude_when': [], 'provenance': [{'evidence_kind': 'legacy_unknown'}], 'units': []}
+        if (source_files and path in old and path in source_files
+                and old[path]['content_sha256'] == sha(source_files[path])
+                and text != source_files[path] and text.startswith(source_files[path])):
+            # Append-only extensions retain known origins plus an explicit unknown
+            # origin for the new material; no PASS is inferred for new text.
+            entry['provenance'] = list(old[path]['provenance'])
+            unknown = {'evidence_kind': 'legacy_unknown'}
+            if unknown not in entry['provenance']:
+                entry['provenance'].append(unknown)
         entry.update(content_sha256=sha(text), char_count=len(text))
         entries.append(entry)
     value = {'schema_version': 1, 'entries': entries}

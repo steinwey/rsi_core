@@ -1,5 +1,6 @@
 """Atomic task commits. All other progress files are rebuildable projections."""
 import os
+import hashlib
 import re
 import uuid
 from contextlib import contextmanager
@@ -71,9 +72,12 @@ def resume_request(output):
     def verify_version(value):
         if not isinstance(value, str) or not re.fullmatch(r'[0-9a-f]{16}', value):
             raise ValueError('Invalid checkpoint Skill version')
-        load_initial_skill(output / 'skills/versions' / value, directory_schema=schema)
+        files, _ = load_initial_skill(output / 'skills/versions' / value, directory_schema=schema)
+        from rsi.skills.maintenance import settings, validate_limits
+        validate_limits(files, settings(config))
     verify_version(version)
     for task, entry in zip(tasks, completed):
+        verify_maintenance_artifacts(output, entry['report'], entry['update'], config)
         if (entry['report']['task_id'] != task['id'] or not task_complete(entry['report'])
                 or entry['report'].get('phase') != ('train' if config['evolve'] else 'test')
                 or entry['update']['before_skill_version'] != version
@@ -85,6 +89,35 @@ def resume_request(output):
     if version != state['current_skill_version']:
         raise ValueError('Checkpoint Skill pointer mismatch')
     return state, config, [tasks]
+
+
+def verify_maintenance_artifacts(output, report, update, config):
+    from rsi.skills.maintenance import settings
+    from rsi.skills.directory import reject_links
+    if not settings(config)['enabled']:
+        return
+    artifacts = update.get('maintenance_artifacts')
+    if artifacts is None and not update.get('accepted') and 'maintenance' not in update:
+        return  # No proposal/no maintenance; no synthetic artifacts on historical runs.
+    names = {'input.json', 'normalized-input.json', 'output.json', 'coverage.json',
+             'normalization.json', 'validation.json', 'usage.json'}
+    prefix = safe_id(report['task_id']) + '/maintenance/'
+    if not isinstance(artifacts, dict) or prefix + 'validation.json' not in artifacts:
+        raise ValueError('Missing maintenance receipt')
+    for path, checksum in artifacts.items():
+        if path not in {prefix + name for name in names}:
+            raise ValueError('Invalid maintenance artifact path')
+        location = Path(output) / path
+        reject_links(location)
+        if hashlib.sha256(location.read_bytes()).hexdigest() != checksum:
+            raise ValueError('Maintenance artifact hash mismatch')
+    receipt = read_json(Path(output) / prefix / 'validation.json')
+    if receipt != update.get('maintenance'):
+        raise ValueError('Maintenance receipt mismatch')
+    if update.get('accepted') and (receipt.get('status') != 'accepted'
+            or receipt.get('candidate_hash') != update['after_skill_version']
+            or prefix + 'output.json' not in artifacts):
+        raise ValueError('Accepted Skill lacks a matching maintenance receipt')
 
 
 def publish(output, state):
@@ -134,7 +167,11 @@ def commit(output, state, report, update):
         value = update['after_skill_version']
         if not isinstance(value, str) or not re.fullmatch(r'[0-9a-f]{16}', value):
             raise ValueError('Invalid Skill version')
-        load_initial_skill(Path(output) / 'skills/versions' / value, directory_schema=1)
+        files, _ = load_initial_skill(Path(output) / 'skills/versions' / value, directory_schema=1)
+        from rsi.skills.maintenance import settings, validate_limits
+        validate_limits(files, settings(read_json(Path(output) / 'config.json')))
+    if state.get('schema') == 6:
+        verify_maintenance_artifacts(Path(output), report, update, read_json(Path(output) / 'config.json'))
     next_state = {**state, 'current_skill_version': update['after_skill_version'],
                   'completed': [*state['completed'], {'report': report, 'update': update,
                       'committed_at': datetime.now(timezone.utc).isoformat()}]}

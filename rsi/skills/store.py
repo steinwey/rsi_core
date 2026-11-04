@@ -89,7 +89,11 @@ def load_initial_skill(source=None, *, directory_schema=0, bootstrap=False):
 
 
 class SkillStore:
-    def __init__(self, root, seed, *, directory_schema=0):
+    def __init__(self, root, seed, *, directory_schema=0, maintenance=None):
+        from rsi.skills.maintenance import settings
+        self.maintenance = settings({'skill_maintenance': maintenance}) if maintenance is not None else None
+        if maintenance and maintenance.get('enabled') and directory_schema != 1:
+            raise ValueError('Maintenance requires directory schema 1')
         self.directory_schema = directory_schema
         self.root = Path(root)
         reject_links(self.root)
@@ -102,6 +106,8 @@ class SkillStore:
             write_json(self.pointer, {"version": version})
 
     def materialize(self, files):
+        from rsi.skills.maintenance import validate_limits
+        validate_limits(files, self.maintenance)
         validate_paths(files)
         if any(not isinstance(text, str) for text in files.values()):
             raise ValueError('Skill file contents must be text')
@@ -146,7 +152,9 @@ class SkillStore:
                 shutil.rmtree(stage)
 
     def _verify(self, folder, expected):
+        from rsi.skills.maintenance import validate_limits
         actual = read_skill_directory(folder, directory_schema=self.directory_schema)
+        validate_limits(actual, self.maintenance)
         if actual != expected or digest(actual) != digest(expected):
             raise ValueError('Stored Skill version is incomplete or differs from candidate')
         if self.directory_schema:
@@ -162,6 +170,8 @@ class SkillStore:
             if digest(files) != version:
                 raise ValueError('Current Skill version hash mismatch')
             validate_document(files, self.fixed_files, directory_schema=self.directory_schema)
+            from rsi.skills.maintenance import validate_limits
+            validate_limits(files, self.maintenance)
         return folder
 
     def propose(self, changes, *, managed_changes=None, expected_base_version=None):
@@ -181,12 +191,14 @@ class SkillStore:
                 if not self.directory_schema or not isinstance(managed_changes, dict) or set(managed_changes) != {INDEX_PATH}:
                     raise ValueError('Managed changes may only contain routing/index.yaml in managed mode')
                 # The independent interface accepts only deterministic program output.
-                expected = build_index(new, validate_index(old))
+                expected = build_index(new, validate_index(old), source_files=old if self.maintenance and self.maintenance.get('enabled') else None)
                 if managed_changes[INDEX_PATH] != expected:
                     raise ValueError('Managed index must match deterministic builder output')
                 new.update(managed_changes)
             elif self.directory_schema:
-                new[INDEX_PATH] = build_index(new, validate_index(old))
+                new[INDEX_PATH] = build_index(new, validate_index(old), source_files=old if self.maintenance and self.maintenance.get('enabled') else None)
+            from rsi.skills.maintenance import validate_limits
+            validate_limits(new, self.maintenance)
             # An unchanged archived seed is not a newly accepted version.
             (validate_candidate if new != old else validate_document)(new, self.fixed_files, directory_schema=self.directory_schema)
         except ValueError as exc:
@@ -198,6 +210,8 @@ class SkillStore:
 
     def record(self, candidate, accepted, evidence):
         if accepted:
+            from rsi.skills.maintenance import validate_limits
+            validate_limits(read_skill_directory(candidate, directory_schema=self.directory_schema), self.maintenance)
             validate_candidate(read_skill_directory(candidate, directory_schema=self.directory_schema), self.fixed_files, directory_schema=self.directory_schema)
         before = self.current().name
         event = {"timestamp": datetime.now(timezone.utc).isoformat(), "before": before,
@@ -233,7 +247,7 @@ def validate_candidate(files, fixed_files, *, directory_schema=0):
     validate_consistency(files)
 
 
-def document_gate(candidate, fixed_files, *, check_consistency=False, directory_schema=0):
+def document_gate(candidate, fixed_files, *, check_consistency=False, directory_schema=0, maintenance=None):
     # Archived seeds stay readable; the stronger gate is required for NEW versions.
     scope = 'document_consistency' if check_consistency else 'document_integrity'
     details = {'scope': scope, 'effectiveness_evaluated': False,
@@ -242,6 +256,8 @@ def document_gate(candidate, fixed_files, *, check_consistency=False, directory_
         details['checks'] += ['managed_index', 'directory_hash']
     try:
         files = read_skill_directory(candidate, directory_schema=directory_schema)
+        from rsi.skills.maintenance import validate_limits
+        validate_limits(files, maintenance)
         (validate_candidate if check_consistency else validate_document)(files, fixed_files, directory_schema=directory_schema)
         if directory_schema and digest(files) != Path(candidate).name:
             raise ValueError("Candidate directory hash mismatch")
