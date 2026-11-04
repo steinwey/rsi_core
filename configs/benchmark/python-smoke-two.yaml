@@ -1,0 +1,9 @@
+config: ../agent/python-pilot.yaml
+rollouts: 5
+parallel: true
+tasks: ../../tasks/python-smoke-two.json
+swe_dataset: D:/RSI/datasets/evoarena-swe/evaluation-e77c3282aa468ee5.json
+swe_split: test
+fixed_skill: false
+label: python-smoke-two
+wandb: false

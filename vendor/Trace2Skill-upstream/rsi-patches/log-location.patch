@@ -1,0 +1,10 @@
+--- a/skill_evolver/parallel_evolving_agent.py
++++ b/skill_evolver/parallel_evolving_agent.py
+@@
+             max_references=max_references,
++            parse_failure_dir=self.parse_failure_dir or "parse_failures",
+         )
+
+RSI compatibility fix: propagate the configured parse-failure directory to
+the internal SkillEvolver utility. Upstream otherwise creates ./parse_failures
+even when the parallel runner has an explicit per-task output directory.

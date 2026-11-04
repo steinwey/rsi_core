@@ -1,0 +1,89 @@
+# Luna solver via Sub2API; judge and learning roles retain Qwen Max.
+# Credentials are loaded from .env; api_base must match your key issuer.
+provider: sub2api
+allowed_models:
+- gpt-6-luna
+- qwen3.8-max
+model:
+  name: gpt-6-luna
+  provider: sub2api
+  custom_llm_provider: openai
+  api_base: https://sub2api.47.250.156.179.nip.io/v1
+  api_key_env: SUB2API_API_KEY
+  max_tokens: 4096
+  timeout: 120
+  num_retries: 2
+  reasoning_effort: none
+judge_model:
+  name: qwen3.8-max
+  provider: qwen-token-plan
+  custom_llm_provider: openai
+  api_base: https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
+  api_key_env: QWEN_TOKEN_PLAN_API_KEY
+  extra_body: &id001
+    enable_thinking: false
+  temperature: 0.0
+  max_tokens: 8192
+  timeout: 180
+  num_retries: 2
+rollouts: 5
+step_limit: 100
+action_format_max_consecutive: 3
+action_format_repair_enabled: true
+cost_limit: 3.0
+command_timeout: 180
+image_pull_timeout: 7200
+rollout_timeout: 1800
+evaluation_timeout: 1800
+swe_dataset: SWE-bench/SWE-bench_Verified
+swe_split: test
+gate_image: python:3.12-slim
+terminal_artifacts: []
+evolve: true
+wandb:
+  project: rsi
+execution_mode: parallel
+skill_update_method: trace2skill
+skill_error_model:
+  name: qwen3.8-max
+  provider: qwen-token-plan
+  custom_llm_provider: openai
+  api_base: https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
+  api_key_env: QWEN_TOKEN_PLAN_API_KEY
+  extra_body: *id001
+  temperature: 0.0
+  max_tokens: 8192
+  timeout: 180
+  num_retries: 2
+skill_success_model:
+  name: qwen3.8-max
+  provider: qwen-token-plan
+  custom_llm_provider: openai
+  api_base: https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
+  api_key_env: QWEN_TOKEN_PLAN_API_KEY
+  extra_body: *id001
+  temperature: 0.0
+  max_tokens: 8192
+  timeout: 180
+  num_retries: 2
+trace2skill:
+  analysis_max_turns: 20
+  timeout: 1800
+  max_workers: 2
+  merge_batch_size: 5
+  max_merge_levels: 3
+skill_editor_model:
+  name: qwen3.8-max
+  provider: qwen-token-plan
+  custom_llm_provider: openai
+  api_base: https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
+  api_key_env: QWEN_TOKEN_PLAN_API_KEY
+  extra_body:
+    enable_thinking: false
+  temperature: 0.0
+  max_tokens: 8192
+  timeout: 180
+  num_retries: 2
+reasoningbank:
+  timeout: 1800
+  max_repair_rounds: 3

@@ -1,0 +1,13 @@
+config: ../agent/qwen.yaml
+rollouts: 5
+parallel: true
+tasks: ../../tasks/smoke-one.json
+test_tasks: null
+swe_dataset: D:\RSI\datasets\evoarena-swe\evaluation-d65855063a13010d.json
+swe_split: test
+fixed_skill: false
+initial_skill: null
+output: null
+runs_dir: null
+label: core-five-smoke
+wandb: false

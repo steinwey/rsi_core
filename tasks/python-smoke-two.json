@@ -1,0 +1,32 @@
+[
+  {
+    "id": "evo-f881cb75-001",
+    "benchmark": "swe",
+    "dataset_fingerprint": "7ca07a6e50c16569",
+    "instance": {
+      "instance_id": "evo-f881cb75-001",
+      "repo": "pallets/click",
+      "version": "lc-0005-target",
+      "base_commit": "ae46cfd6bc997804893adc799589248eadcdbc29",
+      "image": "rsi-evo/pallets__click_lc_0005_5850ef97:ae46cfd6bc99",
+      "problem_statement": "Implement this click project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Fix callable ``flag_value`` being instantiated when used as a default"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  },
+  {
+    "id": "evo-79f25adb-000",
+    "benchmark": "swe",
+    "dataset_fingerprint": "617bf63f33e20608",
+    "instance": {
+      "instance_id": "evo-79f25adb-000",
+      "repo": "sqlfluff/sqlfluff",
+      "version": "lc-0007-target",
+      "base_commit": "36b9eb61ed7e555bc0fed60418cc4f4fef3118f5",
+      "image": "rsi-evo/sqlfluff__sqlfluff_lc_0007_14d78ec8:36b9eb61ed7e",
+      "problem_statement": "Implement this sqlfluff project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Oracle: parse TABLESPACE/STORAGE and other table/index options"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  }
+]

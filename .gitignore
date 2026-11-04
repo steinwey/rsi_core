@@ -1,0 +1,23 @@
+.venv/
+.venv-wsl/
+.venv-py314/
+.tools/
+.test-deps/
+*.log
+__pycache__/
+*.pyc
+*.egg-info/
+runs/
+.env
+.env.*
+!.env.example
+.cache/
+datasets/
+_work/
+output/
+tmp/
+
+# Generated manifests contain paths to local EvoArena grading metadata.
+tasks/evoarena-*.json
+tasks/splits/
+tasks/streams/

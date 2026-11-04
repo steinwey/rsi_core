@@ -1,0 +1,77 @@
+[
+  {
+    "id": "evo-f881cb75-010",
+    "benchmark": "swe",
+    "dataset_fingerprint": "518bbfad53dcc43a",
+    "instance": {
+      "instance_id": "evo-f881cb75-010",
+      "repo": "pallets/click",
+      "version": "lc-0040-target",
+      "base_commit": "c8da1fcc2cb4523c1fb5bef7f0ca82394dde1efd",
+      "image": "rsi-evo/pallets__click_lc_0040_b03f211e:c8da1fcc2cb4",
+      "problem_statement": "Implement this click project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Auto-detect `type=UNPROCESSED` when `flag_value` has non-basic types"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  },
+  {
+    "id": "evo-f881cb75-011",
+    "benchmark": "swe",
+    "dataset_fingerprint": "19578581dcfbc16c",
+    "instance": {
+      "instance_id": "evo-f881cb75-011",
+      "repo": "pallets/click",
+      "version": "lc-0054-target",
+      "base_commit": "5b9630f50fde938b72ad8c99542efe3a6f5717e2",
+      "image": "rsi-evo/pallets__click_lc_0054_fc6c7c47:5b9630f50fde",
+      "problem_statement": "Implement this click project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- `FuncParamType` should use `ValueError` message in `self.fail()`"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  },
+  {
+    "id": "evo-f881cb75-012",
+    "benchmark": "swe",
+    "dataset_fingerprint": "8d4c67601f69387c",
+    "instance": {
+      "instance_id": "evo-f881cb75-012",
+      "repo": "pallets/click",
+      "version": "lc-0055-target",
+      "base_commit": "fc6c7c47edd6110b6bd5a1a5297b2035214b0cd1",
+      "image": "rsi-evo/pallets__click_lc_0055_c943271a:fc6c7c47edd6",
+      "problem_statement": "Implement this click project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Show custom error message in prompt with `hide_input=True`"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  },
+  {
+    "id": "evo-f881cb75-013",
+    "benchmark": "swe",
+    "dataset_fingerprint": "2ad9f0bdf2d4685c",
+    "instance": {
+      "instance_id": "evo-f881cb75-013",
+      "repo": "pallets/click",
+      "version": "lc-0059-target",
+      "base_commit": "3619563d9bf8763360d3f0d95eb76e43f26dea5e",
+      "image": "rsi-evo/pallets__click_lc_0059_ec822695:3619563d9bf8",
+      "problem_statement": "Implement this click project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Dual-option value arbitration: `first` vs. `last` vs. `most explicit` policy"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  },
+  {
+    "id": "evo-f881cb75-014",
+    "benchmark": "swe",
+    "dataset_fingerprint": "44d5b280d3e1130b",
+    "instance": {
+      "instance_id": "evo-f881cb75-014",
+      "repo": "pallets/click",
+      "version": "lc-0061-target",
+      "base_commit": "ba745ac64037b7d4cdd0abce10446c0a2861935f",
+      "image": "rsi-evo/pallets__click_lc_0061_d959898d:ba745ac64037",
+      "problem_statement": "Implement this click project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Add capture mode to `CliRunner` and revert default `fileno` exposure"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  }
+]

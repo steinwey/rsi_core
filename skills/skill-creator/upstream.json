@@ -1,0 +1,6 @@
+{
+  "repo": "https://github.com/anthropics/skills",
+  "sha256": "67cf5703402013936c8fb75ad6a1afecd8841d45cc5e606b634eb05825fde365",
+  "commit": "ca45fc496a3436251f191354091d557da31c15b5",
+  "path": "skills/skill-creator/scripts/quick_validate.py"
+}

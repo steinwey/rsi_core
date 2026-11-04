@@ -1,0 +1,11 @@
+{
+  "config": "../agent/python-pilot.yaml",
+  "rollouts": 5,
+  "parallel": true,
+  "tasks": "../../tasks/click-chain-train.json",
+  "swe_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+  "swe_split": "test",
+  "fixed_skill": false,
+  "label": "click-chain-train-10",
+  "wandb": false
+}

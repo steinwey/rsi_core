@@ -1,0 +1,244 @@
+{
+  "source_manifest": "D:\\RSI\\tasks\\evoarena-cached.json",
+  "source_sha256": "84d128ae4cb58584c450ccfd256374c3c447b0728bc1e9e18e027033c6286e70",
+  "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+  "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a",
+  "policy": "Independent SWE tasks. Exclude the known Click sentinel task; first five eligible milestones per repo train, next five eval; alternate repos.",
+  "excluded_source_instances": [
+    "pallets__click_lc_0003_b6afbf05"
+  ],
+  "manifest_sha256": {
+    "train": "712b0f4100847fe49c247632b3e95fecce429f3b7311a1a2283355bb59c777b3",
+    "eval": "62aa7445a7202eead1342905e62999e7fcbc4d92aac8a1eb39b6413750eb1837"
+  },
+  "tasks": [
+    {
+      "task_id": "evo-f881cb75-001",
+      "split": "train",
+      "repo": "pallets/click",
+      "language": "python",
+      "source_chain_id": "pallets__click_multistep_v25_L15_s0",
+      "source_chain_index": 1,
+      "source_instance_id": "pallets__click_lc_0005_5850ef97",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\pallets__click_multistep_v25_L15_s0\\instances\\001-pallets__click_lc_0005_5850ef97.json",
+      "goal": "- Fix callable ``flag_value`` being instantiated when used as a default"
+    },
+    {
+      "task_id": "evo-f881cb75-002",
+      "split": "train",
+      "repo": "pallets/click",
+      "language": "python",
+      "source_chain_id": "pallets__click_multistep_v25_L15_s0",
+      "source_chain_index": 2,
+      "source_instance_id": "pallets__click_lc_0016_14588004",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\pallets__click_multistep_v25_L15_s0\\instances\\002-pallets__click_lc_0016_14588004.json",
+      "goal": "- Fix speculative empty string check"
+    },
+    {
+      "task_id": "evo-f881cb75-003",
+      "split": "train",
+      "repo": "pallets/click",
+      "language": "python",
+      "source_chain_id": "pallets__click_multistep_v25_L15_s0",
+      "source_chain_index": 3,
+      "source_instance_id": "pallets__click_lc_0017_63ea71f9",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\pallets__click_multistep_v25_L15_s0\\instances\\003-pallets__click_lc_0017_63ea71f9.json",
+      "goal": "- Document and fix command sanitizing with `shlex.split`"
+    },
+    {
+      "task_id": "evo-f881cb75-004",
+      "split": "train",
+      "repo": "pallets/click",
+      "language": "python",
+      "source_chain_id": "pallets__click_multistep_v25_L15_s0",
+      "source_chain_index": 4,
+      "source_instance_id": "pallets__click_lc_0020_ac2dd7aa",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\pallets__click_multistep_v25_L15_s0\\instances\\004-pallets__click_lc_0020_ac2dd7aa.json",
+      "goal": "- Allow debugger interactions in tests"
+    },
+    {
+      "task_id": "evo-f881cb75-005",
+      "split": "train",
+      "repo": "pallets/click",
+      "language": "python",
+      "source_chain_id": "pallets__click_multistep_v25_L15_s0",
+      "source_chain_index": 5,
+      "source_instance_id": "pallets__click_lc_0027_89af4ae2",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\pallets__click_multistep_v25_L15_s0\\instances\\005-pallets__click_lc_0027_89af4ae2.json",
+      "goal": "- Expose original file descriptor in `CliRunner`"
+    },
+    {
+      "task_id": "evo-f881cb75-006",
+      "split": "eval",
+      "repo": "pallets/click",
+      "language": "python",
+      "source_chain_id": "pallets__click_multistep_v25_L15_s0",
+      "source_chain_index": 6,
+      "source_instance_id": "pallets__click_lc_0030_8c95c73b",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\pallets__click_multistep_v25_L15_s0\\instances\\006-pallets__click_lc_0030_8c95c73b.json",
+      "goal": "- Reconcile default value passing and default activation"
+    },
+    {
+      "task_id": "evo-f881cb75-007",
+      "split": "eval",
+      "repo": "pallets/click",
+      "language": "python",
+      "source_chain_id": "pallets__click_multistep_v25_L15_s0",
+      "source_chain_index": 7,
+      "source_instance_id": "pallets__click_lc_0031_76552ff1",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\pallets__click_multistep_v25_L15_s0\\instances\\007-pallets__click_lc_0031_76552ff1.json",
+      "goal": "- Show default string in prompt"
+    },
+    {
+      "task_id": "evo-f881cb75-008",
+      "split": "eval",
+      "repo": "pallets/click",
+      "language": "python",
+      "source_chain_id": "pallets__click_multistep_v25_L15_s0",
+      "source_chain_index": 8,
+      "source_instance_id": "pallets__click_lc_0033_4a352253",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\pallets__click_multistep_v25_L15_s0\\instances\\008-pallets__click_lc_0033_4a352253.json",
+      "goal": "- Reduce blast-radius of `UNSET` in `default_map`"
+    },
+    {
+      "task_id": "evo-f881cb75-009",
+      "split": "eval",
+      "repo": "pallets/click",
+      "language": "python",
+      "source_chain_id": "pallets__click_multistep_v25_L15_s0",
+      "source_chain_index": 9,
+      "source_instance_id": "pallets__click_lc_0039_c8da1fcc",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\pallets__click_multistep_v25_L15_s0\\instances\\009-pallets__click_lc_0039_c8da1fcc.json",
+      "goal": "- Split string values from `default_map` for multi-value parameters"
+    },
+    {
+      "task_id": "evo-f881cb75-010",
+      "split": "eval",
+      "repo": "pallets/click",
+      "language": "python",
+      "source_chain_id": "pallets__click_multistep_v25_L15_s0",
+      "source_chain_index": 10,
+      "source_instance_id": "pallets__click_lc_0040_b03f211e",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\pallets__click_multistep_v25_L15_s0\\instances\\010-pallets__click_lc_0040_b03f211e.json",
+      "goal": "- Auto-detect `type=UNPROCESSED` when `flag_value` has non-basic types"
+    },
+    {
+      "task_id": "evo-79f25adb-000",
+      "split": "train",
+      "repo": "sqlfluff/sqlfluff",
+      "language": "python",
+      "source_chain_id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "source_chain_index": 0,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0007_14d78ec8",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\sqlfluff__sqlfluff_multistep_v25_L10_s0\\instances\\000-sqlfluff__sqlfluff_lc_0007_14d78ec8.json",
+      "goal": "- Oracle: parse TABLESPACE/STORAGE and other table/index options"
+    },
+    {
+      "task_id": "evo-79f25adb-001",
+      "split": "train",
+      "repo": "sqlfluff/sqlfluff",
+      "language": "python",
+      "source_chain_id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "source_chain_index": 1,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0012_d8ec47d8",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\sqlfluff__sqlfluff_multistep_v25_L10_s0\\instances\\001-sqlfluff__sqlfluff_lc_0012_d8ec47d8.json",
+      "goal": "- Fix for empty iterator bug that can occur from Jinja loops"
+    },
+    {
+      "task_id": "evo-79f25adb-002",
+      "split": "train",
+      "repo": "sqlfluff/sqlfluff",
+      "language": "python",
+      "source_chain_id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "source_chain_index": 2,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0022_15d1db05",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\sqlfluff__sqlfluff_multistep_v25_L10_s0\\instances\\002-sqlfluff__sqlfluff_lc_0022_15d1db05.json",
+      "goal": "- Fix crash on malformed inline config using = syntax"
+    },
+    {
+      "task_id": "evo-79f25adb-003",
+      "split": "train",
+      "repo": "sqlfluff/sqlfluff",
+      "language": "python",
+      "source_chain_id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "source_chain_index": 3,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0028_c43ef991",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\sqlfluff__sqlfluff_multistep_v25_L10_s0\\instances\\003-sqlfluff__sqlfluff_lc_0028_c43ef991.json",
+      "goal": "- Add dbt 1.11 function() builtin to Jinja apply_dbt_builtins"
+    },
+    {
+      "task_id": "evo-79f25adb-004",
+      "split": "train",
+      "repo": "sqlfluff/sqlfluff",
+      "language": "python",
+      "source_chain_id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "source_chain_index": 4,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0051_6ceef78d",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\sqlfluff__sqlfluff_multistep_v25_L10_s0\\instances\\004-sqlfluff__sqlfluff_lc_0051_6ceef78d.json",
+      "goal": "- Apply warning-level fixes even when no errors present"
+    },
+    {
+      "task_id": "evo-79f25adb-005",
+      "split": "eval",
+      "repo": "sqlfluff/sqlfluff",
+      "language": "python",
+      "source_chain_id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "source_chain_index": 5,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0070_13753d6c",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\sqlfluff__sqlfluff_multistep_v25_L10_s0\\instances\\005-sqlfluff__sqlfluff_lc_0070_13753d6c.json",
+      "goal": "- Add option for non-zero exit on large_file_skip"
+    },
+    {
+      "task_id": "evo-79f25adb-006",
+      "split": "eval",
+      "repo": "sqlfluff/sqlfluff",
+      "language": "python",
+      "source_chain_id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "source_chain_index": 6,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0091_2cff769f",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\sqlfluff__sqlfluff_multistep_v25_L10_s0\\instances\\006-sqlfluff__sqlfluff_lc_0091_2cff769f.json",
+      "goal": "- Preserve mocked dbt `var()` placeholders under Jinja subscripting"
+    },
+    {
+      "task_id": "evo-79f25adb-007",
+      "split": "eval",
+      "repo": "sqlfluff/sqlfluff",
+      "language": "python",
+      "source_chain_id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "source_chain_index": 7,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0093_08e473ac",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\sqlfluff__sqlfluff_multistep_v25_L10_s0\\instances\\007-sqlfluff__sqlfluff_lc_0093_08e473ac.json",
+      "goal": "- Handle shorthand-casted aggregates correctly in ST06 column ordering"
+    },
+    {
+      "task_id": "evo-79f25adb-008",
+      "split": "eval",
+      "repo": "sqlfluff/sqlfluff",
+      "language": "python",
+      "source_chain_id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "source_chain_index": 8,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0111_048591f5",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\sqlfluff__sqlfluff_multistep_v25_L10_s0\\instances\\008-sqlfluff__sqlfluff_lc_0111_048591f5.json",
+      "goal": "- Ensure `pool.join()` is called in ParallelRunner"
+    },
+    {
+      "task_id": "evo-79f25adb-009",
+      "split": "eval",
+      "repo": "sqlfluff/sqlfluff",
+      "language": "python",
+      "source_chain_id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "source_chain_index": 9,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0128_7ad7b4ca",
+      "raw_source": "D:\\RSI\\datasets\\evoarena-swe\\chains\\sqlfluff__sqlfluff_multistep_v25_L10_s0\\instances\\009-sqlfluff__sqlfluff_lc_0128_7ad7b4ca.json",
+      "goal": "- Force color output when --color is requested"
+    }
+  ],
+  "validation": {
+    "train": 10,
+    "eval": 10,
+    "unique_sources": 20,
+    "python_only": true,
+    "grading_metadata_matches": true,
+    "docker_images_verified": false
+  }
+}

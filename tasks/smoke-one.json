@@ -1,0 +1,17 @@
+[
+  {
+    "id": "evo-f881cb75-000",
+    "benchmark": "swe",
+    "dataset_fingerprint": "53dbbbf5dbf8010c",
+    "instance": {
+      "instance_id": "evo-f881cb75-000",
+      "repo": "pallets/click",
+      "version": "lc-0003-target",
+      "base_commit": "fa7f035ab58dc4d9b8818b92fbc6a8f3c3234af6",
+      "image": "rsi-evo/pallets__click_lc_0003_b6afbf05:fa7f035ab58d",
+      "problem_statement": "Implement this click project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Hide `Sentinel.UNSET` values as `None` in `lookup_default()`"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-d65855063a13010d.json",
+    "evaluation_sha256": "982875c23d479131e3528331b17d411a9e017c12b861ba77fa3b03bbe0c33793"
+  }
+]

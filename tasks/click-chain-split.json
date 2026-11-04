@@ -1,0 +1,120 @@
+{
+  "source_manifest": "D:\\RSI\\tasks\\evoarena-cached.json",
+  "source_sha256": "84d128ae4cb58584c450ccfd256374c3c447b0728bc1e9e18e027033c6286e70",
+  "chain_id": "pallets__click_multistep_v25_L15_s0",
+  "repo": "pallets/click",
+  "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+  "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a",
+  "policy": "Original indices 0..9 train, 10..14 test. Independent snapshots; only Skill transfers. Includes previously inspected milestones.",
+  "manifest_sha256": {
+    "train": "3a88c86b6e9aa0edf1d832eb6d3d04317467ea6e4b5bf9a3473d126bee435025",
+    "eval": "25f4e180061ed469b3553eda97ccf7acefe50a5db7ea82d9e2c9eb81d2f8d9fb"
+  },
+  "tasks": [
+    {
+      "task_id": "evo-f881cb75-000",
+      "split": "train",
+      "source_chain_index": 0,
+      "source_instance_id": "pallets__click_lc_0003_b6afbf05",
+      "goal": "- Hide `Sentinel.UNSET` values as `None` in `lookup_default()`"
+    },
+    {
+      "task_id": "evo-f881cb75-001",
+      "split": "train",
+      "source_chain_index": 1,
+      "source_instance_id": "pallets__click_lc_0005_5850ef97",
+      "goal": "- Fix callable ``flag_value`` being instantiated when used as a default"
+    },
+    {
+      "task_id": "evo-f881cb75-002",
+      "split": "train",
+      "source_chain_index": 2,
+      "source_instance_id": "pallets__click_lc_0016_14588004",
+      "goal": "- Fix speculative empty string check"
+    },
+    {
+      "task_id": "evo-f881cb75-003",
+      "split": "train",
+      "source_chain_index": 3,
+      "source_instance_id": "pallets__click_lc_0017_63ea71f9",
+      "goal": "- Document and fix command sanitizing with `shlex.split`"
+    },
+    {
+      "task_id": "evo-f881cb75-004",
+      "split": "train",
+      "source_chain_index": 4,
+      "source_instance_id": "pallets__click_lc_0020_ac2dd7aa",
+      "goal": "- Allow debugger interactions in tests"
+    },
+    {
+      "task_id": "evo-f881cb75-005",
+      "split": "train",
+      "source_chain_index": 5,
+      "source_instance_id": "pallets__click_lc_0027_89af4ae2",
+      "goal": "- Expose original file descriptor in `CliRunner`"
+    },
+    {
+      "task_id": "evo-f881cb75-006",
+      "split": "train",
+      "source_chain_index": 6,
+      "source_instance_id": "pallets__click_lc_0030_8c95c73b",
+      "goal": "- Reconcile default value passing and default activation"
+    },
+    {
+      "task_id": "evo-f881cb75-007",
+      "split": "train",
+      "source_chain_index": 7,
+      "source_instance_id": "pallets__click_lc_0031_76552ff1",
+      "goal": "- Show default string in prompt"
+    },
+    {
+      "task_id": "evo-f881cb75-008",
+      "split": "train",
+      "source_chain_index": 8,
+      "source_instance_id": "pallets__click_lc_0033_4a352253",
+      "goal": "- Reduce blast-radius of `UNSET` in `default_map`"
+    },
+    {
+      "task_id": "evo-f881cb75-009",
+      "split": "train",
+      "source_chain_index": 9,
+      "source_instance_id": "pallets__click_lc_0039_c8da1fcc",
+      "goal": "- Split string values from `default_map` for multi-value parameters"
+    },
+    {
+      "task_id": "evo-f881cb75-010",
+      "split": "eval",
+      "source_chain_index": 10,
+      "source_instance_id": "pallets__click_lc_0040_b03f211e",
+      "goal": "- Auto-detect `type=UNPROCESSED` when `flag_value` has non-basic types"
+    },
+    {
+      "task_id": "evo-f881cb75-011",
+      "split": "eval",
+      "source_chain_index": 11,
+      "source_instance_id": "pallets__click_lc_0054_fc6c7c47",
+      "goal": "- `FuncParamType` should use `ValueError` message in `self.fail()`"
+    },
+    {
+      "task_id": "evo-f881cb75-012",
+      "split": "eval",
+      "source_chain_index": 12,
+      "source_instance_id": "pallets__click_lc_0055_c943271a",
+      "goal": "- Show custom error message in prompt with `hide_input=True`"
+    },
+    {
+      "task_id": "evo-f881cb75-013",
+      "split": "eval",
+      "source_chain_index": 13,
+      "source_instance_id": "pallets__click_lc_0059_ec822695",
+      "goal": "- Dual-option value arbitration: `first` vs. `last` vs. `most explicit` policy"
+    },
+    {
+      "task_id": "evo-f881cb75-014",
+      "split": "eval",
+      "source_chain_index": 14,
+      "source_instance_id": "pallets__click_lc_0061_d959898d",
+      "goal": "- Add capture mode to `CliRunner` and revert default `fileno` exposure"
+    }
+  ]
+}
