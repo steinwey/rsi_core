@@ -17,6 +17,7 @@ from rsi.experiment.checkpoints import run_lock, initialize, resume_request, pub
 from rsi.skills.store import SkillStore, SkillProposalRejected, document_gate, functional_gate, load_initial_skill
 from rsi.frameworks import evolve_skill, get_framework
 from rsi.skills.supervision import build_all_supervision
+from rsi.skills.directory import directory_schema
 
 
 def run_group(task, folder, skill, config, *, backend_factory=make_backend, model_factory=Model):
@@ -126,6 +127,7 @@ def run_group(task, folder, skill, config, *, backend_factory=make_backend, mode
 
 def run_experiment(tasks, config, output=None, *, runs_dir=None, label=None, resume=False,
                    backend_factory=make_backend, model_factory=Model):
+    schema = directory_schema(config)
     from rsi.benchmarks.evo_swe import validate_order
     validate_execution_mode(config)
     validate_action_protocol(config)
@@ -137,15 +139,15 @@ def run_experiment(tasks, config, output=None, *, runs_dir=None, label=None, res
     if resume:
         output = Path(output).resolve()
     else:
-        files, source = load_initial_skill(config.get('initial_skill'))
+        files, source = load_initial_skill(config.get('initial_skill'), directory_schema=schema, bootstrap=bool(schema))
         output = create_run_directory(tasks, config, output, runs_dir=runs_dir, label=label, initial_skill=source)
     with run_lock(output):
         if resume:
             state, saved_config, groups = resume_request(output)
             if config != saved_config or tasks != groups[0]:
                 raise ValueError('Resume must use the saved tasks and configuration without overrides')
-            seed_files, _ = load_initial_skill(output / 'initial-skill')
-            seed = SkillStore(output / 'initial-skill', seed_files)
+            seed_files, _ = load_initial_skill(output / 'initial-skill', directory_schema=schema)
+            seed = SkillStore(output / 'initial-skill', seed_files, directory_schema=schema)
             publish(output, state)
             archive_incomplete(output, tasks, len(state['completed']))
         else:
@@ -153,11 +155,11 @@ def run_experiment(tasks, config, output=None, *, runs_dir=None, label=None, res
             write_json(output / 'task-manifest.json', tasks)
             write_json(output / 'upstreams.lock.json', read_json(ROOT / 'upstreams.lock.json'))
             write_json(output / 'initial-skill-source.json', source)
-            seed = SkillStore(output / 'initial-skill', files)
-            SkillStore(output / 'skills', seed.current())
+            seed = SkillStore(output / 'initial-skill', files, directory_schema=schema)
+            SkillStore(output / 'skills', seed.current(), directory_schema=schema)
             state = initialize(output, tasks, config, seed.current().name)
         print(f'Run output: {output}', flush=True)
-        store = SkillStore(output / 'skills', seed.current())
+        store = SkillStore(output / 'skills', seed.current(), directory_schema=schema)
         return _continue_experiment(tasks, config, output, seed, store, state, backend_factory, model_factory)
 
 
@@ -178,7 +180,7 @@ def _continue_experiment(tasks, config, output, seed, store, state, backend_fact
             task_started = time.monotonic()
             progress(f"[{number}/{len(tasks)}] {task['id']}")
             skill = store.current()
-            integrity = document_gate(skill, store.fixed_files)
+            integrity = document_gate(skill, store.fixed_files, directory_schema=store.directory_schema)
             if not integrity['passed']:
                 raise RuntimeError(integrity['error'])
             folder = output / safe_id(task['id'])
@@ -200,8 +202,8 @@ def _continue_experiment(tasks, config, output, seed, store, state, backend_fact
                     proposal = evolve_skill(task, results, skill, config, model_factory, folder=folder,
                                       supervision=supervision, prepared_evidence=evidence)
                     if proposal['changes']:
-                        candidate, diff = store.propose(proposal['changes'])
-                        gate = document_gate(candidate, store.fixed_files, check_consistency=True)
+                        candidate, diff = store.propose(proposal['changes'], expected_base_version=skill.name)
+                        gate = document_gate(candidate, store.fixed_files, check_consistency=True, directory_schema=store.directory_schema)
                         accepted = gate['passed'] and candidate != skill
                         update = {'accepted': accepted, 'decision': 'document_checks_passed' if accepted else 'unchanged_candidate',
                                   'reason': proposal['reason'], 'document_gate': gate,

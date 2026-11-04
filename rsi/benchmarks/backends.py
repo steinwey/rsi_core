@@ -7,11 +7,15 @@ import shlex
 import subprocess
 import sys
 import uuid
+import tempfile
+import hashlib
 from pathlib import Path
 
 from minisweagent.environments.docker import DockerEnvironment
 
-from rsi.core.common import file_map, read_json, write_json
+from rsi.core.common import file_map, read_json, write_json, digest
+from rsi.skills.directory import read_skill_directory
+from rsi.skills.index import validate_index
 from rsi.benchmarks.tasks import evaluation_dataset_name
 
 
@@ -26,7 +30,7 @@ class CompatibleDockerEnvironment(DockerEnvironment):
             raise
 
 
-def install_skill(env, folder):
+def _copy_skill(env, folder, files=None):
     if hasattr(env, "install_skill"):
         env.install_skill(folder)
         return
@@ -37,17 +41,52 @@ def install_skill(env, folder):
         subprocess.run([env.config.executable, "cp", str(folder.resolve()) + "/.",
                         env.container_id + ":/opt/rsi-skills"], check=True, capture_output=True, timeout=60)
         return
-    payload = base64.b64encode(json.dumps(file_map(folder)).encode()).decode()
+    payload = base64.b64encode(json.dumps(file_map(folder) if files is None else files).encode()).decode()
+    writer = ("(root/p).write_text(v,encoding='utf-8')" if files is None
+              else "(root/p).write_bytes(v.encode('utf-8'))")
     script = ("import base64,json,pathlib; "
               f"files=json.loads(base64.b64decode('{payload}')); "
               "root=pathlib.Path('/opt/rsi-skills'); "
               "[( (root/p).parent.mkdir(parents=True,exist_ok=True),"
-              "(root/p).write_text(v,encoding='utf-8')) for p,v in files.items()]")
+              f"{writer}) for p,v in files.items()]")
     result = env.execute("python -c " + shlex.quote(script))
     if result["returncode"]:
         result = env.execute("python3 -c " + shlex.quote(script))
     if result["returncode"]:
         raise RuntimeError("Cannot install skill: " + result["output"])
+
+
+def install_skill(env, folder, *, directory_schema=0):
+    if not directory_schema:
+        return _copy_skill(env, folder)
+    files = read_skill_directory(folder, directory_schema=directory_schema)
+    validate_index(files)
+    if digest(files) != folder.name:
+        raise ValueError('Install Skill snapshot hash mismatch')
+    # All adapters copy the exact same canonical snapshot (no ignored files).
+    with tempfile.TemporaryDirectory(prefix='rsi-install-') as tmp:
+        snapshot = Path(tmp)
+        for name, text in files.items():
+            path = snapshot / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text, encoding='utf-8', newline='\n')
+        _copy_skill(env, snapshot, files)
+    expected = {name: hashlib.sha256(text.encode('utf-8')).hexdigest() for name, text in files.items()}
+    script = ("import pathlib,hashlib,json; root=pathlib.Path('/opt/rsi-skills'); "
+              "paths=list(root.rglob('*')); "
+              "assert not root.is_symlink() and not any(p.is_symlink() for p in paths); "
+              "actual={p.relative_to(root).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() "
+              "for p in paths if p.is_file()}; print('RSI_MANIFEST='+json.dumps(actual,sort_keys=True))")
+    result = env.execute('python -c ' + shlex.quote(script))
+    if result['returncode']:
+        result = env.execute('python3 -c ' + shlex.quote(script))
+    try:
+        lines = [line for line in result['output'].splitlines() if line.startswith('RSI_MANIFEST=')]
+        valid = result['returncode'] == 0 and len(lines) == 1 and json.loads(lines[0].split('=', 1)[1]) == expected
+    except (ValueError, TypeError):
+        valid = False
+    if not valid:
+        raise RuntimeError('Installed Skill differs from complete snapshot')
 
 
 # The pinned harness writes eval.sh with Path.write_text. On Windows that

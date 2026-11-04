@@ -5,10 +5,11 @@ import time
 import yaml
 from rsi import UPSTREAM
 from rsi.benchmarks.backends import install_skill, make_backend
-from rsi.core.common import digest, file_map, write_json
+from rsi.core.common import digest, write_json
+from rsi.skills.directory import directory_schema, immutable, read_skill_directory
 from rsi.core.model import Model, ModelFactory, RequestDeadlineExceeded, model_usage
 from rsi.agent.evidence import RecordingEnvironment
-from rsi.skills.store import SKILL_ROOT, skill_files, editable
+from rsi.skills.store import SKILL_ROOT, skill_files
 from rsi.agent.action_protocol import GuardedAgent, validate_action_protocol, REPAIR_INSTRUCTION
 from rsi.core.responses import generate_object
 def solver_step_limit_note(limit):
@@ -39,10 +40,10 @@ def execute_one(task, index, folder, skill, config, backend_factory=make_backend
     backend = agent = model = env = action_formatter = None
     result = {"rollout": index, "status": "error", "messages": [], "artifact": "", "error": None,
               "skill_version": skill.name, "skill_injected": False,
-              "tools_hash": digest({k: v for k, v in file_map(skill).items() if not editable(k)})}
+              "tools_hash": digest(immutable(read_skill_directory(skill, directory_schema=directory_schema(config))))}
     try:
         backend = backend_factory(task, folder, config)
-        install_skill(backend.env, skill)
+        install_skill(backend.env, skill, directory_schema=directory_schema(config))
         model = model_factory(config["model"])
         model.stream_log = folder / 'model-stream.jsonl'
         settings = yaml.safe_load((UPSTREAM / "third_party/src/minisweagent/config/extra/swebench.yaml").read_text(encoding="utf-8"))["agent"]

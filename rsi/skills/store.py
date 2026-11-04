@@ -1,27 +1,29 @@
 """Version and validate the guide while keeping tools immutable."""
+import os
 import difflib
 import hashlib
 import re
 import subprocess
 import uuid
+import shutil
+import tempfile
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
 from rsi import ROOT
-from rsi.core.common import digest, file_map, parse_object, read_json, write_json
+from rsi.core.common import digest, file_map, read_json, write_json
 from rsi.skills.documents import CHECKS, validate_consistency
+from rsi.skills.directory import INDEX_PATH, editable, immutable, read_skill_directory, validate_paths, reject_links
+from rsi.skills.index import build_index, validate_index
+from rsi.core.common import transient_file_access_error
 
 SKILL_ROOT = "/opt/rsi-skills"
 SCRIPT_PATH = re.compile(r"scripts/[A-Za-z][A-Za-z0-9_]{0,40}\.py")
-REFERENCE_PATH = re.compile(r"references/[A-Za-z0-9_][A-Za-z0-9_.-]*\.md")
 
 
 class SkillProposalRejected(ValueError):
     """An invalid candidate leaves the current skill unchanged."""
-
-
-def editable(path):
-    return isinstance(path, str) and (path == "SKILL.md" or REFERENCE_PATH.fullmatch(path) is not None)
 
 
 def skill_files(skill):
@@ -29,13 +31,15 @@ def skill_files(skill):
     return {k: v for k, v in file_map(skill).items() if editable(k) or SCRIPT_PATH.fullmatch(k)}
 
 
-def load_initial_skill(source=None):
+def load_initial_skill(source=None, *, directory_schema=0, bootstrap=False):
     """Read and validate a seed once; never change its source store or pointer."""
     builtin = ROOT / "skills/test-and-diagnose"
     fixed_files = {k: v for k, v in file_map(builtin).items() if not editable(k)}
     if source is not None and (not isinstance(source, (str, Path)) or not str(source).strip()):
         raise ValueError("initial_skill must be a nonempty path")
-    path = Path(source).expanduser().resolve() if source is not None else builtin.resolve()
+    raw_path = Path(source).expanduser().absolute() if source is not None else builtin.absolute()
+    reject_links(raw_path)
+    path = raw_path.resolve()
     requested = path
     pointer = None
     kind = "builtin" if source is None else "directory"
@@ -65,61 +69,136 @@ def load_initial_skill(source=None):
     if kind != "document" and not (path / "SKILL.md").is_file():
         raise ValueError(f"Initial skill directory must contain SKILL.md: {path}")
     files = ({**fixed_files, "SKILL.md": path.read_text(encoding="utf-8")}
-             if kind == "document" else file_map(path))
-    validate_document(files, fixed_files)
+             if kind == "document" else read_skill_directory(path, directory_schema=directory_schema))
+    source_version = digest(files)
+    if directory_schema and INDEX_PATH not in files:
+        if not bootstrap:
+            raise ValueError("Managed Skill requires an index")
+        validate_document(files, fixed_files)
+        files[INDEX_PATH] = build_index(files)
+    validate_document(files, fixed_files, directory_schema=directory_schema)
     version = digest(files)
-    if (pointer is not None or kind == "version") and version != path.name:
+    if (pointer is not None or kind == "version") and (source_version if bootstrap else version) != path.name:
         raise ValueError(f"Initial skill content differs from its version: {path}")
     metadata = {"kind": kind, "requested_path": str(requested), "resolved_path": str(path.resolve()),
                 "version": version, "tools_hash": digest(fixed_files),
                 "document_sha256": hashlib.sha256(files["SKILL.md"].encode("utf-8")).hexdigest()}
+    if directory_schema:
+        metadata.update(directory_schema=directory_schema, source_version=source_version, derived_version=version)
     return files, metadata
 
 
 class SkillStore:
-    def __init__(self, root, seed):
+    def __init__(self, root, seed, *, directory_schema=0):
+        self.directory_schema = directory_schema
         self.root = Path(root)
+        reject_links(self.root)
         self.pointer = self.root / "current.json"
-        files = dict(seed) if isinstance(seed, dict) else file_map(seed)
-        self.fixed_files = {k: v for k, v in files.items() if not editable(k)}
+        files = dict(seed) if isinstance(seed, dict) else read_skill_directory(seed, directory_schema=directory_schema)
+        self.fixed_files = immutable(files) if directory_schema else {k: v for k, v in files.items() if not editable(k)}
         self.tools_hash = digest(self.fixed_files)
         if not self.pointer.exists():
             version = self.materialize(files)
             write_json(self.pointer, {"version": version})
 
     def materialize(self, files):
+        validate_paths(files)
+        if any(not isinstance(text, str) for text in files.values()):
+            raise ValueError('Skill file contents must be text')
+        if self.directory_schema:
+            validate_document(files, self.fixed_files, directory_schema=self.directory_schema)
         version = digest(files)
-        folder = self.root / "versions" / version
-        for name, text in files.items():
-            path = folder / name
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(text, encoding="utf-8", newline="\n")
-        return version
+        versions = self.root / 'versions'
+        reject_links(versions)
+        versions.mkdir(parents=True, exist_ok=True)
+        folder = versions / version
+        if folder.exists():
+            self._verify(folder, files)
+            return version
+        stage = Path(tempfile.mkdtemp(prefix='.staging-', dir=versions))
+        try:
+            for name, text in sorted(files.items()):
+                path = stage / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                with path.open('w', encoding='utf-8', newline='\n') as stream:
+                    stream.write(text)
+                    stream.flush()
+                    os.fsync(stream.fileno())
+            self._verify(stage, files)
+            for attempt in range(6):
+                try:
+                    # Never replace an existing committed version.
+                    stage.rename(folder)
+                    break
+                except OSError as exc:
+                    if folder.exists():
+                        self._verify(folder, files)
+                        break
+                    if not transient_file_access_error(exc) or attempt == 5:
+                        raise
+                    time.sleep(0.05 * 2 ** attempt)
+            self._verify(folder, files)
+            return version
+        finally:
+            if stage.exists():
+                # Cleanup only this invocation's private staging directory.
+                # A hard kill may leave an unreferenced staging directory, never current.
+                shutil.rmtree(stage)
+
+    def _verify(self, folder, expected):
+        actual = read_skill_directory(folder, directory_schema=self.directory_schema)
+        if actual != expected or digest(actual) != digest(expected):
+            raise ValueError('Stored Skill version is incomplete or differs from candidate')
+        if self.directory_schema:
+            validate_document(actual, self.fixed_files, directory_schema=self.directory_schema)
 
     def current(self):
-        version = read_json(self.pointer)["version"]
-        return self.root / "versions" / version
+        version = read_json(self.pointer)['version']
+        if not isinstance(version, str) or not re.fullmatch(r'[0-9a-f]{16}', version):
+            raise ValueError('Invalid current Skill version')
+        folder = self.root / 'versions' / version
+        if self.directory_schema:
+            files = read_skill_directory(folder, directory_schema=self.directory_schema)
+            if digest(files) != version:
+                raise ValueError('Current Skill version hash mismatch')
+            validate_document(files, self.fixed_files, directory_schema=self.directory_schema)
+        return folder
 
-    def propose(self, changes):
+    def propose(self, changes, *, managed_changes=None, expected_base_version=None):
         if not isinstance(changes, dict) or any(not editable(p) for p in changes):
             raise SkillProposalRejected("Only SKILL.md and references/*.md may change; tools and checks are fixed")
         if "SKILL.md" in changes and changes["SKILL.md"] is None:
             raise SkillProposalRejected("SKILL.md cannot be deleted")
-        old = file_map(self.current())
+        current = self.current()
+        if expected_base_version is not None and current.name != expected_base_version:
+            raise SkillProposalRejected('Stale Skill base version')
+        old = read_skill_directory(current, directory_schema=self.directory_schema)
         new = {k: v for k, v in (old | changes).items() if v is not None}
         try:
+            if any(not isinstance(text, str) for text in new.values()):
+                raise ValueError('Skill file contents must be text')
+            if managed_changes is not None:
+                if not self.directory_schema or not isinstance(managed_changes, dict) or set(managed_changes) != {INDEX_PATH}:
+                    raise ValueError('Managed changes may only contain routing/index.yaml in managed mode')
+                # The independent interface accepts only deterministic program output.
+                expected = build_index(new, validate_index(old))
+                if managed_changes[INDEX_PATH] != expected:
+                    raise ValueError('Managed index must match deterministic builder output')
+                new.update(managed_changes)
+            elif self.directory_schema:
+                new[INDEX_PATH] = build_index(new, validate_index(old))
             # An unchanged archived seed is not a newly accepted version.
-            (validate_candidate if new != old else validate_document)(new, self.fixed_files)
+            (validate_candidate if new != old else validate_document)(new, self.fixed_files, directory_schema=self.directory_schema)
         except ValueError as exc:
             raise SkillProposalRejected(str(exc)) from exc
         version = self.materialize(new)
         diff = "\n".join("\n".join(difflib.unified_diff(old.get(p, "").splitlines(), new.get(p, "").splitlines(),
-                         fromfile=f"old/{p}", tofile=f"new/{p}", lineterm="")) for p in sorted(changes))
+                         fromfile=f"old/{p}", tofile=f"new/{p}", lineterm="")) for p in sorted(old.keys() | new.keys()) if old.get(p) != new.get(p))
         return self.root / "versions" / version, diff
 
     def record(self, candidate, accepted, evidence):
         if accepted:
-            validate_candidate(file_map(candidate), self.fixed_files)
+            validate_candidate(read_skill_directory(candidate, directory_schema=self.directory_schema), self.fixed_files, directory_schema=self.directory_schema)
         before = self.current().name
         event = {"timestamp": datetime.now(timezone.utc).isoformat(), "before": before,
                  "after": candidate.name, "accepted": accepted, **evidence, "tools_hash": self.tools_hash}
@@ -131,8 +210,12 @@ class SkillStore:
             write_json(self.pointer, {"version": candidate.name})
 
 
-def validate_document(files, fixed_files):
-    if {k: v for k, v in files.items() if not editable(k)} != fixed_files:
+def validate_document(files, fixed_files, *, directory_schema=0):
+    validate_paths(files)
+    if directory_schema:
+        validate_index(files)
+    fixed = immutable(files) if directory_schema else {k: v for k, v in files.items() if not editable(k)}
+    if fixed != fixed_files:
         raise ValueError("Fixed tools or checks were modified")
     guide = files.get("SKILL.md")
     if not isinstance(guide, str) or not guide.strip():
@@ -145,19 +228,23 @@ def validate_document(files, fixed_files):
             raise ValueError(f"Unknown fixed tool reference: {ref}")
 
 
-def validate_candidate(files, fixed_files):
-    validate_document(files, fixed_files)
+def validate_candidate(files, fixed_files, *, directory_schema=0):
+    validate_document(files, fixed_files, directory_schema=directory_schema)
     validate_consistency(files)
 
 
-def document_gate(candidate, fixed_files, *, check_consistency=False):
+def document_gate(candidate, fixed_files, *, check_consistency=False, directory_schema=0):
     # Archived seeds stay readable; the stronger gate is required for NEW versions.
     scope = 'document_consistency' if check_consistency else 'document_integrity'
     details = {'scope': scope, 'effectiveness_evaluated': False,
                'checks': ['fixed_files', 'nonempty_documents', 'fixed_tool_links'] + (CHECKS if check_consistency else [])}
+    if directory_schema:
+        details['checks'] += ['managed_index', 'directory_hash']
     try:
-        files = file_map(candidate)
-        (validate_candidate if check_consistency else validate_document)(files, fixed_files)
+        files = read_skill_directory(candidate, directory_schema=directory_schema)
+        (validate_candidate if check_consistency else validate_document)(files, fixed_files, directory_schema=directory_schema)
+        if directory_schema and digest(files) != Path(candidate).name:
+            raise ValueError("Candidate directory hash mismatch")
         return {"passed": True, "tools_hash": digest(fixed_files), **details}
     except ValueError as exc:
         return {"passed": False, "error": str(exc), **details}

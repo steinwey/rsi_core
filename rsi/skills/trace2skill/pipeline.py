@@ -11,16 +11,38 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict
 from pathlib import Path
 
-from rsi.core.common import write_json, file_map
+from rsi.core.common import write_json
 from rsi.core.model import Model
 from rsi.skills.store import SkillProposalRejected, skill_files, editable
 from rsi.skills.documents import validate_consistency
+from rsi.skills.directory import read_skill_directory, directory_schema, validate_paths, immutable, INDEX_PATH
 from rsi.skills.trace2skill.client import RecordedClient
 from rsi.skills.trace2skill.evidence import EvidenceReader
 from rsi.skills.trace2skill.prompts import analysis_prompt
 from rsi.skills.trace2skill.reports import extract_report
 from rsi.skills.trace2skill.upstream import load
 from rsi.skills.trace2skill.validation import FailureValidation, filter_for_editor, sha
+
+
+def guard_editor_writes(evolver, work_skill, schema):
+    """Guard both initial Apply and verification repairs before any file is written."""
+    original_apply = evolver.apply_edits
+    def apply_checked(edits):
+        edits = list(edits)
+        files = read_skill_directory(work_skill, directory_schema=schema)
+        for edit in edits:
+            path = edit.relative_path
+            if (not editable(path) or edit.action not in ('create', 'modify', 'delete')
+                    or path == 'SKILL.md' and edit.action == 'delete'
+                    or edit.action != 'delete' and not isinstance(edit.content, str)):
+                raise SkillProposalRejected(f'Illegal editor FileEdit: {path!r}')
+            if edit.action == 'delete':
+                files.pop(path, None)
+            else:
+                files[path] = edit.content
+        validate_paths(files)
+        original_apply(edits)
+    evolver.apply_edits = apply_checked
 
 
 def evolve_skill(task, results, skill, config, model_factory=Model, *, folder, supervision, prepared_evidence):
@@ -37,6 +59,8 @@ def evolve_skill(task, results, skill, config, model_factory=Model, *, folder, s
     clients = []
     lock = threading.Lock()
     abort_event = threading.Event()
+    schema = directory_schema(config)
+    original_directory = read_skill_directory(skill, directory_schema=schema)
     original = skill_files(skill)
     state = {k: v for k, v in original.items() if editable(k)}
     evidence, _ = prepared_evidence
@@ -193,12 +217,13 @@ def evolve_skill(task, results, skill, config, model_factory=Model, *, folder, s
             output_dir=root / 'patches', parse_failure_dir=root / 'parse_failures', verbose=False)
         # Reuse the upstream bounded verification/repair loop. Do not add a new
         # model stage or mutate its pinned source to check document consistency.
+        guard_editor_writes(evolver._evolver, work_skill, schema)
         upstream_validate = evolver._evolver.validate_skill
         def validate_work_skill():
             passed, message = upstream_validate()
             if passed:
                 try:
-                    validate_consistency(file_map(work_skill))
+                    validate_consistency(read_skill_directory(work_skill, directory_schema=schema))
                 except ValueError as exc:
                     return False, str(exc)
             return passed, message
@@ -206,7 +231,11 @@ def evolve_skill(task, results, skill, config, model_factory=Model, *, folder, s
         outcome = evolver.run(actionable)
         if abort_event.is_set():
             raise RuntimeError('Trace2Skill editor/model failed; task not committed')
-        updated = {k: v for k, v in file_map(work_skill).items() if editable(k)}
+        updated_directory = read_skill_directory(work_skill, directory_schema=schema)
+        if (immutable(updated_directory) != immutable(original_directory)
+                or updated_directory.get(INDEX_PATH) != original_directory.get(INDEX_PATH)):
+            raise SkillProposalRejected('Editor modified fixed tools or managed metadata')
+        updated = {k: v for k, v in updated_directory.items() if editable(k)}
         changed = updated != state
         # The upstream verifier can return normally after exhausting repairs.
         # Confirm its final artifact before allowing an experiment checkpoint.
@@ -217,7 +246,7 @@ def evolve_skill(task, results, skill, config, model_factory=Model, *, folder, s
         consistency_error = None
         if checked.returncode == 0 and changed:
             try:
-                validate_consistency(file_map(work_skill))
+                validate_consistency(read_skill_directory(work_skill, directory_schema=schema))
             except ValueError as exc:
                 consistency_error = str(exc)
         validation_result = {'passed': checked.returncode == 0 and not consistency_error,

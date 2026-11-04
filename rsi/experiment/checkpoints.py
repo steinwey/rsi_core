@@ -10,6 +10,7 @@ from rsi.core.common import digest, read_json, write_json, safe_id
 from rsi.experiment.run_logs import update_run
 from rsi.experiment.tracking import summary_metrics, task_complete
 from rsi.skills.store import load_initial_skill
+from rsi.skills.directory import directory_schema
 
 
 @contextmanager
@@ -41,8 +42,11 @@ def run_lock(output):
 
 
 def initialize(output, tasks, config, version):
-    state = {'schema': 5, 'tasks_hash': digest(tasks), 'config_hash': digest(config),
+    schema = directory_schema(config)
+    state = {'schema': 6 if schema else 5, 'tasks_hash': digest(tasks), 'config_hash': digest(config),
              'initial_skill_version': version, 'current_skill_version': version, 'completed': []}
+    if schema:
+        state['directory_schema'] = schema
     write_json(Path(output) / 'checkpoint.json', state)
     return state
 
@@ -54,7 +58,8 @@ def resume_request(output):
     tasks = read_json(output / 'task-manifest.json')
     config = read_json(output / 'config.json')
     state = read_json(output / 'checkpoint.json')
-    if (state.get('schema') != 5 or state.get('tasks_hash') != digest(tasks)
+    schema = directory_schema(config)
+    if (state.get('schema') != (6 if schema else 5) or (schema and state.get('directory_schema') != schema) or state.get('tasks_hash') != digest(tasks)
             or state.get('config_hash') != digest(config)):
         raise ValueError('Checkpoint schema, task manifest or configuration mismatch')
     completed = state['completed']
@@ -66,7 +71,7 @@ def resume_request(output):
     def verify_version(value):
         if not isinstance(value, str) or not re.fullmatch(r'[0-9a-f]{16}', value):
             raise ValueError('Invalid checkpoint Skill version')
-        load_initial_skill(output / 'skills/versions' / value)
+        load_initial_skill(output / 'skills/versions' / value, directory_schema=schema)
     verify_version(version)
     for task, entry in zip(tasks, completed):
         if (entry['report']['task_id'] != task['id'] or not task_complete(entry['report'])
@@ -85,6 +90,14 @@ def resume_request(output):
 def publish(output, state):
     """Idempotent replay after a crash during pointer/summary publication."""
     output = Path(output)
+    if state.get('schema') == 6:
+        if state.get('directory_schema') != 1:
+            raise ValueError('Unsupported directory schema')
+        for value in {state['initial_skill_version'], state['current_skill_version'],
+                      *(entry['update']['after_skill_version'] for entry in state['completed'])}:
+            if not isinstance(value, str) or not re.fullmatch(r'[0-9a-f]{16}', value):
+                raise ValueError('Invalid checkpoint Skill version')
+            load_initial_skill(output / 'skills/versions' / value, directory_schema=1)
     reports = [entry['report'] for entry in state['completed']]
     history = []
     for entry in state['completed']:
@@ -110,6 +123,18 @@ def publish(output, state):
 def commit(output, state, report, update):
     if not task_complete(report):
         raise ValueError('Incomplete supervision or evaluation cannot be checkpointed')
+    if state.get('schema') == 6:
+        if state.get('directory_schema') != 1:
+            raise ValueError('Unsupported directory schema')
+        if (report['task_id'] in {e['report']['task_id'] for e in state['completed']}
+                or report['skill_version'] != state['current_skill_version']
+                or update['before_skill_version'] != state['current_skill_version']
+                or not update['accepted'] and update['after_skill_version'] != state['current_skill_version']):
+            raise ValueError('Invalid or duplicate managed task commit')
+        value = update['after_skill_version']
+        if not isinstance(value, str) or not re.fullmatch(r'[0-9a-f]{16}', value):
+            raise ValueError('Invalid Skill version')
+        load_initial_skill(Path(output) / 'skills/versions' / value, directory_schema=1)
     next_state = {**state, 'current_skill_version': update['after_skill_version'],
                   'completed': [*state['completed'], {'report': report, 'update': update,
                       'committed_at': datetime.now(timezone.utc).isoformat()}]}

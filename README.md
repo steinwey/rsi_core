@@ -165,3 +165,7 @@ checkpoint schema 5 在评分和学习结束后原子提交，保存当前 Skill
 密钥从根目录 `.env` 的 `SUB2API_API_KEY` 加载，不写入 YAML。默认接口为 `https://www.sub2api.com/v1`；如果密钥来自其他站点，需要修改求解角色 `model.api_base`。其他角色继续使用 `QWEN_TOKEN_PLAN_API_KEY`。Luna 使用现有 Chat Completions 调用链，设置 `reasoning_effort: none`，不发送 Qwen 的 `enable_thinking` 参数。
 
 运行时指定 `--config configs/agent/gpt6-luna.yaml`（例如 `python -m rsi.cli run --tasks <任务清单> --config configs/agent/gpt6-luna.yaml`）。本地配置校验不代表上游凭据或模型权限有效，需实际请求验证。
+
+## P0：可选的 Skill 索引与版本事务
+
+新增目录模式默认关闭。新 Trace2Skill 运行可显式设置 `skill_directory: {schema: 1}`，启用程序管理的 `routing/index.yaml`、完整目录原子物化、安装校验和 Checkpoint Schema 6。旧模式及 Schema 5 恢复保持兼容；迁移、检索、整理功能尚未实现，不能开启。接口、限制与安全回退命令见 [P0 说明](docs/skill_routing_p0.md)。

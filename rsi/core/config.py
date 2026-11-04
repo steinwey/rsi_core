@@ -139,6 +139,11 @@ def load_config(path, *, framework=None):
     config['reasoningbank'] = rb_defaults | rb
     if any(type(value) is not int or value <= 0 for value in config['reasoningbank'].values()):
         raise ValueError('ReasoningBank settings must be positive integers')
+    from rsi.skills.directory import directory_schema
+    directory_schema(config)
+    for feature in ('skill_maintenance', 'reference_maintenance', 'skill_routing'):
+        config.setdefault(feature, {'enabled': False})
+    config.setdefault('skill_directory', {'schema': 0})
     blocks = model_configs(config)
     for block in (*blocks.values(), config.get("wandb") or {}):
         if isinstance(block, dict) and any(key in block for key in ("api_key", "key")):
