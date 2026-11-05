@@ -181,7 +181,11 @@ def route(task, skill, config, *, folder=None, counter_factory=None):
             record['estimated_budget'] = {
                 'effective_limit': selection_limit, 'safety_margin': options['estimated_counter']['safety_margin'],
                 'strict_guarantee': False, 'unit': 'proxy BPE tokens; not provider usage'}
-        selection = select_context(files, eligible, counter, budget_limit=selection_limit, top_k=options['top_k'])
+        from rsi.skills.access import settings as access_settings
+        access = access_settings(config)
+        if access['enabled']:
+            record['skill_access'] = access
+        selection = select_context(files, eligible, counter, budget_limit=selection_limit, top_k=options['top_k'], access=access)
         record['core_tokens'] = selection.core_tokens
         if not eligible and not options['allow_zero_matches']:
             raise BudgetError('zero_matches_disallowed', 'No applicable positive BM25 match.')
@@ -231,7 +235,10 @@ def verify_receipt(output, report, config, task=None):
     stable['route_id'] = None
     files = read_skill_directory(Path(output) / 'skills/versions' / report['skill_version'], directory_schema=1)
     validate_index(files)
-    if (record.get('status') != 'ok' or record.get('route_id') != sha(stable_json(stable))
+    from rsi.skills.access import settings as access_settings
+    access = access_settings(config)
+    if (record.get('skill_access') != (access if access['enabled'] else None)
+            or record.get('status') != 'ok' or record.get('route_id') != sha(stable_json(stable))
             or record.get('parameters') != settings(config)
             or record.get('task_id') != report['task_id']
             or record.get('skill_version') != report['skill_version']

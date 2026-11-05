@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "installation": {
+    "skill_version": "577cdf3b0cd8d011",
+    "expected_manifest": {
+      "SKILL.md": "e251039a3ac4ae04f98dc2955af889c2a3ca8807d498db31755245f2b2a17986",
+      "references/a.md": "42c03ceb9e4cb79ddab29f295bb5d65bc48c6b1ee74453abf0b7fb45a98da3a6",
+      "references/b.md": "dc98348cf390d1a9b3ac600d369f51bb5b31a674624472046ba4e4cd7a32c2f0",
+      "routing/index.yaml": "125e8d15a7fb1c26b8a7694f3e9e7c77696f6f72cbb263dd143e403f90be3122",
+      "scripts/inspect_project.py": "5394e18880fc30a753e52b75fc095318de1081c7712491b092cd7786b4346f44",
+      "tests/check_skill.py": "f2b249e6bba8fd990dbf7abe5ed4ede6341a5d4463997cbc523f3fc3a2cd7038"
+    },
+    "snapshot_sha256": "5e03c2519ac8bb4d7473548499706f24b6e9736a63826d57ce14adff118064e0",
+    "read_only_enforced": false,
+    "status": "verified",
+    "install_mode": "copy_audited",
+    "degraded": true,
+    "limitation": "Writable copy; endpoint hashes cannot exclude transient or concealed changes",
+    "installed_snapshot_sha256": "5e03c2519ac8bb4d7473548499706f24b6e9736a63826d57ce14adff118064e0",
+    "final_snapshot_sha256": "5e03c2519ac8bb4d7473548499706f24b6e9736a63826d57ce14adff118064e0"
+  },
+  "read_response": {
+    "output": "# A\nWhen pytest fails, inspect evidence.\nCheck scope.\n",
+    "returncode": 0
+  },
+  "tampering_detected": true,
+  "real_harbor_lifecycle": true
+}

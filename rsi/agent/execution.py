@@ -32,12 +32,15 @@ def skill_prompt(skill):
             f"Available scripts:\n{tools}\n\n" + (skill / "SKILL.md").read_text(encoding="utf-8").strip())
 
 def execute_one(task, index, folder, skill, config, backend_factory=make_backend,
-                model_factory: ModelFactory = Model, *, skill_context=None):
+                model_factory: ModelFactory = Model, *, skill_context=None, counter_factory=None):
     from minisweagent.agents.default import LimitsExceeded
     validate_action_protocol(config)
     folder.mkdir(parents=True, exist_ok=False)
     start = time.monotonic()
     backend = agent = model = env = action_formatter = None
+    from rsi.skills import access
+    access_options = access.settings(config)
+    snapshot = installation = None
     result = {"rollout": index, "status": "error", "messages": [], "artifact": "", "error": None,
               "skill_version": skill.name, "skill_injected": False,
               "tools_hash": digest(immutable(read_skill_directory(skill, directory_schema=directory_schema(config))))}
@@ -55,8 +58,14 @@ def execute_one(task, index, folder, skill, config, backend_factory=make_backend
                           index_hash=skill_context.index_hash, initial_skill_tokens=skill_context.initial_skill_tokens)
         elif skill_context is not None:
             raise ValueError('Frozen SkillContext supplied while routing is disabled')
-        backend = backend_factory(task, folder, config)
-        install_skill(backend.env, skill, directory_schema=directory_schema(config))
+        if access_options['enabled']:
+            snapshot = access.Snapshot(skill)
+            backend = backend_factory(task, folder, config | {'_skill_access_snapshot': str(snapshot.path)})
+            backend = access.ManagedBackend(backend, snapshot)
+            installation = access.install(backend.env, snapshot, access_options, folder)
+        else:
+            backend = backend_factory(task, folder, config)
+            install_skill(backend.env, skill, directory_schema=directory_schema(config))
         model = model_factory(config["model"])
         model.stream_log = folder / 'model-stream.jsonl'
         settings = yaml.safe_load((UPSTREAM / "third_party/src/minisweagent/config/extra/swebench.yaml").read_text(encoding="utf-8"))["agent"]
@@ -102,13 +111,39 @@ def execute_one(task, index, folder, skill, config, backend_factory=make_backend
                            action_log=folder / 'action-protocol.jsonl', **settings)
         guide = skill_context.text if skill_context is not None else skill_prompt(skill)
         result["status"], result["submission"] = agent.run(task["prompt"], rsi_skill=guide)
+        if installation:
+            installation['final_snapshot_sha256'] = access.verify(backend.env, snapshot.expected)
+            installation['final_status'] = 'verified'
         result["artifact"] = backend.artifact()
     except Exception as exc:
         result["error"] = f"{type(exc).__name__}: {exc}"
     finally:
+        if snapshot and backend is None:
+            snapshot.cleanup()
+        if installation:
+            try:
+                installation['final_snapshot_sha256'] = access.verify(backend.env, snapshot.expected)
+                installation['final_status'] = 'verified'
+            except Exception as exc:
+                installation['final_status'] = 'failed'
+                result['error'] = 'Skill integrity: ' + str(exc)
+                result['artifact'] = ''
+            try:
+                write_json(folder / 'skill-install.json', installation)
+            except BaseException:
+                backend.close()
+                raise
         result["messages"] = copy.deepcopy(agent.messages) if agent else []
         result["usage"] = model_usage(model)
         result['action_repair_usage'] = model_usage(action_formatter)
+        if access_options['enabled']:
+            try:
+                from rsi.skills.access_audit import audit
+                result['skill_access'] = audit(folder, snapshot.files, skill_context, config, result, counter_factory=counter_factory,
+                    default_cwd=getattr(getattr(backend.env, 'config', None), 'cwd', '/testbed'))
+            except Exception as exc:
+                result['skill_access'] = {'status': 'unknown', 'audit_error': type(exc).__name__, 'autonomous_read_events': None}
+            result['skill_install'] = installation
         result['action_protocol'] = {'total_failures': agent.format_total if agent else 0,
                                     'consecutive_failures': agent.format_consecutive if agent else 0,
                                     'max_consecutive': config.get('action_format_max_consecutive', 3)}

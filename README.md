@@ -187,3 +187,7 @@ P2 已实现默认关闭的 BM25 检索、整文件预算筛选与一次路由�
 ## P3：可选的辅助文件周期维护
 
 默认关闭的 Reference Consolidation 在第 10、20 次已提交有效学习更新处执行有界候选检索和整理。采用完整原文合并、整文件精确去重及 P1 覆盖验证拆分；冲突或可选整理失败保留已通过必要验证的学习候选，基础设施故障安全中止。计数、savepoint、覆盖账本及恢复规则见 [P3 说明](docs/skill_routing_p3.md)，Mock 示例与回归结果见 [P3 验收报告](docs/skill_routing_p3_validation.md)。以上旧阶段段落描述各阶段当时状态；P4 自主读取审计仍未实现。
+
+## P4：自主查阅引导、只读安装与访问审计
+
+P4 默认关闭，复用现有 Bash 读取能力。启用后，Docker 使用经过验证的独立快照只读挂载，Harbor/通用 Backend 明确标记复制审计降级；新增引导仍纳入 P2 初始上下文预算。各路分别记录内容核对、推断及未知访问，Observation 代理估算与实际 API usage 分开统计。详见 [P4 说明](docs/skill_routing_p4.md) 和 [验收报告](docs/skill_routing_p4_validation.md)。没有启动正式实验；P2/P3 原本即可读取 references，不能将开关名称当作访问能力消融。

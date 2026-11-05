@@ -90,6 +90,8 @@ def resume_request(output):
         verify_maintenance_artifacts(output, entry['report'], entry['update'], config)
         from rsi.skills.routing import verify_receipt
         verify_receipt(output, entry['report'], config, task)
+        from rsi.skills.access import verify_receipt as verify_access
+        verify_access(output, entry['report'], config)
         if (entry['report']['task_id'] != task['id'] or not task_complete(entry['report'])
                 or entry['report'].get('phase') != ('train' if config['evolve'] else 'test')
                 or entry['update']['before_skill_version'] != version
@@ -192,6 +194,8 @@ def commit(output, state, report, update):
         tasks = read_json(Path(output) / 'task-manifest.json')
         task = next((t for t in tasks if t['id'] == report['task_id']), None)
         verify_receipt(output, report, config, task)
+        from rsi.skills.access import verify_receipt as verify_access
+        verify_access(output, report, config)
     next_state = {**state, 'current_skill_version': update['after_skill_version'],
                   'completed': [*state['completed'], {'report': report, 'update': update,
                       'committed_at': datetime.now(timezone.utc).isoformat()}]}

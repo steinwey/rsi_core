@@ -1,0 +1,179 @@
+{
+  "kind": "Mock solver/backend, real pinned offline proxy BPE; zero paid API calls",
+  "model_alias": "gpt-6-luna",
+  "route": {
+    "schema": 1,
+    "status": "ok",
+    "task_id": "task",
+    "task_hash": "3f89e1595695ce4c9eb0b69b6716d0da8ac0e8b0026764ea157587e95f84a8a9",
+    "skill_version": "1d9c1033ae35f7b5",
+    "index_hash": "e62a95b7644ce43f5d947e3b6f064822f9fd96e35dbbfa0f29d25660ca986baf",
+    "algorithm": "bm25-skill-v1",
+    "tokenization": "identifier-cjk-v1",
+    "field_weights": {
+      "title": 1,
+      "description": 1,
+      "keywords": 1,
+      "applies_when": 1,
+      "body": 1
+    },
+    "retrieval_method": "bm25",
+    "top_k": 2,
+    "parameters": {
+      "enabled": true,
+      "retrieval_method": "bm25",
+      "top_k": 2,
+      "max_initial_skill_tokens": 4000,
+      "allow_zero_matches": true,
+      "budget_mode": "estimated",
+      "bm25": {
+        "k1": 1.2,
+        "b": 0.75
+      },
+      "estimated_counter": {
+        "method": "o200k_proxy_v1",
+        "model": "gpt-6-luna",
+        "provider": "sub2api",
+        "api_base": "https://sub2api.47.250.156.179.nip.io/v1",
+        "tokenizer_version": "0.14.0",
+        "encoding": "o200k_base",
+        "safety_margin": 0.25
+      }
+    },
+    "candidate_scores": [
+      {
+        "path": "references/a.md",
+        "score": 1.1594866798289578,
+        "exclusion": null
+      },
+      {
+        "path": "references/b.md",
+        "score": 1.095871709899459,
+        "exclusion": null
+      },
+      {
+        "path": "references/third.md",
+        "score": 0.0,
+        "exclusion": null
+      }
+    ],
+    "selected_references": [
+      "references/a.md",
+      "references/b.md"
+    ],
+    "excluded_references": [
+      {
+        "path": "references/third.md",
+        "reason": "no_positive_match",
+        "condition": null
+      }
+    ],
+    "route_id": "8d880ce1e90be6b54d045c8351c2e7dc31c67d465755614fc5f9366b625f62b7",
+    "context_hash": "e6f2f759f626f86e96f24b1246e07b263ccd1c122defc28ef9c06ff537601360",
+    "initial_skill_tokens": 466,
+    "budget_limit": 4000,
+    "counter": {
+      "model": "gpt-6-luna",
+      "identity": "{\"encoding\":\"o200k_base\",\"endpoint_sha256\":\"f4cc12772337acf8ce35fa2c61122151f52f7ee78bb9f2f25d1e7e7043e03a82\",\"method\":\"o200k_proxy_v1\",\"model\":\"gpt-6-luna\",\"pattern_sha256\":\"2d1b8dc11e89af71459b36004f698ab3693f59fd84f63e8ec2b49564ab857420\",\"provider\":\"sub2api\",\"version\":\"0.14.0\",\"vocabulary_sha256\":\"446a9538cb6c348e3516120d7c08b09f57c36495e2acfffe59a5bf8b0cfb1a2d\"}",
+      "accuracy": "estimated",
+      "statement": "Exact count only for the pinned o200k_base proxy vocabulary, NOT the target API model. Mapping and provider usage are unverified; error is unbounded. Safety margin is a heuristic, not a guarantee. Counts SkillContext text only, excluding chat framing and other messages."
+    },
+    "context_file": "skill-context.txt",
+    "estimated_budget": {
+      "effective_limit": 3200,
+      "safety_margin": 0.25,
+      "strict_guarantee": false,
+      "unit": "proxy BPE tokens; not provider usage"
+    },
+    "skill_access": {
+      "enabled": true,
+      "install_mode": "auto",
+      "require_read_only": false,
+      "expose_index": true,
+      "audit_reads": true,
+      "record_observation_cost": true,
+      "verify_snapshot_before": true,
+      "verify_snapshot_after": true
+    },
+    "core_tokens": 419,
+    "loaded_files": [
+      {
+        "path": "references/a.md",
+        "content_hash": "d37b8a2a007c06c13e7600a0e2730f187bd1f9fed3d000242c30f104dd727e76",
+        "full_or_partial": "full",
+        "unit_ids": []
+      },
+      {
+        "path": "references/b.md",
+        "content_hash": "a4a3423b3f56938d299b2d7cbe26ed3ec81e3da050c67f36b1c00988fd3fa376",
+        "full_or_partial": "full",
+        "unit_ids": []
+      }
+    ],
+    "outcome": "references_loaded",
+    "seconds": 0.19904940016567707
+  },
+  "rollout_0": {
+    "audit_scope": "best_effort_command_and_observation; not OS file tracing",
+    "initial_skill_tokens": 466,
+    "initial_skill_tokens_estimated": 466,
+    "initial_counter": {
+      "model": "gpt-6-luna",
+      "identity": "{\"encoding\":\"o200k_base\",\"endpoint_sha256\":\"f4cc12772337acf8ce35fa2c61122151f52f7ee78bb9f2f25d1e7e7043e03a82\",\"method\":\"o200k_proxy_v1\",\"model\":\"gpt-6-luna\",\"pattern_sha256\":\"2d1b8dc11e89af71459b36004f698ab3693f59fd84f63e8ec2b49564ab857420\",\"provider\":\"sub2api\",\"version\":\"0.14.0\",\"vocabulary_sha256\":\"446a9538cb6c348e3516120d7c08b09f57c36495e2acfffe59a5bf8b0cfb1a2d\"}",
+      "accuracy": "estimated",
+      "statement": "Exact count only for the pinned o200k_base proxy vocabulary, NOT the target API model. Mapping and provider usage are unverified; error is unbounded. Safety margin is a heuristic, not a guarantee. Counts SkillContext text only, excluding chat framing and other messages."
+    },
+    "automatically_injected_references": [
+      "references/a.md",
+      "references/b.md"
+    ],
+    "autonomous_observation_tokens_estimated": 24,
+    "autonomous_read_events": 1,
+    "unique_references_read": [
+      "references/third.md"
+    ],
+    "solver_input_tokens_api": 20,
+    "solver_output_tokens_api": 10,
+    "router_model_calls": 0,
+    "solver_usage_source": "reported model usage; not local observation estimates",
+    "cost_addition_allowed": false,
+    "status": "ok",
+    "detected_read_command_count": 1,
+    "unclassified_or_failed_commands": 1,
+    "possible_references_read": [
+      "references/third.md"
+    ],
+    "observation_count": 1,
+    "observation_counter": {
+      "model": "gpt-6-luna",
+      "identity": "{\"encoding\":\"o200k_base\",\"endpoint_sha256\":\"f4cc12772337acf8ce35fa2c61122151f52f7ee78bb9f2f25d1e7e7043e03a82\",\"method\":\"o200k_proxy_v1\",\"model\":\"gpt-6-luna\",\"pattern_sha256\":\"2d1b8dc11e89af71459b36004f698ab3693f59fd84f63e8ec2b49564ab857420\",\"provider\":\"sub2api\",\"version\":\"0.14.0\",\"vocabulary_sha256\":\"446a9538cb6c348e3516120d7c08b09f57c36495e2acfffe59a5bf8b0cfb1a2d\"}",
+      "accuracy": "estimated",
+      "statement": "Exact count only for the pinned o200k_base proxy vocabulary, NOT the target API model. Mapping and provider usage are unverified; error is unbounded. Safety margin is a heuristic, not a guarantee. Counts SkillContext text only, excluding chat framing and other messages."
+    },
+    "absence_of_events_proves_no_reads": false,
+    "observation_cost_scope": "detected candidate commands only; not all Skill access or full API cost"
+  },
+  "installation": {
+    "skill_version": "1d9c1033ae35f7b5",
+    "expected_manifest": {
+      "SKILL.md": "e251039a3ac4ae04f98dc2955af889c2a3ca8807d498db31755245f2b2a17986",
+      "references/a.md": "d37b8a2a007c06c13e7600a0e2730f187bd1f9fed3d000242c30f104dd727e76",
+      "references/b.md": "a4a3423b3f56938d299b2d7cbe26ed3ec81e3da050c67f36b1c00988fd3fa376",
+      "references/third.md": "43cf2d296239e4fdd05b950efda62b2ed3ffc19e9a9982c832d39d1621a50dcf",
+      "routing/index.yaml": "e62a95b7644ce43f5d947e3b6f064822f9fd96e35dbbfa0f29d25660ca986baf",
+      "scripts/inspect_project.py": "5394e18880fc30a753e52b75fc095318de1081c7712491b092cd7786b4346f44",
+      "tests/check_skill.py": "f2b249e6bba8fd990dbf7abe5ed4ede6341a5d4463997cbc523f3fc3a2cd7038"
+    },
+    "snapshot_sha256": "f87efebdacaec5f85bfe2d1393281174c3be5e925e590813c8d2482f89040a5a",
+    "read_only_enforced": false,
+    "status": "verified",
+    "install_mode": "copy_audited",
+    "degraded": true,
+    "limitation": "Writable copy; endpoint hashes cannot exclude transient or concealed changes",
+    "installed_snapshot_sha256": "f87efebdacaec5f85bfe2d1393281174c3be5e925e590813c8d2482f89040a5a",
+    "final_snapshot_sha256": "f87efebdacaec5f85bfe2d1393281174c3be5e925e590813c8d2482f89040a5a",
+    "final_status": "verified"
+  },
+  "five_distinct_audit_files": true,
+  "five_shared_context": true
+}

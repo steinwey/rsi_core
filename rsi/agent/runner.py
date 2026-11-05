@@ -37,6 +37,8 @@ def run_group(task, folder, skill, config, *, backend_factory=make_backend, mode
         routing = route_skill({'id': task['id'], 'prompt': task['prompt']}, skill, config,
                              folder=folder, counter_factory=counter_factory)
         execution_options['skill_context'] = routing.context
+        if config.get('skill_access', {}).get('enabled'):
+            execution_options['counter_factory'] = counter_factory
     task = get_framework(config).prepare_task(task, skill, config, folder)
     started, pairs = time.monotonic(), []
     try:
@@ -117,6 +119,11 @@ def run_group(task, folder, skill, config, *, backend_factory=make_backend, mode
                   'graded_rollouts': list(scores), 'success': None if training else scores[chosen]['success'], 'skill_version': skill.name, 'seconds': time.monotonic()-started,
                   'selector_usage': selector_usage,
                   'skill_injected_rollouts': sum(r['skill_injected'] for r in results)}
+        if config.get('skill_access', {}).get('enabled'):
+            from rsi.skills.access import receipts
+            report['skill_access'] = {'rollouts': [r.get('skill_access') for r in results],
+                                      'artifacts': receipts(folder, results), 'costs_are_nonadditive': True}
+            write_json(folder / 'skill-access-summary.json', report['skill_access'])
         if routing is not None:
             report['skill_routing'] = {
                 'route_id': routing.context.route_id, 'context_hash': routing.context.context_hash,

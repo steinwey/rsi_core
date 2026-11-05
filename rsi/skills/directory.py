@@ -102,4 +102,6 @@ def directory_schema(config):
         raise ValueError('Maintenance requires the P0 directory schema 1')
     if schema and config.get('skill_update_method', 'trace2skill') != 'trace2skill':
         raise ValueError('Managed Skill directories require Trace2Skill')
+    from rsi.skills.access import settings as access_settings
+    access_settings(config)
     return schema

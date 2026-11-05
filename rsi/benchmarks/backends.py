@@ -138,9 +138,17 @@ class SWEBackend:
         # Image convention from ReasoningBank's get_swebench_docker_image_name.
         image = instance.get("image_name") or instance.get("image") or f"swebench/sweb.eval.x86_64.{iid}:latest".lower()
         # The model is called on the host. The container only needs the local repository and its installed tools.
+        run_args = ['--rm', '--network', 'none']
+        mounted = (config.get('skill_access', {}).get('enabled') and config.get('_skill_access_snapshot')
+                   and config['skill_access'].get('install_mode', 'auto') != 'copy_audited')
+        if mounted:
+            from rsi.skills.access import docker_args
+            run_args += docker_args(config['_skill_access_snapshot'])
         self.env = CompatibleDockerEnvironment(image=image, cwd="/testbed", timeout=config["command_timeout"],
                                      container_timeout="4h", pull_timeout=config.get("image_pull_timeout", 7200),
-                                     run_args=["--rm", "--network", "none"])
+                                     run_args=run_args)
+        if mounted:
+            self.env.rsi_read_only_mount = True
         self.base = self.env.execute("git rev-parse HEAD")["output"].strip()
 
     def artifact(self):
@@ -224,7 +232,11 @@ class TerminalBackend:
         self.paths = TrialPaths(folder.resolve())
         self.paths.mkdir()
         self.extra_artifacts = config.get("terminal_artifacts", [])
-        self.loop = asyncio.new_event_loop()
+        # Some model libraries install a Windows selector policy, which cannot run
+        # Harbor's subprocesses. P4 owns a subprocess-capable loop without changing
+        # the process policy or legacy disabled behavior.
+        self.loop = (asyncio.ProactorEventLoop() if sys.platform == 'win32'
+                     and config.get('skill_access', {}).get('enabled') else asyncio.new_event_loop())
         self.timeout = min(config["evaluation_timeout"], self.task.config.verifier.timeout_sec)
         self.raw = DockerEnvironment(environment_dir=self.task.paths.environment_dir,
                                      environment_name=self.task.name,

@@ -66,7 +66,7 @@ def count_text(counter, text):
     return value
 
 
-def render_context(files, selected=()):
+def render_context(files, selected=(), *, access=None):
     scripts = sorted(p for p in files if p.startswith('scripts/'))
     tools = '\n'.join(f'- python {SKILL_ROOT}/{p} --path <repository>  (see --help)' for p in scripts)
     loaded = '\n'.join(f'- {p} (complete file)' for p in selected) or '- None (core only)'
@@ -80,6 +80,11 @@ def render_context(files, selected=()):
             'Root guide links resolve from the toolkit root; reference links resolve from their file directory.\n\n'
             f'Automatically loaded references:\n{loaded}\n\n'
             '## Core guide (SKILL.md)\n' + files['SKILL.md'])
+    if access and access['enabled']:
+        from rsi.skills.access import guidance
+        if not access['expose_index']:
+            text = text.replace(f'{SKILL_ROOT}/routing/index.yaml lists all references. ', '')
+        text += guidance(access)
     for path in selected:
         text += f'\n\n---\n## Reference: {path} (complete file)\n' + files[path]
     return text
@@ -103,8 +108,8 @@ class BudgetSelection:
     excluded: tuple[tuple[str, str, int | None], ...]
 
 
-def select_context(files, ranked_paths, counter, *, budget_limit, top_k):
-    core = render_context(files)
+def select_context(files, ranked_paths, counter, *, budget_limit, top_k, access=None):
+    core = render_context(files, access=access)
     core_tokens = count_text(counter, core)
     if core_tokens > budget_limit:
         raise BudgetError('core_over_budget', f'Core SkillContext uses {core_tokens} tokens; limit {budget_limit}.')
@@ -113,13 +118,13 @@ def select_context(files, ranked_paths, counter, *, budget_limit, top_k):
         if len(selected) == top_k:
             excluded.append((path, 'top_k_limit', None))
             continue
-        trial = render_context(files, (*selected, path))
+        trial = render_context(files, (*selected, path), access=access)
         trial_tokens = count_text(counter, trial)
         if trial_tokens <= budget_limit:
             selected.append(path)
         else:
             excluded.append((path, 'reference_over_budget', trial_tokens))
-    text = render_context(files, selected)
+    text = render_context(files, selected, access=access)
     final_tokens = count_text(counter, text)
     if final_tokens > budget_limit:
         raise BudgetError('final_over_budget', 'Final complete SkillContext exceeds the budget.')

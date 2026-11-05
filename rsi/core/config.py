@@ -153,6 +153,9 @@ def load_config(path, *, framework=None):
     if config['reference_maintenance'].get('enabled'):
         from rsi.skills.consolidation import settings as reference_settings
         config['reference_maintenance'] = reference_settings(config)
+    if config.get('skill_access', {}).get('enabled'):
+        from rsi.skills.access import settings as access_settings
+        config['skill_access'] = access_settings(config)
     blocks = model_configs(config)
     for block in (*blocks.values(), config.get("wandb") or {}):
         if isinstance(block, dict) and any(key in block for key in ("api_key", "key")):
