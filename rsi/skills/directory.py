@@ -85,14 +85,15 @@ def directory_schema(config):
     schema = block.get('schema', 0)
     if type(schema) is not int or schema not in (0, 1):
         raise ValueError('skill_directory.schema must be 0 or 1')
-    for key in ('reference_maintenance',):
-        value = config.get(key, {})
-        if not isinstance(value, dict) or value.keys() - {'enabled'} or type(value.get('enabled', False)) is not bool:
-            raise ValueError(f'Invalid {key} configuration')
-        if value.get('enabled', False):
-            raise ValueError(f'{key} is not implemented in P0')
     from rsi.skills.maintenance import settings
     maintenance = settings(config)
+    from rsi.skills.consolidation import settings as reference_settings
+    reference = reference_settings(config)
+    if reference['enabled']:
+        if schema != 1:
+            raise ValueError('Reference maintenance requires the P0 directory schema 1')
+        if not maintenance['enabled'] or maintenance['max_reference_chars'] != reference['max_reference_chars']:
+            raise ValueError('Reference maintenance requires enabled P1 with the same reference size limit')
     from rsi.skills.routing import settings as routing_settings
     routing = routing_settings(config)
     if routing['enabled'] and schema != 1:

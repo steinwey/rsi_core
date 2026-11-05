@@ -99,10 +99,10 @@ def validate_coverage(before, after, records):
         raise UnsafeMarkdown('Unaccounted directory change')
 
 
-def split_references(files, limit):
+def split_references(files, limit, *, sources=None):
     """Split oversized references only at independent leaf sections; keep navigation."""
     result, all_records = dict(files), []
-    for source in sorted(p for p in files if REFERENCE_PATH.fullmatch(p) and len(files[p]) > limit):
+    for source in sorted(p for p in files if REFERENCE_PATH.fullmatch(p) and (p in sources if sources is not None else len(files[p]) > limit)):
         before = dict(result)
         units = parse_units(before[source])
         records = []

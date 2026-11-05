@@ -1,0 +1,150 @@
+{
+  "merge": {
+    "before": {
+      "version": "577cdf3b0cd8d011",
+      "reference_count": 2,
+      "reference_chars": 111,
+      "references": {
+        "references/a.md": {
+          "chars": 54,
+          "sha256": "42c03ceb9e4cb79ddab29f295bb5d65bc48c6b1ee74453abf0b7fb45a98da3a6"
+        },
+        "references/b.md": {
+          "chars": 57,
+          "sha256": "dc98348cf390d1a9b3ac600d369f51bb5b31a674624472046ba4e4cd7a32c2f0"
+        }
+      }
+    },
+    "after": {
+      "version": "872b601cce9b73df",
+      "reference_count": 1,
+      "reference_chars": 112,
+      "references": {
+        "references/merged.md": {
+          "chars": 112,
+          "sha256": "f8b5d2ec6913fb1a258ab4534d5ef38d544647514a9ed7cdb2e3de44d0282d29"
+        }
+      }
+    },
+    "validation": {
+      "status": "consolidated",
+      "decision": "MERGE",
+      "reason": "Retain all original knowledge and conditions.",
+      "savepoint_version": "577cdf3b0cd8d011",
+      "output_version": "872b601cce9b73df",
+      "seconds": 0.03425330005120486
+    },
+    "usage": {
+      "calls": 2,
+      "input_tokens": 20,
+      "output_tokens": 10,
+      "reasoning_tokens": 0,
+      "cost_usd": 0
+    }
+  },
+  "condition-conflict": {
+    "before": {
+      "version": "f3371454a05db448",
+      "reference_count": 2,
+      "reference_chars": 125,
+      "references": {
+        "references/a.md": {
+          "chars": 54,
+          "sha256": "42c03ceb9e4cb79ddab29f295bb5d65bc48c6b1ee74453abf0b7fb45a98da3a6"
+        },
+        "references/b.md": {
+          "chars": 71,
+          "sha256": "7c1bac73bb225e2300ee0650c9b4ea38d10800f067c5956c793c760b1ea108d6"
+        }
+      }
+    },
+    "after": {
+      "version": "f3371454a05db448",
+      "reference_count": 2,
+      "reference_chars": 125,
+      "references": {
+        "references/a.md": {
+          "chars": 54,
+          "sha256": "42c03ceb9e4cb79ddab29f295bb5d65bc48c6b1ee74453abf0b7fb45a98da3a6"
+        },
+        "references/b.md": {
+          "chars": 71,
+          "sha256": "7c1bac73bb225e2300ee0650c9b4ea38d10800f067c5956c793c760b1ea108d6"
+        }
+      }
+    },
+    "validation": {
+      "status": "consolidation_failed",
+      "decision": "KEEP_SEPARATE",
+      "reason": "Different applicability/exclusion conditions: KEEP_SEPARATE",
+      "savepoint_version": "f3371454a05db448",
+      "output_version": "f3371454a05db448",
+      "seconds": 0.03564449993427843
+    },
+    "usage": {
+      "calls": 3,
+      "input_tokens": 30,
+      "output_tokens": 15,
+      "reasoning_tokens": 0,
+      "cost_usd": 0
+    }
+  },
+  "tenth-failure": {
+    "before": {
+      "version": "3bf38c04c2efe0cb",
+      "reference_count": 2,
+      "reference_chars": 111,
+      "references": {
+        "references/a.md": {
+          "chars": 54,
+          "sha256": "42c03ceb9e4cb79ddab29f295bb5d65bc48c6b1ee74453abf0b7fb45a98da3a6"
+        },
+        "references/b.md": {
+          "chars": 57,
+          "sha256": "dc98348cf390d1a9b3ac600d369f51bb5b31a674624472046ba4e4cd7a32c2f0"
+        }
+      }
+    },
+    "after": {
+      "version": "3bf38c04c2efe0cb",
+      "reference_count": 2,
+      "reference_chars": 111,
+      "references": {
+        "references/a.md": {
+          "chars": 54,
+          "sha256": "42c03ceb9e4cb79ddab29f295bb5d65bc48c6b1ee74453abf0b7fb45a98da3a6"
+        },
+        "references/b.md": {
+          "chars": 57,
+          "sha256": "dc98348cf390d1a9b3ac600d369f51bb5b31a674624472046ba4e4cd7a32c2f0"
+        }
+      }
+    },
+    "validation": {
+      "status": "consolidation_failed",
+      "decision": null,
+      "reason": "Invalid ConsolidationPlan/review JSON",
+      "savepoint_version": "3bf38c04c2efe0cb",
+      "output_version": "3bf38c04c2efe0cb",
+      "seconds": 0.02454259991645813
+    },
+    "usage": {
+      "calls": 3,
+      "input_tokens": 30,
+      "output_tokens": 15,
+      "reasoning_tokens": 0,
+      "cost_usd": 0
+    },
+    "accepted": true,
+    "learning_skill_version": "3bf38c04c2efe0cb",
+    "after_skill_version": "3bf38c04c2efe0cb",
+    "checkpoint_counter": {
+      "accepted_updates": 10,
+      "checks": 1,
+      "cursor": 1
+    },
+    "previous_published_version": "ac522edd4bd6419b",
+    "completed_tasks": 10,
+    "calls_after_resume": 3
+  }
+}

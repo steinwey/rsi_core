@@ -254,6 +254,36 @@ def _continue_experiment(tasks, config, output, seed, store, state, backend_fact
             except Exception as exc:
                 write_json(folder / 'update.json', {'accepted': False, 'decision': 'update_error', 'error': f'{type(exc).__name__}: {exc}'})
                 raise
+            from rsi.skills.consolidation import settings as reference_settings, consolidate
+            from rsi.skills.consolidation_state import schedule
+            reference = reference_settings(config)
+            if reference['enabled']:
+                effective = bool(config['evolve'] and update['accepted'] and after_version != skill.name)
+                update['reference_maintenance'] = schedule(state['reference_maintenance'], config, effective)
+                if effective:
+                    update['learning_skill_version'] = after_version
+                if update['reference_maintenance']['due']:
+                    savepoint, _ = load_initial_skill(store.root / 'versions' / after_version, directory_schema=1)
+                    old = read_skill_directory(skill, directory_schema=1)
+                    consolidated = consolidate(savepoint, config, folder / 'consolidation',
+                        changed=[p for p in savepoint if savepoint[p] != old.get(p)],
+                        cursor=state['reference_maintenance']['cursor'], published_version=skill.name,
+                        model_factory=model_factory)
+                    # Optional rejection returns the exact savepoint. Materialization/I/O failures abort.
+                    after_version = store.materialize(consolidated)
+                    final_gate = document_gate(store.root / 'versions' / after_version, store.fixed_files,
+                        check_consistency=True, directory_schema=1, maintenance=store.maintenance)
+                    if not final_gate['passed']:
+                        raise RuntimeError('Consolidation materialized version failed integrity: ' + final_gate['error'])
+                    update['document_gate'] = final_gate
+                    update['consolidation'] = read_json(folder / 'consolidation/validation.json')
+                    update['consolidation_usage'] = read_json(folder / 'consolidation/usage.json')
+                    update['consolidation_artifacts'] = {
+                        p.relative_to(output).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+                        for p in sorted((folder / 'consolidation').glob('*.json'))}
+                    for key in ('input_tokens', 'output_tokens'):
+                        report[key] += update['consolidation_usage']['total'][key]
+                    report['tokens'] = report['input_tokens'] + report['output_tokens']
             if supervision is not None:
                 update['supervision'] = {'mode': 'all_route_formal_grades', 'path': 'supervision.json',
                                          'graded_rollouts': [route['rollout'] for route in supervision['routes']],

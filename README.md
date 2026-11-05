@@ -183,3 +183,7 @@ P2 已实现默认关闭的 BM25 检索、整文件预算筛选与一次路由�
 ## P2.1：显式 estimated TokenCounter
 
 新增可用于探索实验的本地 BPE 估算模式，固定 `tiktoken==0.14.0`、`o200k_base` 词表 SHA256，并显式绑定模型、提供商和接口地址。三份 `routing-estimated-*.yaml` 配置预留 25% 余量：4000 的配置预算使用 3200 个代理 BPE tokens 作为筛选上限。运行时不联网计数，不自动从 strict 降级；真实模型计数误差尚未校准，不能宣称严格满足 4000 tokens。三个模型的 strict 仍安全失败。安装、启动配置、研究依据及 306 项回归结果见 [P2.1 说明](docs/skill_routing_p21_tokenizer.md)。未开始 P3。
+
+## P3：可选的辅助文件周期维护
+
+默认关闭的 Reference Consolidation 在第 10、20 次已提交有效学习更新处执行有界候选检索和整理。采用完整原文合并、整文件精确去重及 P1 覆盖验证拆分；冲突或可选整理失败保留已通过必要验证的学习候选，基础设施故障安全中止。计数、savepoint、覆盖账本及恢复规则见 [P3 说明](docs/skill_routing_p3.md)，Mock 示例与回归结果见 [P3 验收报告](docs/skill_routing_p3_validation.md)。以上旧阶段段落描述各阶段当时状态；P4 自主读取审计仍未实现。

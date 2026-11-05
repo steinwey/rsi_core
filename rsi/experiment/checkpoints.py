@@ -48,6 +48,10 @@ def initialize(output, tasks, config, version):
              'initial_skill_version': version, 'current_skill_version': version, 'completed': []}
     if schema:
         state['directory_schema'] = schema
+    from rsi.skills.consolidation import settings as reference_settings
+    if reference_settings(config)['enabled']:
+        from rsi.skills.consolidation_state import initial_state
+        state['reference_maintenance'] = initial_state()
     write_json(Path(output) / 'checkpoint.json', state)
     return state
 
@@ -76,7 +80,13 @@ def resume_request(output):
         from rsi.skills.maintenance import settings, validate_limits
         validate_limits(files, settings(config))
     verify_version(version)
+    from rsi.skills.consolidation import settings as reference_settings
+    from rsi.skills.consolidation_state import initial_state, verify_entry
+    reference = reference_settings(config)
+    reference_state = initial_state()
     for task, entry in zip(tasks, completed):
+        if reference['enabled']:
+            reference_state = verify_entry(output, reference_state, entry['report'], entry['update'], config)
         verify_maintenance_artifacts(output, entry['report'], entry['update'], config)
         from rsi.skills.routing import verify_receipt
         verify_receipt(output, entry['report'], config, task)
@@ -88,6 +98,8 @@ def resume_request(output):
             raise ValueError('Checkpoint task order, score or Skill transition is invalid')
         version = entry['update']['after_skill_version']
         verify_version(version)
+    if reference['enabled'] and state.get('reference_maintenance') != reference_state:
+        raise ValueError('Consolidation checkpoint counter mismatch')
     if version != state['current_skill_version']:
         raise ValueError('Checkpoint Skill pointer mismatch')
     return state, config, [tasks]
@@ -117,7 +129,8 @@ def verify_maintenance_artifacts(output, report, update, config):
     if receipt != update.get('maintenance'):
         raise ValueError('Maintenance receipt mismatch')
     if update.get('accepted') and (receipt.get('status') != 'accepted'
-            or receipt.get('candidate_hash') != update['after_skill_version']
+            or receipt.get('candidate_hash') != (update.get('learning_skill_version', update['after_skill_version'])
+                if config.get('reference_maintenance', {}).get('enabled') else update['after_skill_version'])
             or prefix + 'output.json' not in artifacts):
         raise ValueError('Accepted Skill lacks a matching maintenance receipt')
 
@@ -182,6 +195,10 @@ def commit(output, state, report, update):
     next_state = {**state, 'current_skill_version': update['after_skill_version'],
                   'completed': [*state['completed'], {'report': report, 'update': update,
                       'committed_at': datetime.now(timezone.utc).isoformat()}]}
+    from rsi.skills.consolidation import settings as reference_settings
+    if state.get('schema') == 6 and reference_settings(config)['enabled']:
+        from rsi.skills.consolidation_state import verify_entry
+        next_state['reference_maintenance'] = verify_entry(output, state['reference_maintenance'], report, update, config)
     # Single commit point: versions exist, but no pointer has changed yet.
     write_json(Path(output) / 'checkpoint.json', next_state)
     publish(output, next_state)
