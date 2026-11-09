@@ -1,0 +1,11 @@
+{
+  "scenarios": [
+    "s1_short",
+    "s2_near_limit",
+    "s3_three_references",
+    "s4_redundancy",
+    "s5_periodic",
+    "s6_routing"
+  ],
+  "note": "Labels are human expectations for the offline tests. They are not model judgments."
+}

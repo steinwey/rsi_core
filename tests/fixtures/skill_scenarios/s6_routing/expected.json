@@ -1,0 +1,155 @@
+{
+  "reference_count": 14,
+  "top_k": 2,
+  "queries": [
+    {
+      "id": "import_error",
+      "prompt": "ImportError ModuleNotFoundError sys.path collection",
+      "gold": [
+        "references/import_error.md"
+      ],
+      "must_not_select": [
+        "references/numpy_shapes.md"
+      ]
+    },
+    {
+      "id": "pytest_fixture",
+      "prompt": "pytest fixture function scope teardown",
+      "gold": [
+        "references/pytest_fixture.md"
+      ],
+      "must_not_select": [
+        "references/numpy_shapes.md"
+      ]
+    },
+    {
+      "id": "pytest_asyncio",
+      "prompt": "pytest-asyncio coroutine await event loop",
+      "gold": [
+        "references/pytest_asyncio.md"
+      ],
+      "must_not_select": [
+        "references/numpy_shapes.md"
+      ]
+    },
+    {
+      "id": "git_apply",
+      "prompt": "git apply --check rejected hunk",
+      "gold": [
+        "references/git_apply.md"
+      ],
+      "must_not_select": [
+        "references/numpy_shapes.md"
+      ]
+    },
+    {
+      "id": "django_migrations",
+      "prompt": "django migration schema editor",
+      "gold": [
+        "references/django_migrations.md"
+      ],
+      "must_not_select": [
+        "references/numpy_shapes.md"
+      ]
+    },
+    {
+      "id": "flask_routes",
+      "prompt": "flask route endpoint url_for",
+      "gold": [
+        "references/flask_routes.md"
+      ],
+      "must_not_select": [
+        "references/numpy_shapes.md"
+      ]
+    },
+    {
+      "id": "pandas_index",
+      "prompt": "pandas DataFrame index alignment",
+      "gold": [
+        "references/pandas_index.md"
+      ],
+      "must_not_select": [
+        "references/numpy_shapes.md"
+      ]
+    },
+    {
+      "id": "argparse_defaults",
+      "prompt": "argparse argument default namespace",
+      "gold": [
+        "references/argparse_defaults.md"
+      ],
+      "must_not_select": [
+        "references/numpy_shapes.md"
+      ]
+    },
+    {
+      "id": "logging_config",
+      "prompt": "logging dictConfig handler formatter",
+      "gold": [
+        "references/logging_config.md"
+      ],
+      "must_not_select": [
+        "references/numpy_shapes.md"
+      ]
+    },
+    {
+      "id": "sqlalchemy_sessions",
+      "prompt": "sqlalchemy session commit rollback",
+      "gold": [
+        "references/sqlalchemy_sessions.md"
+      ],
+      "must_not_select": [
+        "references/numpy_shapes.md"
+      ]
+    },
+    {
+      "id": "click_options",
+      "prompt": "click Option multiple values",
+      "gold": [
+        "references/click_options.md"
+      ],
+      "must_not_select": [
+        "references/numpy_shapes.md"
+      ]
+    },
+    {
+      "id": "packaging_imports",
+      "prompt": "setuptools package_data wheel distribution",
+      "gold": [
+        "references/packaging_imports.md"
+      ],
+      "must_not_select": [
+        "references/numpy_shapes.md"
+      ]
+    },
+    {
+      "id": "typing_annotations",
+      "prompt": "typing Optional annotation checker",
+      "gold": [
+        "references/typing_annotations.md"
+      ],
+      "must_not_select": [
+        "references/numpy_shapes.md"
+      ]
+    },
+    {
+      "id": "ambiguous_import",
+      "prompt": "ImportError setuptools package_data",
+      "gold": [
+        "references/import_error.md",
+        "references/packaging_imports.md"
+      ],
+      "must_not_select": [
+        "references/django_migrations.md"
+      ]
+    }
+  ],
+  "large_reference": "references/numpy_shapes.md",
+  "unselected_sentinel_term": "ndarray reshape broadcasting",
+  "human_expectation": {
+    "clear_queries_should_rank_their_gold_file_first": true,
+    "top_k_is_two_complete_files": true,
+    "five_solvers_share_one_route_snapshot": true,
+    "budget_skips_an_oversized_file_instead_of_truncating_it": true
+  }
+}

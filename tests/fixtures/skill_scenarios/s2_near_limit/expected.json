@@ -1,0 +1,18 @@
+{
+  "character_count": 9230,
+  "existing_reference": "references/python_imports.md",
+  "added_experience_characters": 1174,
+  "projected_root_characters": 10404,
+  "hard_limit": 10000,
+  "human_expectation": {
+    "model_only_root_append_crosses_hard_limit": true,
+    "program_migration_must_keep_root_at_or_below_hard_limit": true,
+    "original_topic_sentences_must_remain_verbatim": [
+      "Check `sys.path`, the missing module name, and whether the test runner changed the working directory. Do not rewrite unrelated imports.",
+      "Create the resource inside the fixture and close it in teardown. Do not store that resource on a session object.",
+      "Mark the test with pytest-asyncio and close the event loop after the assertion. Do not call the coroutine without await.",
+      "Compare the rejected hunk with the current file. Keep the patch limited to the reported lines and rerun the focused pytest."
+    ],
+    "rejected_migration_must_leave_the_published_pointer_unchanged": true
+  }
+}

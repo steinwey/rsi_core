@@ -1,0 +1,21 @@
+{
+  "exact_duplicate": [
+    "references/pytest_fixture_scope.md",
+    "references/pytest_fixture_scope_duplicate.md"
+  ],
+  "different_conditions": [
+    "references/pytest_fixture_scope.md",
+    "references/pytest_session_state.md"
+  ],
+  "partial_duplicate": [
+    "references/async_tests.md",
+    "references/async_tests_partial.md"
+  ],
+  "unique_sentence_that_must_survive": "Close the event loop after the assertion.",
+  "unrelated": "references/git_apply.md",
+  "human_expectation": {
+    "exact_duplicate_may_be_deduplicated": true,
+    "different_conditions_must_stay_separate": true,
+    "partial_duplicate_must_not_drop_the_unique_sentence": true
+  }
+}

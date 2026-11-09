@@ -35,9 +35,72 @@ ERROR_DETAILS = {
     'empty_command': ('The bash block contains no command.', 'Refuse: do not invent a command.'),
     'multiple_action_blocks': ('More than one independent code/action block was returned.', 'Refuse: do not choose or merge independent action blocks. Multiple commands within one block are allowed.'),
     'mixed_tool_protocol': ('Tool-call XML markers occur outside a complete bash block.', 'Remove only protocol wrappers and close the bash fence, preserving the entire original script, including all commands in their original order. Multiple commands in one block are allowed.'),
+    'incomplete_dsml': ('DeepSeek tool markup is not one complete bash command.', 'Refuse: do not invent or complete a missing command. Reply with one fenced bash block.'),
     'missing_or_unclosed_bash_block': ('No complete bash action block was found.', 'Restore only the bash label/fences if the complete script can be identified without guessing. Multiple commands in that single block are allowed; never invent a heredoc terminator.'),
     'extra_unclosed_code_block': ('Extra unclosed code fences occur outside the action.', 'Refuse if there is any ambiguity about which text belongs to the command.'),
 }
+
+
+_DSML_MARK = '\uff5cDSML\uff5c'
+_DSML_TAG = re.compile(r'<(/?)' + re.escape(_DSML_MARK) + r'\s*([A-Za-z]+)([^<>]*)>')
+_DSML_ATTR = re.compile(r'\b([A-Za-z_]+)\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s"\'=<>]+))')
+
+
+def _dsml_attr(attrs, key):
+    for match in _DSML_ATTR.finditer(attrs or ''):
+        if match.group(1) == key:
+            return next(group for group in match.groups()[1:] if group is not None)
+    return None
+
+
+def dsml_bash_action(text):
+    """Extract one complete DeepSeek bash command.
+
+    Returns None when the reply has no DSML open tag. A unique invoke named bash
+    with one non-empty command parameter returns ('command', script, body_span).
+    Several invokes or parameters return ('multiple', None, None). Any other
+    DSML shape returns ('incomplete', None, None) and must not be executed.
+    """
+    tags = list(_DSML_TAG.finditer(text))
+    if not any(not tag.group(1) for tag in tags):
+        return None
+    stack = []
+    nodes = []
+    for tag in tags:
+        closing, name, attrs = bool(tag.group(1)), tag.group(2), tag.group(3)
+        if not closing:
+            stack.append({'name': name, 'attrs': attrs, 'start': tag.end(), 'open': tag.start()})
+            continue
+        if not stack or stack[-1]['name'] != name:
+            return ('incomplete', None, None)
+        node = stack.pop()
+        node['body_end'] = tag.start()
+        node['end'] = tag.end()
+        node['parent'] = stack[-1]['name'] if stack else None
+        nodes.append(node)
+    if stack or any(node['name'] not in {'calls', 'invoke', 'parameter'} for node in nodes):
+        return ('incomplete', None, None)
+    invokes = [node for node in nodes if node['name'] == 'invoke']
+    params = [node for node in nodes if node['name'] == 'parameter']
+    calls = [node for node in nodes if node['name'] == 'calls']
+    if len(invokes) != 1 or len(params) != 1 or len(calls) > 1:
+        return ('multiple', None, None)
+    invoke, param = invokes[0], params[0]
+    if (param['parent'] != 'invoke' or _dsml_attr(invoke['attrs'], 'name') != 'bash'
+            or _dsml_attr(param['attrs'], 'name') != 'command'
+            or (calls and invoke['parent'] != 'calls') or (not calls and invoke['parent'] is not None)):
+        return ('incomplete', None, None)
+    command = text[param['start']:param['body_end']].strip()
+    if not command or _DSML_MARK in command:
+        return ('incomplete', None, None)
+    invoke_body = text[invoke['start']:invoke['body_end']]
+    if invoke_body.replace(text[param['open']:param['end']], '', 1).strip():
+        return ('incomplete', None, None)
+    if calls:
+        call = calls[0]
+        if text[call['start']:call['body_end']].replace(text[invoke['open']:invoke['end']], '', 1).strip():
+            return ('incomplete', None, None)
+    return ('command', command, (param['start'], param['body_end']))
 
 
 def original_command(text):
@@ -98,7 +161,7 @@ class GuardedAgent(DefaultAgent):
                        'executed': False}
             # Refuse irrecoverably ambiguous inputs without asking a model to guess.
             if error in ('output_truncated', 'empty_response', 'empty_command', 'multiple_action_blocks',
-                         'extra_unclosed_code_block'):
+                         'incomplete_dsml', 'extra_unclosed_code_block'):
                 attempt.update(status='refused', reason='No unique complete original command to rewrap')
                 self.record_action(attempt)
                 raise original
@@ -153,10 +216,21 @@ class GuardedAgent(DefaultAgent):
         for match in reversed(matches):
             outside = outside[:match.start()] + outside[match.end():]
         error = None
+        chosen = None
+        dsml = dsml_bash_action(text)
         if finish == 'length':
             error = 'output_truncated'
         elif not text.strip():
             error = 'empty_response'
+        elif dsml is not None:
+            kind, command, span = dsml
+            residue = text if span is None else text[:span[0]] + text[span[1]:]
+            if kind == 'multiple' or '```' in residue:
+                error = 'multiple_action_blocks'
+            elif kind != 'command' or re.search(r'</?(?:tool_call|function|parameter)(?:[\s=>]|$)', residue):
+                error = 'incomplete_dsml'
+            else:
+                chosen = command
         elif len(matches) > 1 or len(blocks) > 1:
             error = 'multiple_action_blocks'
         elif re.search(r'</?(?:tool_call|function|parameter)(?:[\s=>]|$)', outside):
@@ -186,7 +260,7 @@ class GuardedAgent(DefaultAgent):
         self.format_consecutive = 0
         event.update(consecutive_failures=0, total_failures=self.format_total)
         self.pending_action = event
-        return {'action': matches[0].group(1).strip(), **response}
+        return {'action': chosen if chosen is not None else matches[0].group(1).strip(), **response}
 
     def execute_action(self, action):
         event, self.pending_action = self.pending_action, None

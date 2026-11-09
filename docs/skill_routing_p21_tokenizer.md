@@ -18,6 +18,7 @@ is removed before transmission; it is not evidence of actual model lineage.
 | qwen3.8-max | qwen-token-plan; token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1 | No | Explicit pinned o200k proxy estimate | Local BPE and five-route machinery; no usage comparison |
 | qwen3.8-flash | Same Token Plan endpoint | No | Explicit pinned o200k proxy estimate | Local BPE and configuration; no usage comparison |
 | gpt-6-luna | sub2api; sub2api.47.250.156.179.nip.io/v1 | No | Explicit pinned o200k proxy estimate | Local BPE and five-route machinery; no usage comparison |
+| deepseek-v4.1-flash | Same Token Plan endpoint as the Qwen rows | Yes, pinned checkpoint file | Published tokenizer.json, SHA256 c90dfa01249db1be4245780a052ede752e1361c612ac6d08e2bdada7d599476b | Local file hash and tokenizers 0.23.3; Token Plan usage not compared |
 
 The local endpoint and public model strings are known; the deployed server's actual
 upstream model/tokenizer and rewrite configuration were NOT inspected or authenticated.
@@ -94,11 +95,12 @@ The budget never includes the rest of the solver prompt, framing or future messa
 
 ## Setup and launch configurations
 
-Three complete configurations are supplied; original configurations are untouched:
+Complete configurations are supplied; original configurations are untouched:
 
 - configs/agent/routing-estimated-qwen-max.yaml (derived from qwen.yaml)
 - configs/agent/routing-estimated-qwen-flash.yaml (derived from click15-flash-max.yaml)
 - configs/agent/routing-estimated-gpt6-luna.yaml (derived from gpt6-luna.yaml)
+- configs/agent/routing-deepseek-flash.yaml (derived from click15-deepseek-v41-flash.yaml; strict mode, checkpoint tokenizer.json)
 
 All non-routing settings and role choices match their source configurations. These
 files enable schema 1 and estimated routing; they do not run any tasks by themselves.

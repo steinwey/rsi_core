@@ -33,7 +33,7 @@ def estimated(cfg):
 
 
 class TokenizerTests(unittest.TestCase):
-    def test_all_three_models_select_explicit_estimate(self):
+    def test_estimated_models_select_explicit_estimate(self):
         for name in ('qwen3.8-max', 'qwen3.8-flash', 'gpt-6-luna'):
             cfg = model(name)
             with self.subTest(name=name):
@@ -45,7 +45,7 @@ class TokenizerTests(unittest.TestCase):
                 self.assertEqual(manifest['vocabulary_sha256'], tk.VOCAB_SHA256)
                 self.assertEqual(manifest['version'], '0.14.0')
 
-    def test_all_three_strict_still_fail_without_loading_proxy(self):
+    def test_estimated_models_strict_still_fail_without_loading_proxy(self):
         with patch.object(tk, 'load_encoding', side_effect=AssertionError('strict fallback')):
             for name in ('qwen3.8-max', 'qwen3.8-flash', 'gpt-6-luna'):
                 with self.subTest(name=name), self.assertRaises(BudgetError): token_counter(model(name))
@@ -236,3 +236,24 @@ class CompatibilityTests(unittest.TestCase):
                 self.assertEqual(before[key], after[key])
             self.assertEqual(token_counter(after['model'], mode='estimated',
                 estimated=after['skill_routing']['estimated_counter']).info.accuracy, 'estimated')
+
+    def test_deepseek_launch_config_uses_checkpoint_tokenizer(self):
+        from rsi import ROOT
+        before = load_config(ROOT / 'configs/agent/click15-deepseek-v41-flash.yaml')
+        after = load_config(ROOT / 'configs/agent/routing-deepseek-flash.yaml')
+        self.assertEqual(after['skill_routing']['budget_mode'], 'strict')
+        self.assertNotIn('estimated_counter', after['skill_routing'])
+        for key in before.keys() - {'skill_directory', 'skill_routing'}:
+            self.assertEqual(before[key], after[key])
+        counter = token_counter(after['model'])
+        self.assertEqual(counter.info.accuracy, 'exact_text')
+        self.assertEqual(counter.info.model, 'deepseek-v4.1-flash')
+        self.assertEqual(counter.count('Hello'), 1)
+        self.assertEqual(counter.count(''), 0)
+        self.assertGreater(counter.count('中文测试'), 1)
+        manifest = json.loads(counter.info.identity)
+        self.assertEqual(manifest['vocabulary_sha256'], tk.DEEPSEEK_SHA256)
+        self.assertEqual(manifest['vocab_ids'], 129280)
+        cfg = model('deepseek-v4.1-flash')
+        with self.assertRaises(ValueError):
+            token_counter(cfg, mode='estimated', estimated=options(cfg))

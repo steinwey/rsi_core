@@ -1,0 +1,10 @@
+config: ../agent/click15-flash-max-routing.yaml
+tasks: ../../tasks/sqlfluff-chain-10.json
+rollouts: 5
+parallel: true
+swe_dataset: D:\RSI\datasets\evoarena-swe\evaluation-e77c3282aa468ee5.json
+swe_split: test
+fixed_skill: false
+initial_skill: D:\RSI-core-skill-routing\runs\20261106-000907__monitored__5eb57b
+label: sqlfluff10-continue-click15-routing
+wandb: false

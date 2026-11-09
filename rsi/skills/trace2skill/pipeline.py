@@ -18,7 +18,7 @@ from rsi.skills.documents import validate_consistency
 from rsi.skills.directory import read_skill_directory, directory_schema, validate_paths, immutable, INDEX_PATH
 from rsi.skills.trace2skill.client import RecordedClient
 from rsi.skills.trace2skill.evidence import EvidenceReader
-from rsi.skills.trace2skill.prompts import analysis_prompt
+from rsi.skills.trace2skill.prompts import EDITOR_REFERENCE_PLACEMENT, analysis_prompt
 from rsi.skills.trace2skill.reports import extract_report
 from rsi.skills.trace2skill.upstream import load
 from rsi.skills.trace2skill.validation import FailureValidation, filter_for_editor, sha
@@ -45,12 +45,37 @@ def guard_editor_writes(evolver, work_skill, schema):
     evolver.apply_edits = apply_checked
 
 
+def attach_reference_placement(evolver):
+    """Ask the editor to file topical lessons without editing vendored templates."""
+    if getattr(evolver, '_rsi_reference_placement', False):
+        return evolver
+    instruction = EDITOR_REFERENCE_PLACEMENT.strip()
+    for name in ('_map_system_prompt', '_map_patterns_system_prompt', '_merge_system_prompt'):
+        current = getattr(evolver, name, None)
+        if isinstance(current, str) and instruction not in current:
+            setattr(evolver, name, current.rstrip() + '\n\n' + instruction)
+    for name in ('_build_map_user_message', '_build_map_user_message_from_patterns',
+                 '_build_merge_user_message', '_build_merge_user_message_semantic'):
+        original = getattr(evolver, name)
+
+        def wrapped(*args, _original=original, **kwargs):
+            text = _original(*args, **kwargs)
+            if instruction in text:
+                return text
+            return text.rstrip() + '\n\n' + instruction
+
+        setattr(evolver, name, wrapped)
+    evolver._rsi_reference_placement = True
+    return evolver
+
+
 def evolve_skill(task, results, skill, config, model_factory=Model, *, folder, supervision, prepared_evidence):
     if (supervision.get('schema') != 2 or supervision.get('task_id') != task['id']
-            or len(supervision.get('routes', [])) != 5
+            or len(results) not in (1, 5)
+            or len(supervision.get('routes', [])) != len(results)
             or {r['rollout'] for r in supervision['routes']} != {r['rollout'] for r in results}
             or any(not r.get('graded') or type(r.get('success')) is not bool for r in supervision['routes'])):
-        raise SkillProposalRejected('Trace2Skill requires all five independent formal grades')
+        raise SkillProposalRejected('Trace2Skill requires one or five independent formal grades')
     Agent, AgentConfig, Tool, Parameter, Message, Combined, find_section, apply_edit = load()
     root = Path(folder) / 'trace2skill'
     root.mkdir(parents=True, exist_ok=False)

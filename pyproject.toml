@@ -10,7 +10,7 @@ requires-python = ">=3.11"
 dependencies = ["pyyaml", "jinja2", "python-dotenv", "platformdirs", "rich", "litellm>=1.75.5", "datasets", "openai", "tqdm"]
 
 [project.optional-dependencies]
-routing = ["tiktoken==0.14.0"]
+routing = ["tiktoken==0.14.0", "tokenizers==0.23.3"]
 
 [project.scripts]
 rsi = "rsi.cli:main"

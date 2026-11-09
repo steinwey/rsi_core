@@ -111,12 +111,14 @@ def load_config(path, *, framework=None):
         if config[key] <= 0:
             raise ValueError(f"{key} must be positive")
     solver = config['model'].get('name')
-    if solver not in ('qwen3.8-max', 'qwen3.8-flash', 'gpt-6-luna'):
-        raise ValueError('model must use qwen3.8-max, qwen3.8-flash or gpt-6-luna')
+    # These solvers keep Qwen Max for judging and skill editing.
+    solver_only = {'gpt-6-luna', 'deepseek-v4.1-flash'}
+    if solver not in {'qwen3.8-max', 'qwen3.8-flash', *solver_only}:
+        raise ValueError('model must use qwen3.8-max, qwen3.8-flash, gpt-6-luna or deepseek-v4.1-flash')
     roles = ('model', 'judge_model', 'skill_error_model', 'skill_success_model', 'skill_editor_model')
-    all_luna = solver == 'gpt-6-luna' and all(model_configs(config).get(role, {}).get('name') == solver for role in roles)
+    all_same = solver in solver_only and all(model_configs(config).get(role, {}).get('name') == solver for role in roles)
     for role in roles:
-        expected = solver if all_luna or role == 'model' or (role == 'judge_model' and solver != 'gpt-6-luna') else 'qwen3.8-max'
+        expected = solver if all_same or role == 'model' or (role == 'judge_model' and solver not in solver_only) else 'qwen3.8-max'
         if not isinstance(config.get(role), dict) or config[role].get('name') != expected:
             raise ValueError(f'{role} must explicitly use {expected}')
     from rsi.frameworks import FRAMEWORKS

@@ -1,5 +1,6 @@
 import copy
 import json
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -9,7 +10,8 @@ from rsi.core.common import digest, read_json
 from rsi.skills.directory import INDEX_PATH, read_skill_directory, directory_schema
 from rsi.skills.index import build_index, validate_index
 from rsi.skills.maintenance import maintain_candidate, MaintenanceRejected, settings, validate_limits
-from rsi.skills.markdown_units import parse_units, canonical, sha, UnsafeMarkdown, rebase_links
+from rsi.skills.markdown_units import (parse_units, parse_experience_units, canonical, sha, UnsafeMarkdown,
+                                       rebase_links, CONDITION)
 from rsi.skills.migration import apply_plan, validate_coverage, split_references
 from rsi.skills.store import load_initial_skill, SkillStore, SkillProposalRejected, document_gate
 
@@ -20,19 +22,50 @@ def section(title='Click options', size=3200):
     return prefix + 'Check inputs and outputs. ' * ((size - len(prefix) - len(suffix)) // 26) + suffix
 
 
-def plan_for(data, target='references/click.md'):
-    unit = next(u for u in data['units'] if not u['protected'] and u['applicability'])
-    return {'schema': 1, 'input_hash': data['input_hash'], 'operations': [
-        {'unit_id': unit['id'], 'source_sha256': unit['content_sha256'], 'start': unit['start'], 'end': unit['end'],
-         'target': target, 'operation': 'move_verbatim', 'target_content': unit['text'],
-         'classification': 'specific', 'applies_when': unit['applicability'][0],
-         'coverage': [unit['id']], 'reason': 'The complete scoped section and ancestor context are retained.'}]}
+def scoped(unit):
+    return CONDITION.match(unit['text']) is not None and '`' in unit['text']
+
+
+def plan_for(data, target='references/click.md', *, select=None, limit=1, topic=None):
+    """Deterministic fake planner: moves the first scoped unit(s); everything else is core."""
+    topic = topic or re.sub(r'[^a-z0-9]+', '-', target.removeprefix('references/').removesuffix('.md').lower()).strip('-')
+    chosen = [u for u in data['units'] if (select or scoped)(u)][:limit]
+    ids = {u['id'] for u in chosen}
+    return {'schema': 2, 'input_hash': data['input_hash'],
+            'classifications': [{'unit_id': u['id'], 'class': 'specific' if u['id'] in ids else 'core',
+                                 'topic': topic if u['id'] in ids else '', 'reason': 'fixture classification'}
+                                for u in data['units']],
+            'operations': [
+        {'unit_id': u['id'], 'target': target, 'topic': topic, 'applies_when': f'the task involves {topic}',
+         'requires': [], 'reason': 'The complete scoped unit is retained verbatim.'}
+        for u in chosen]}
+
+
+def payload(files):
+    return {'input_hash': digest(files),
+            'units': [u.record() for u in parse_experience_units(files['SKILL.md']) if not u.protected]}
+
+
+def approve(data, reject=()):
+    """Fake reviewer: per-operation verdicts for migration, a single verdict for P3."""
+    if 'operations' not in data:
+        return {'approved': True, 'conflicts': [], 'uncertainties': [], 'reason': 'Exact content and conditions retained.'}
+    return {'reason': 'Audited each operation.', 'decisions': [
+        {'unit_id': op['unit_id'], 'approved': op['unit_id'] not in reject,
+         'conflicts': ['fixture conflict'] if op['unit_id'] in reject else [], 'uncertainties': [],
+         'reason': 'fixture decision'} for op in data['operations']]}
+
+
+def reject_all(data, uncertainty='Caller scope ambiguous'):
+    return {'reason': 'Cannot establish coverage.', 'decisions': [
+        {'unit_id': op['unit_id'], 'approved': False, 'conflicts': [], 'uncertainties': [uncertainty],
+         'reason': 'rejected'} for op in data['operations']]}
 
 
 class PlannerModels:
     def __init__(self, planner=None, reviewer=None):
         self.planner = planner or plan_for
-        self.reviewer = reviewer or (lambda data: {'approved': True, 'conflicts': [], 'uncertainties': [], 'reason': 'Exact content and conditions retained.'})
+        self.reviewer = reviewer or approve
         self.requests, self.options = [], []
 
     def __call__(self, config):
@@ -115,14 +148,22 @@ class MigrationTests(unittest.TestCase):
         self.base[INDEX_PATH] = build_index(self.base)
         files = self.maintain(self.long_root())['files']
         self.assertEqual(files['references/click.md'], old)
-        self.assertTrue(any(p.startswith('references/moved-') for p in files))
+        self.assertIn('references/click-2.md', files)
+        self.assertTrue(files['references/click-2.md'].startswith('# click\n\nApplies when: '))
         self.assertTrue(all(len(v) <= 5000 for p,v in files.items() if p.startswith('references/')))
 
     def test_protected_and_uncertain_units_never_move(self):
-        text = self.base['SKILL.md'] + '\n## Protected Core\nWhen `click.Option` is used, for all tasks preserve safety.\n' + 'z'*10000 + '\n'
+        core = '## Protected Core\nWhen `click.Option` is used, for all tasks preserve safety.\n' + 'z'*10000 + '\n'
+        front = self.base['SKILL.md'].split('# Test and diagnose')[0]
         with self.assertRaisesRegex(MaintenanceRejected, 'no safely'):
-            self.maintain(text)
+            self.maintain(front + core, folder='only-core')
         self.assertEqual(self.models.requests, [])
+        with self.assertRaises(MaintenanceRejected):
+            self.maintain(self.base['SKILL.md'] + '\n' + core, folder='mixed')
+        offered = [u for r in self.models.requests if r[0]['content'].startswith('Propose')
+                   for u in json.loads(r[1]['content'])['units']]
+        self.assertTrue(offered)
+        self.assertFalse(any('Protected Core' in u['heading_path'] for u in offered))
 
     def test_mixed_parent_retained_child_moves_with_dependencies(self):
         parent = '## Mixed workflow\nFor all tasks, verify before and after changes.\n'
@@ -130,8 +171,91 @@ class MigrationTests(unittest.TestCase):
         source = self.base['SKILL.md'] + '\n' + parent + child + section('Other') + section('Third')
         result = self.maintain(source)['files']
         self.assertIn(parent, result['SKILL.md'])
-        self.assertIn(parent, result['references/click.md'])
+        self.assertIn('### Scoped example', result['SKILL.md'])
+        self.assertNotIn('For all tasks', result['references/click.md'])
         self.assertIn('Unless the value is missing', result['references/click.md'])
+
+    def test_required_units_stay_or_move_to_the_same_target(self):
+        files = self.base | {'SKILL.md': self.long_root()}
+        data = payload(files)
+        plan = plan_for(data, limit=2)
+        first, second = plan['operations']
+        first['requires'] = [second['unit_id']]
+        second.update(target='references/other.md', topic='other')
+        for item in plan['classifications']:
+            if item['unit_id'] == second['unit_id']:
+                item['topic'] = 'other'
+        after, coverage, _, issues = apply_plan(files, plan, 5000)
+        self.assertEqual([r['unit_id'] for r in coverage], [second['unit_id']])
+        self.assertEqual(issues, [{'unit_id': first['unit_id'], 'error': 'dependent units must stay or move together'}])
+        self.assertIn(next(u['text'] for u in data['units'] if u['id'] == first['unit_id']), after['SKILL.md'])
+        plan = plan_for(data, limit=1)
+        plan['operations'][0]['requires'] = [data['units'][0]['id']]
+        after, coverage, _, issues = apply_plan(files, plan, 5000)
+        self.assertEqual(issues, [])
+        self.assertIn(data['units'][0]['text'], after['SKILL.md'])
+
+    def test_invalid_operations_are_dropped_individually(self):
+        files = self.base | {'SKILL.md': self.long_root()}
+        plan = plan_for(payload(files), limit=2)
+        plan['operations'][1]['target'] = 'references/elsewhere.md'
+        _, coverage, _, issues = apply_plan(files, plan, 5000)
+        self.assertEqual(len(coverage), 1)
+        self.assertEqual(issues[0]['error'], 'one topic must use one target')
+        plan = plan_for(payload(files), limit=2)
+        plan['operations'][1]['topic'] = 'second'
+        next(c for c in plan['classifications'] if c['unit_id'] == plan['operations'][1]['unit_id'])['topic'] = 'second'
+        with self.assertRaisesRegex(UnsafeMarkdown, 'mix topics'):
+            apply_plan(files, plan, 5000)
+        plan = plan_for(payload(files))
+        chosen = plan['operations'][0]['unit_id']
+        plan['classifications'] = [c for c in plan['classifications'] if c['unit_id'] != chosen]
+        _, coverage, labels, issues = apply_plan(files, plan, 5000, require_shrink=False)
+        self.assertEqual(coverage, [])
+        self.assertEqual(next(c for c in labels if c['unit_id'] == chosen)['class'], 'uncertain')
+        self.assertEqual(issues[0]['error'], 'unit is not classified specific under this topic')
+
+    def test_small_new_reference_is_dropped_but_existing_reference_accepts_it(self):
+        files = self.base | {'SKILL.md': self.long_root()}
+        plan = plan_for(payload(files))
+        size = len(next(u for u in payload(files)['units'] if u['id'] == plan['operations'][0]['unit_id'])['text'])
+        _, coverage, _, issues = apply_plan(files, plan, 5000, require_shrink=False,
+                                            min_new_reference_chars=size + 10)
+        self.assertEqual(coverage, [])
+        self.assertIn('minimum', issues[0]['error'])
+        with self.assertRaisesRegex(UnsafeMarkdown, 'minimum'):
+            apply_plan(files, plan, 5000, min_new_reference_chars=size + 10)
+        self.assertEqual(len(apply_plan(files, plan, 5000, min_new_reference_chars=size - 10)[1]), 1)
+        files['references/click.md'] = '# Click\n\nApplies when: the task involves click\n'
+        plan = plan_for(payload(files))
+        after, coverage, _, issues = apply_plan(files, plan, 5000, min_new_reference_chars=size + 10)
+        self.assertEqual((len(coverage), issues), (1, []))
+        self.assertTrue(after['references/click.md'].startswith(files['references/click.md']))
+
+    def test_last_mandatory_round_allows_small_new_reference(self):
+        self.config['skill_maintenance'] = settings({'skill_maintenance': {
+            'enabled': True, 'min_new_reference_chars': 4999}})
+        files = self.maintain(self.long_root())['files']
+        self.assertLessEqual(len(files['SKILL.md']), 10000)
+        self.assertIn('references/click.md', files)
+        events = read_json(self.root / 'maintenance/coverage.json')['events']
+        self.assertEqual([e['kind'] for e in events], ['round_rejected', 'round_rejected', 'root_migration'])
+        self.assertIn('minimum 4999', events[0]['reason'])
+        self.assertEqual(events[2]['min_new_reference_chars'], 0)
+        plans = [json.loads(m[1]['content']) for m in self.models.requests if m[0]['content'].startswith('Propose')]
+        self.assertEqual([p['min_new_reference_chars'] for p in plans], [4999, 4999, 0])
+
+    def test_program_copies_text_and_ignores_model_supplied_copies(self):
+        files = self.base | {'SKILL.md': self.long_root()}
+        data = payload(files)
+        plan = plan_for(data)
+        plan['operations'][0] |= {'target_content': 'a summary', 'source_sha256': 'bad', 'start': 0}
+        after, coverage, _, issues = apply_plan(files, plan, 5000)
+        unit = next(u for u in data['units'] if u['id'] == plan['operations'][0]['unit_id'])
+        self.assertEqual(issues, [])
+        self.assertIn(unit['text'].strip(), after['references/click.md'])
+        self.assertNotIn('a summary', after['references/click.md'])
+        self.assertEqual(coverage[0]['source_sha256'], unit['content_sha256'])
 
     def test_fences_lists_quotes_setext_are_not_split(self):
         text = '# Core\nIntro\n\nTopic\n-----\nWhen `pytest.fixture` is changed, retain scope.\n'
@@ -145,18 +269,63 @@ class MigrationTests(unittest.TestCase):
         code_only = '# Core\n## Example\n```text\nWhen `pytest.fixture` changes, act.\n```\n'
         self.assertEqual(parse_units(code_only)[0].applicability, ())
 
+    def test_experience_units_keep_nested_lists_fences_and_continuations(self):
+        text = ('# Workflow\nIntro paragraph\nstill intro.\n\n1. First step\n   - nested detail\n\n'
+                '   continued paragraph of step one.\n7a. Sub-numbered step\n```python\n## not a heading\n```\n'
+                '- Bullet after\n\n    indented code\n\nClosing paragraph.\n## Protected Core\n- kept\n')
+        units = parse_experience_units(text)
+        self.assertEqual([u.kind for u in units], ['paragraph', 'item', 'item', 'item', 'paragraph', 'item'])
+        self.assertIn('continued paragraph of step one.', units[1].text)
+        self.assertIn('## not a heading', units[2].text)
+        self.assertIn('indented code', units[3].text)
+        self.assertEqual([u.protected for u in units], [True] + [False] * 4 + [True])
+        self.assertEqual(''.join(u.text for u in units[:5]), text[text.index('Intro'):text.index('## Protected')])
+        self.assertEqual(units[1].fingerprint, sha(units[1].text.strip()))
+
+    def test_brackets_inside_code_spans_are_not_links(self):
+        text = '7. Use `d["key"]` and `config[name]` before [core](#test-and-diagnose).\n'
+        self.assertIn('`d["key"]`', rebase_links(text, 'SKILL.md', 'references/x.md', self.base))
+        with self.assertRaisesRegex(UnsafeMarkdown, 'shortcut'):
+            rebase_links('7. Read [details] first.\n', 'SKILL.md', 'references/x.md', self.base)
+
+    def test_skill_scope_and_fixed_tool_units_are_protected(self):
+        units = parse_experience_units(self.base['SKILL.md'])
+        protected = [u.text.split('\n')[0][:30] for u in units if u.protected]
+        self.assertEqual(protected, ['Use for SWE-bench software-rep', '2. Run `python /opt/rsi-skills',
+                                     '4. Prefer the smallest relevan', 'The helper reads configuration'])
+        nested = parse_experience_units('# Top\n## Topic\nIntro under level two.\n- Read `scripts/x.py`.\n')
+        self.assertEqual([u.protected for u in nested], [False, True])
+
+    def test_each_moved_item_keeps_its_number_in_place(self):
+        root = self.base['SKILL.md'] + '\n## Notes\n\n' + ''.join(
+            f'{n}. When `click.Option` handles case {n}, keep `ctx.params`.\n' for n in ('6', '7a', '8')) + '9. Keep going.\n'
+        files = self.base | {'SKILL.md': root}
+        plan = plan_for(payload(files), limit=3, select=lambda u: 'click.Option' in u['text'])
+        after, coverage, _, _ = apply_plan(files, plan, 5000, require_shrink=False)
+        lines = [line for line in after['SKILL.md'].splitlines() if line[:1].isdigit()][-4:]
+        self.assertEqual(lines, ['6. Specific guidance (the task involves click): [Click](references/click.md)',
+                                 '7a. Specific guidance (the task involves click): [Click](references/click.md)',
+                                 '8. Specific guidance (the task involves click): [Click](references/click.md)',
+                                 '9. Keep going.'])
+        validate_coverage(files, after, coverage)
+        offered = [u.text for u in parse_experience_units(after['SKILL.md']) if not u.protected]
+        self.assertFalse(any('Specific guidance' in text for text in offered))
+
     def test_relative_links_rebased_anchor_navigation_retained(self):
-        linked = section() + '\nRead [tool](scripts/inspect_project.py) and [core](#test-and-diagnose).\n'
-        source = self.base['SKILL.md'] + '\n' + linked + section('Second') + section('Third')
+        linked = section().rstrip('\n') + ' Read [core](#test-and-diagnose).\n'
+        tool = section('Tool use').rstrip('\n') + ' Run [tool](scripts/inspect_project.py).\n'
+        source = self.base['SKILL.md'] + '\n' + linked + tool + section('Third')
         files = self.maintain(source)['files']
         target = files['references/click.md']
-        self.assertIn('(../scripts/inspect_project.py)', target)
         self.assertIn('(../SKILL.md#test-and-diagnose)', target)
+        self.assertIn('Run [tool](scripts/inspect_project.py)', files['SKILL.md'])
         self.assertIn('## Click options', files['SKILL.md'])
-        self.assertIn('[complete guidance](references/click.md)', files['SKILL.md'])
+        self.assertIn('\nSpecific guidance (the task involves click): [Click](references/click.md)\n', files['SKILL.md'])
+        entry = validate_index(files)['entries'][0]
+        self.assertEqual((entry['title'], entry['applies_when']), ('Click', ['the task involves click']))
 
     def test_ambiguous_relative_code_and_reference_links_rejected(self):
-        for extra in ('\n```bash\ncat references/testing.md\n```\n', '\n[details][ref]\n'):
+        for extra in ('```bash\ncat references/testing.md\n```\n', '[details][ref]\n'):
             source = self.base['SKILL.md'] + '\n' + section() + extra + section('Second') + section('Third')
             with self.assertRaises(MaintenanceRejected):
                 self.maintain(source, folder=str(len(extra)))
@@ -180,12 +349,14 @@ class MigrationTests(unittest.TestCase):
 
     def test_invalid_plans_and_nonconvergence_are_bounded(self):
         mutations = [lambda p:p.update(input_hash='bad'),
-                     lambda p:p['operations'][0].update(start=0),
-                     lambda p:p['operations'][0].update(source_sha256='bad'),
                      lambda p:p['operations'][0].update(target='../bad.md'),
-                     lambda p:p['operations'][0].update(target_content='summary'),
-                     lambda p:p['operations'][0].update(classification='mixed'),
-                     lambda p:p['operations'][0].update(coverage=[]),
+                     lambda p:p['operations'][0].pop('applies_when'),
+                     lambda p:p['operations'][0].update(unit_id='unknown'),
+                     lambda p:p['operations'][0].update(topic='other'),
+                     lambda p:p['operations'][0].update(applies_when='see [x](y)'),
+                     lambda p:p['operations'][0].update(requires=['unknown']),
+                     lambda p:p.update(classifications=[]),
+                     lambda p:p.update(schema=1),
                      lambda p:p.update(operations=[])]
         for i, mutate in enumerate(mutations):
             def invalid(data, mutate=mutate):
@@ -203,12 +374,40 @@ class MigrationTests(unittest.TestCase):
         self.assertEqual(len(self.models.requests), 1)
 
     def test_independent_review_uncertainty_rejects_candidate(self):
-        self.models = PlannerModels(reviewer=lambda data: {'approved': False, 'conflicts': [],
-                                   'uncertainties': ['Caller scope ambiguous'], 'reason': 'Cannot establish coverage.'})
+        self.models = PlannerModels(reviewer=reject_all)
         with self.assertRaises(MaintenanceRejected):
             self.maintain(self.long_root())
         self.assertEqual(len(self.models.requests), 6)
         self.assertEqual(read_json(self.root/'maintenance/validation.json')['status'], 'rejected')
+        # The next plan sees the reviewer's concrete objection, not just a generic rejection.
+        retry = json.loads(self.models.requests[2][1]['content'])
+        self.assertIn('Caller scope ambiguous', retry['previous_error'])
+
+    def test_partial_review_applies_only_approved_operations(self):
+        source = self.base['SKILL.md'] + '\n' + ''.join(section(f'Click case {i}', 2400) for i in range(5))
+        refused = []
+        def reviewer(data):
+            if not refused:
+                refused.append(data['operations'][0]['unit_id'])
+            return approve(data, reject=refused)
+        self.models = PlannerModels(planner=lambda data: plan_for(data, limit=3), reviewer=reviewer)
+        files = self.maintain(source)['files']
+        events = read_json(self.root/'maintenance/coverage.json')['events']
+        first = events[0]
+        self.assertEqual([r['unit_id'] for r in first['rejected_operations']], refused)
+        self.assertEqual(len(first['coverage']), 2)
+        self.assertNotIn(refused[0], [r['unit_id'] for r in first['coverage']])
+        retry = json.loads(self.models.requests[2][1]['content'])
+        self.assertIn('fixture conflict', retry['previous_error'])
+        self.assertLessEqual(len(files['SKILL.md']), 10000)
+
+    def test_invalid_review_shape_rejects(self):
+        for verdict in ({'approved': True, 'conflicts': [], 'uncertainties': [], 'reason': 'old schema'},
+                        {'reason': 'missing decision', 'decisions': []}):
+            with self.subTest(verdict=verdict):
+                self.models = PlannerModels(reviewer=lambda data, v=verdict: v)
+                with self.assertRaises(MaintenanceRejected):
+                    self.maintain(self.long_root(), folder=str(len(verdict)) + verdict['reason'][:3])
 
     def test_api_error_not_disguised_as_rejection(self):
         def fail(data):
@@ -222,7 +421,7 @@ class MigrationTests(unittest.TestCase):
     def test_timeout_is_infrastructure_failure(self):
         clock = [0]
         def slow(data):
-            clock[0] = 301
+            clock[0] = 1201
             return plan_for(data)
         self.models = PlannerModels(planner=slow)
         with patch('rsi.skills.maintenance.time.monotonic', side_effect=lambda:clock[0]), self.assertRaises(TimeoutError):
@@ -231,12 +430,15 @@ class MigrationTests(unittest.TestCase):
 
     def test_exact_coverage_detects_loss_or_rewrite(self):
         files = self.base | {'SKILL.md': self.long_root()}
-        data = {'input_hash': digest(files), 'units': [u.record() for u in parse_units(files['SKILL.md'])]}
-        after, coverage = apply_plan(files, plan_for(data), 5000)
+        after, coverage, _, _ = apply_plan(files, plan_for(payload(files), limit=2), 5000)
         validate_coverage(files, after, coverage)
-        after['references/click.md'] = after['references/click.md'].replace('Unless', 'Always')
-        with self.assertRaises(UnsafeMarkdown):
-            validate_coverage(files, after, coverage)
+        for mutate in (lambda a: a.update({'references/click.md': a['references/click.md'].replace('Unless', 'Always')}),
+                       lambda a: a.update({'SKILL.md': a['SKILL.md'].replace('Specific guidance', 'Guidance')}),
+                       lambda a: a.update({'SKILL.md': a['SKILL.md'].replace('1. Inspect', '1. Look at')})):
+            changed = dict(after)
+            mutate(changed)
+            with self.subTest(), self.assertRaises(UnsafeMarkdown):
+                validate_coverage(files, changed, coverage)
 
     def test_canonicalization_and_disabled_settings(self):
         text = '\ufeff' + self.base['SKILL.md'].replace('\n','\r\n') + '\r\n\r\n'
@@ -250,7 +452,8 @@ class MigrationTests(unittest.TestCase):
     def test_strict_configuration_types_and_ranges(self):
         for field, value in [('enabled', 1), ('max_llm_calls', True), ('max_migration_rounds', 0),
                              ('timeout_seconds', float('inf')), ('max_reference_chars', -1),
-                             ('root_target_chars', 10000), ('unknown', 1)]:
+                             ('root_target_chars', 10000), ('min_new_reference_chars', -1),
+                             ('min_new_reference_chars', 5000), ('min_new_reference_chars', 1.5), ('unknown', 1)]:
             with self.subTest(field=field), self.assertRaises(ValueError):
                 settings({'skill_maintenance': {field: value}})
         with self.assertRaises(ValueError):
@@ -287,7 +490,8 @@ class MigrationTests(unittest.TestCase):
     def test_unknown_classification_cannot_override_coverage(self):
         def unknown(data):
             plan = plan_for(data)
-            plan['operations'][0]['classification'] = 'uncertain'
+            for item in plan['classifications']:
+                item['class'] = 'uncertain'
             return plan
         self.models = PlannerModels(planner=unknown)
         with self.assertRaises(MaintenanceRejected):
@@ -296,9 +500,12 @@ class MigrationTests(unittest.TestCase):
 
     def test_no_progress_plan_cannot_publish(self):
         files = self.base | {'SKILL.md': '# Repair notes\n## X\nIf `x.y`, act.\n'}
-        data = {'input_hash':digest(files), 'units':[u.record() for u in parse_units(files['SKILL.md'])]}
         with self.assertRaisesRegex(UnsafeMarkdown, 'no progress'):
-            apply_plan(files, plan_for(data), 5000)
+            apply_plan(files, plan_for(payload(files)), 5000)
+        after, coverage, _, _ = apply_plan(files, plan_for(payload(files)), 5000, require_shrink=False)
+        self.assertEqual(len(coverage), 1)
+        empty = plan_for(payload(files), limit=0)
+        self.assertEqual(apply_plan(files, empty, 5000, require_shrink=False)[0], files)
 
     def test_soft_target_continues_after_hard_limit_is_met(self):
         source = self.base['SKILL.md'] + '\n' + ''.join(section(f'Topic {i}', 2200) for i in range(5))
@@ -339,8 +546,7 @@ class MigrationTests(unittest.TestCase):
 
 
     def test_reference_split_rejected_on_dependency_uncertainty(self):
-        self.models = PlannerModels(reviewer=lambda data: {'approved': False, 'conflicts': [],
-                    'uncertainties': ['implicit shared state'], 'reason': 'Unsafe split'})
+        self.models = PlannerModels(reviewer=lambda data: approve(data, reject={data['operations'][0]['unit_id']}))
         ref = '# Topics\nShared prerequisite.\n' + section('One', 2700) + section('Two', 2700)
         with self.assertRaises(MaintenanceRejected):
             self.maintain(changes={'references/big.md': ref})
@@ -389,8 +595,7 @@ class IntegrationTests(unittest.TestCase):
                         if api_error:
                             raise ConnectionError('service unavailable')
                         data = json.loads(messages[1]['content'])
-                        value = plan_for(data) if prompt.startswith('Propose') else {
-                            'approved': True, 'conflicts': [], 'uncertainties': [], 'reason': 'Conditions and source coverage retained.'}
+                        value = plan_for(data) if prompt.startswith('Propose') else approve(data)
                         return {'content': json.dumps(value)}
                     answer = original(messages, **kwargs)
                     if editor_long and client.name == 'judge' and answer['content'].startswith(chr(96)*3+'json'):

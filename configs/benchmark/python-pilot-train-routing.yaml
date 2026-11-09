@@ -1,0 +1,9 @@
+config: ../agent/routing-estimated-qwen-max.yaml
+rollouts: 5
+parallel: true
+tasks: ../../tasks/python-pilot-train-10.json
+swe_dataset: D:/RSI/datasets/evoarena-swe/evaluation-e77c3282aa468ee5.json
+swe_split: test
+fixed_skill: false
+label: python-pilot-train-10-routing
+wandb: false

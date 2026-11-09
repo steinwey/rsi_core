@@ -45,6 +45,18 @@ def command(text):
     return f'```bash\n{text}\n```'
 
 
+_DSML = '\uff5cDSML\uff5c'
+
+
+def dsml(script, *, invoke='bash', parameter='command', wrapped=True):
+    body = (f'<{_DSML} invoke name="{invoke}">\n'
+            f'<{_DSML} parameter name="{parameter}" string="true">{script}</{_DSML} parameter>\n'
+            f'</{_DSML} invoke>')
+    if wrapped:
+        body = f'<{_DSML} calls>\n{body}\n</{_DSML} calls>'
+    return body
+
+
 class ActionProtocolTests(unittest.TestCase):
     def agent(self, replies, **kwargs):
         env = Environment()
@@ -165,6 +177,64 @@ class ActionProtocolTests(unittest.TestCase):
         self.assertEqual(agent.run('task')[0], 'ActionFormatFailed')
         self.assertEqual(env.commands, [])
         self.assertEqual(agent.repair_calls, 0)
+
+    def test_unique_dsml_command_executes_without_repair(self):
+        script = "cd /testbed && sed -n '680,720p' src/click/core.py && echo \"---\" && grep -rn \"UNSET\" src/click/*.py"
+        def repair(_):
+            self.fail('A unique DSML bash command must execute without a repair call')
+        reply = 'THOUGHT: Inspect lookup_default.\n\n' + dsml(script)
+        agent, env = self.agent([reply, command('submit')], action_repair=repair)
+        self.assertEqual(agent.run('task')[0], 'Submitted')
+        self.assertEqual(env.commands, [script, 'submit'])
+        self.assertEqual(agent.repair_calls, 0)
+        self.assertEqual(agent.format_total, 0)
+
+    def test_dsml_without_calls_wrapper_preserves_multiline_script(self):
+        script = "cd /testbed && python - <<'PY'\nprint('unchanged')\nPY"
+        agent, env = self.agent([dsml(script, wrapped=False), command('submit')])
+        self.assertEqual(agent.run('task')[0], 'Submitted')
+        self.assertEqual(env.commands, [script, 'submit'])
+
+    def test_ambiguous_or_incomplete_dsml_never_executes_or_repairs(self):
+        second = dsml('echo second', wrapped=False)
+        cases = {
+            'two_invokes': dsml('echo first') + '\n' + second,
+            'two_parameters': (f'<{_DSML} invoke name="bash">\n'
+                               f'<{_DSML} parameter name="command" string="true">echo first</{_DSML} parameter>\n'
+                               f'<{_DSML} parameter name="command" string="true">echo second</{_DSML} parameter>\n'
+                               f'</{_DSML} invoke>'),
+            'unclosed': dsml('echo cut').replace(f'</{_DSML} calls>', ''),
+            'empty_command': dsml('   '),
+            'wrong_tool': dsml('echo nope', invoke='python'),
+            'wrong_parameter': dsml('echo nope', parameter='cmd'),
+            'extra_fence': dsml('echo one') + '\n' + command('echo two'),
+            'nested_marker': dsml(f'echo <{_DSML} invoke>'),
+        }
+        expected = {'two_invokes': 'multiple_action_blocks', 'two_parameters': 'multiple_action_blocks',
+                    'extra_fence': 'multiple_action_blocks'}
+        for name, reply in cases.items():
+            with self.subTest(name=name):
+                def repair(_):
+                    self.fail('Incomplete or ambiguous DSML must not be repaired')
+                agent, env = self.agent([reply] * 3, action_repair=repair)
+                status, feedback = agent.run('task')
+                self.assertEqual(status, 'ActionFormatFailed')
+                self.assertIn(expected.get(name, 'incomplete_dsml'), feedback)
+                self.assertEqual(env.commands, [])
+                self.assertEqual(agent.repair_calls, 0)
+
+    def test_bash_fence_with_trailing_dsml_closers_still_executes(self):
+        reply = command('submit') + f'\n</{_DSML} parameter>\n</{_DSML} invoke>\n</{_DSML} calls>'
+        agent, env = self.agent([reply])
+        self.assertEqual(agent.run('task')[0], 'Submitted')
+        self.assertEqual(env.commands, ['submit'])
+
+    def test_truncated_dsml_is_not_executed(self):
+        agent, env = self.agent([(dsml('echo partial'), 'length')] * 3)
+        status, feedback = agent.run('task')
+        self.assertEqual(status, 'ActionFormatFailed')
+        self.assertIn('output_truncated', feedback)
+        self.assertEqual(env.commands, [])
 
     def test_monitor_accepts_bounded_format_stop_and_tracks_its_logs(self):
         route = {'status': 'ActionFormatFailed', 'messages': [{'role': 'assistant', 'content': ''}] * 3}

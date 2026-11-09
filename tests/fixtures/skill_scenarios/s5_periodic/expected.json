@@ -1,0 +1,75 @@
+{
+  "duplicate_references": [
+    "references/pytest_evidence.md",
+    "references/pytest_evidence_copy.md"
+  ],
+  "steps": [
+    {
+      "task_id": "task-00",
+      "kind": "accepted",
+      "sentence": "Verify task 00 callers."
+    },
+    {
+      "task_id": "task-01",
+      "kind": "accepted",
+      "sentence": "Verify task 01 callers."
+    },
+    {
+      "task_id": "task-02",
+      "kind": "accepted",
+      "sentence": "Verify task 02 callers."
+    },
+    {
+      "task_id": "task-03",
+      "kind": "accepted",
+      "sentence": "Verify task 03 callers."
+    },
+    {
+      "task_id": "task-04",
+      "kind": "accepted",
+      "sentence": "Verify task 04 callers."
+    },
+    {
+      "task_id": "task-05",
+      "kind": "accepted",
+      "sentence": "Verify task 05 callers."
+    },
+    {
+      "task_id": "task-06",
+      "kind": "accepted",
+      "sentence": "Verify task 06 callers."
+    },
+    {
+      "task_id": "task-07",
+      "kind": "accepted",
+      "sentence": "Verify task 07 callers."
+    },
+    {
+      "task_id": "task-08",
+      "kind": "accepted",
+      "sentence": "Verify task 08 callers."
+    },
+    {
+      "task_id": "task-09",
+      "kind": "no_changes"
+    },
+    {
+      "task_id": "task-10",
+      "kind": "rejected"
+    },
+    {
+      "task_id": "task-11",
+      "kind": "accepted",
+      "sentence": "Verify task 11 callers."
+    }
+  ],
+  "human_expectation": {
+    "accepted_updates_that_count": 10,
+    "trigger_task": "task-11",
+    "no_changes_and_rejected_do_not_count": [
+      "task-09",
+      "task-10"
+    ],
+    "resume_must_not_repeat_the_maintenance_model_calls": true
+  }
+}

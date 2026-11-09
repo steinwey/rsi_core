@@ -107,12 +107,11 @@ class RolloutConcurrencyTests(unittest.TestCase):
             self.assertEqual(report['rollout_workers'], 1)
             self.assertEqual({r['skill_version'] for r in results}, {skill.name})
 
-    def test_single_mode_caps_workers_and_training_stays_five_routes(self):
+    def test_single_mode_caps_workers_and_allows_single_route_training(self):
         config = load_config(ROOT / 'configs/agent/click15-flash-max.yaml')
         config['evolve'] = False
         set_execution_mode(config, 'single')
         self.assertEqual((config['rollouts'], config['rollout_workers']), (1, 1))
         self.assertEqual(validate_execution_mode(config), 'single')
         config['evolve'] = True
-        with self.assertRaises(ValueError):
-            validate_execution_mode(config)
+        self.assertEqual(validate_execution_mode(config), 'single')

@@ -1,0 +1,10 @@
+config: ../agent/click15-deepseek-v41-flash.yaml
+tasks: ../../tasks/sqlfluff-chain-10.json
+rollouts: 5
+parallel: true
+swe_dataset: D:\RSI\datasets\evoarena-swe\evaluation-e77c3282aa468ee5.json
+swe_split: test
+fixed_skill: false
+initial_skill: D:\RSI-core-skill-routing\runs\20261107-232353__monitored__096a86\skills\versions\80a7d0b4098a994b
+label: sqlfluff10-deepseek-v41-flash-offline-5route-continue
+wandb: false

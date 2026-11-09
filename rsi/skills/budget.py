@@ -41,6 +41,9 @@ def token_counter(model_config, *, mode="strict", estimated=None):
     if mode != "strict" or estimated is not None:
         raise BudgetError("counter_unavailable", "Invalid counter mode or strict/estimated configuration mix.")
     name = model_config.get('name')
+    if name == 'deepseek-v4.1-flash':
+        from rsi.skills.tokenizers import DeepSeekCounter
+        return DeepSeekCounter(model_config)
     raise BudgetError('counter_unavailable', UNSUPPORTED_MODELS.get(name,
         f'No verified strict TokenCounter registered for {name!r}.'))
 

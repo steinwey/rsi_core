@@ -1,0 +1,17 @@
+{
+  "references": [
+    "references/python_debugging.md",
+    "references/repository_navigation.md",
+    "references/testing_strategies.md"
+  ],
+  "experiences": {
+    "related": "pytest_fixture_scope",
+    "partial": "python_importerror",
+    "new_topic": "git_apply"
+  },
+  "human_expectation": {
+    "related_update_should_target": "references/testing_strategies.md",
+    "new_topic_file": "references/git_apply.md",
+    "program_currently_accepts_a_second_file_with_overlapping_text": true
+  }
+}

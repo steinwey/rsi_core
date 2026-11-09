@@ -142,12 +142,60 @@ class Trace2SkillTests(unittest.TestCase):
             remove.assert_called_once()
         self.assertTrue(read_json(reader.folder / 'probe-cleanup.json')['removed'])
 
+    def test_diagnostic_export_drops_probe_caches_and_uses_a_longer_timeout(self):
+        seen = []
+        class FakeDocker:
+            def __init__(self, **kwargs):
+                self.container_id = 'analysis-container'
+                self.config = SimpleNamespace(executable='docker', timeout=30)
+            def execute(self, command):
+                seen.append((command, self.config.timeout))
+                return {'returncode': 0, 'output': 'base' if command == 'git rev-parse HEAD' else 'diff --git a/src/click/core.py'}
+        task = {'benchmark': 'swe', 'instance': {'instance_id': 'example', 'base_commit': 'base', 'image': 'cached-image'}}
+        reader = EvidenceReader(task, {'rollout': 0, 'artifact': 'exact patch'}, {}, Path(self.temp.name) / 'trace2skill/rollout-0')
+        with patch('rsi.benchmarks.backends.CompatibleDockerEnvironment', FakeDocker):
+            reader.run_probe('print(1)')
+            patch_text = reader.diagnostic_patch()
+        self.assertEqual(patch_text, 'diff --git a/src/click/core.py')
+        command, timeout = seen[-1]
+        self.assertIn('__pycache__', command)
+        self.assertIn('.pytest_cache', command)
+        self.assertIn('git diff --cached --binary base', command)
+        self.assertNotIn('git add -A &&', command)
+        self.assertEqual(timeout, 120)
+        self.assertEqual(reader.env.config.timeout, 30)
+
     def test_watchdog_observes_trace2skill_activity_and_errors(self):
         path = self.output / 'example/trace2skill/flash/call-0001.request.json'
         path.parent.mkdir(parents=True)
         path.write_text('{}')
         self.assertIn(path, activity_paths(self.output / 'example'))
         self.assertIn('Trace2Skill', problem_in(path.parent.parent / 'summary.json', {'status': 'failed'}))
+
+
+class ReferencePlacementTests(unittest.TestCase):
+    def test_editor_prompts_ask_for_a_reference_before_the_line_limit(self):
+        from rsi.skills.trace2skill.pipeline import attach_reference_placement
+        from rsi.skills.trace2skill.prompts import EDITOR_REFERENCE_PLACEMENT
+        from rsi.skills.trace2skill.upstream import load
+        _, _, _, _, _, Combined, _, _ = load()
+        root = Path(tempfile.mkdtemp())
+        self.addCleanup(lambda: __import__('shutil').rmtree(root))
+        (root / 'SKILL.md').write_text('---\nname: demo\ndescription: Demo workflow.\n---\n# Demo\n', encoding='utf-8')
+        evolver = Combined(client=object(), skill_dir=root, parse_failure_dir=root / 'parse-failures', verbose=False)
+        attach_reference_placement(evolver)
+        instruction = EDITOR_REFERENCE_PLACEMENT.strip()
+        for prompt in (evolver._map_system_prompt, evolver._map_patterns_system_prompt, evolver._merge_system_prompt):
+            self.assertIn(instruction, prompt)
+        self.assertIn('Propose MINIMAL, TARGETED edits', evolver._map_system_prompt)
+        user = evolver._build_map_user_message({'SKILL.md': (root / 'SKILL.md').read_text(encoding='utf-8')}, [], 1, 1)
+        self.assertIn('(limit: 500)', user)
+        self.assertNotIn('approaching the line limit', user)
+        self.assertTrue(user.rstrip().endswith(instruction))
+        merged = evolver._build_merge_user_message({'SKILL.md': 'x'}, [])
+        self.assertTrue(merged.rstrip().endswith(instruction))
+        attach_reference_placement(evolver)
+        self.assertEqual(evolver._map_system_prompt.count(instruction), 1)
 
 
 if __name__ == '__main__':

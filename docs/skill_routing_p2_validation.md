@@ -77,7 +77,7 @@ This example is not model-quality, benchmark-success or generalization evidence.
 
 ## Remaining limits
 
-No verified bundled exact counter for gpt-6-luna/qwen3.8-max/qwen3.8-flash: strict
+No verified bundled exact counter for gpt-6-luna/qwen3.8-max/qwen3.8-flash: strict. deepseek-v4.1-flash strict routing counts the pinned checkpoint tokenizer.json.
 routing fails closed pending a reviewed adapter. BM25 and exclusion phrases are lexical,
 not semantic applicability judgments. Whole-file only; index units are not trusted for
 partial injection. No live Docker/Harbor or privileged symlink verification. No P3/P4.

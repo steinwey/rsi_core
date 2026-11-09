@@ -1,4 +1,16 @@
 """Upstream report prompts with only the spreadsheet environment replaced by SWE."""
+
+# Appended to the editor prompts RSI actually sends. The vendored templates stay
+# checksum-locked. Their few-shot example is a short SKILL.md append, and the
+# "extract into references" warning appears only after SKILL.md exceeds 450 lines.
+EDITOR_REFERENCE_PLACEMENT = """## RSI reference placement
+
+A reusable lesson about one topic (an error class, library, test framework, or tool) does not stay only in SKILL.md, and you do not wait for a line-limit warning.
+In that same patch do both:
+1. "create" references/<topic>.md containing the conditions, steps, exceptions, and examples. The filename is ASCII letters, digits, underscores, hyphens, or dots, and ends in .md.
+2. Edit SKILL.md with one short sentence saying when to read it. The edit content must contain the exact path references/<topic>.md.
+A universal one-line workflow warning stays in SKILL.md. A create without that exact path in another edit of the same patch is discarded, so never emit only one side of the pair.
+"""
 from rsi.skills.trace2skill.upstream import SOURCE
 
 

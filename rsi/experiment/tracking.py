@@ -5,7 +5,7 @@ def task_complete(report):
     if report.get('phase') == 'train':
         return (report.get('success') is None and report.get('selected') is None
                 and report.get('supervision_complete') is True
-                and sorted(report.get('graded_rollouts', [])) == list(range(5)))
+                and sorted(report.get('graded_rollouts', [])) in ([0], list(range(5))))
     return report.get('phase') == 'test' and type(report.get('success')) is bool
 
 

@@ -68,6 +68,49 @@ def load_encoding(path=None):
                              special_tokens={'<|endoftext|>': 199999, '<|endofprompt|>': 200018})
 
 
+DEEPSEEK_MODEL = 'deepseek-v4.1-flash'
+DEEPSEEK_TOKENIZERS_VERSION = '0.23.3'
+DEEPSEEK_SHA256 = 'c90dfa01249db1be4245780a052ede752e1361c612ac6d08e2bdada7d599476b'
+DEEPSEEK_VOCAB_IDS = 129280
+DEEPSEEK_PATH = ROOT / '.cache/skill-tokenizers/deepseek-v4.1-flash/tokenizer.json'
+
+
+class DeepSeekCounter:
+    """Count with the published DeepSeek-V4.1-Flash tokenizer.json, not the o200k proxy."""
+
+    def __init__(self, model_config, path=None):
+        if model_config.get('name') != DEEPSEEK_MODEL:
+            raise BudgetError('counter_unavailable', 'DeepSeek counter requires model deepseek-v4.1-flash.')
+        try:
+            actual = importlib.metadata.version('tokenizers')
+        except importlib.metadata.PackageNotFoundError as exc:
+            raise BudgetError('counter_unavailable', 'Install tokenizers==0.23.3 to count deepseek-v4.1-flash.') from exc
+        if actual != DEEPSEEK_TOKENIZERS_VERSION:
+            raise BudgetError('counter_unavailable',
+                              f'Requires tokenizers {DEEPSEEK_TOKENIZERS_VERSION}; installed {actual}.')
+        location = Path(path) if path is not None else DEEPSEEK_PATH
+        try:
+            data = location.read_bytes()
+        except OSError as exc:
+            raise BudgetError('counter_unavailable',
+                              'Missing local DeepSeek tokenizer.json at .cache/skill-tokenizers/deepseek-v4.1-flash/tokenizer.json.') from exc
+        digest = hashlib.sha256(data).hexdigest()
+        if digest != DEEPSEEK_SHA256:
+            raise BudgetError('counter_unavailable', 'DeepSeek tokenizer.json SHA256 mismatch; refusing to use it.')
+        from tokenizers import Tokenizer
+        self._tokenizer = Tokenizer.from_file(str(location))
+        manifest = {'method': 'deepseek_v41_checkpoint_v1', 'model': DEEPSEEK_MODEL,
+                    'tokenizer_library': DEEPSEEK_TOKENIZERS_VERSION,
+                    'vocabulary_sha256': DEEPSEEK_SHA256, 'vocab_ids': DEEPSEEK_VOCAB_IDS}
+        self.info = CounterInfo(DEEPSEEK_MODEL, json.dumps(manifest, sort_keys=True, separators=(',', ':')),
+            'exact_text', 'Exact count for the pinned DeepSeek-V4.1-Flash checkpoint tokenizer.json. '
+            'No bos or eos is added. Token Plan gateway usage was not compared. '
+            'Counts SkillContext text only, excluding chat framing and other messages.')
+
+    def count(self, text):
+        return len(self._tokenizer.encode(text, add_special_tokens=False).ids)
+
+
 class EstimatedCounter:
     def __init__(self, model_config, options):
         options = validate_estimated(model_config, options)

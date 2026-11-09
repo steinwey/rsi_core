@@ -20,6 +20,8 @@ from rsi.frameworks import evolve_skill, get_framework
 from rsi.skills.supervision import build_all_supervision
 from rsi.skills.directory import directory_schema, read_skill_directory
 from rsi.skills.maintenance import settings as maintenance_settings, maintain_candidate
+from rsi.skills import structural
+from rsi.skills import structural
 from rsi.core.common import digest
 from rsi.skills.routing import route as route_skill
 
@@ -230,6 +232,9 @@ def _continue_experiment(tasks, config, output, seed, store, state, backend_fact
             update = {'accepted': False, 'decision': 'fixed_skill'}
             supervision = None
             after_version = skill.name
+            structural_options = structural.options(config)
+            structural_request = (structural.request(state['structural_migration'], structural_options)
+                                  if structural_options else None)
             try:
                 if config['evolve']:
                     outcomes = read_json(folder / 'all-route-scores.json')['scores']
@@ -243,7 +248,8 @@ def _continue_experiment(tasks, config, output, seed, store, state, backend_fact
                         changes, managed = proposal['changes'], None
                         if store.maintenance['enabled']:
                             result = maintain_candidate(read_skill_directory(skill, directory_schema=1), changes,
-                                config, folder / 'maintenance', model_factory=model_factory)
+                                config, folder / 'maintenance', model_factory=model_factory,
+                                structural=structural_request)
                             changes, managed = result['changes'], result['managed_changes']
                         candidate, diff = store.propose(changes, managed_changes=managed, expected_base_version=skill.name)
                         gate = document_gate(candidate, store.fixed_files, check_consistency=True, directory_schema=store.directory_schema, maintenance=store.maintenance)
@@ -261,6 +267,13 @@ def _continue_experiment(tasks, config, output, seed, store, state, backend_fact
             except Exception as exc:
                 write_json(folder / 'update.json', {'accepted': False, 'decision': 'update_error', 'error': f'{type(exc).__name__}: {exc}'})
                 raise
+            if structural_options:
+                learned = bool(config['evolve'] and update['accepted'] and after_version != skill.name)
+                receipt = None
+                if learned:
+                    receipt = read_json(folder / 'maintenance/validation.json').get('structural')
+                update['structural_migration'] = structural.advance(
+                    state['structural_migration'], receipt, learned, structural_options)
             from rsi.skills.consolidation import settings as reference_settings, consolidate
             from rsi.skills.consolidation_state import schedule
             reference = reference_settings(config)

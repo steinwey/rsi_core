@@ -1,0 +1,15 @@
+{
+  "initial_references": [],
+  "character_count": 2916,
+  "experiences": [
+    "python_importerror",
+    "pytest_fixture_scope",
+    "pytest_asyncio",
+    "git_apply"
+  ],
+  "human_expectation": {
+    "below_hard_limit_program_must_not_invent_a_reference": true,
+    "updater_may_keep_text_in_skill_md_or_create_a_reference": true,
+    "creation_is_a_model_decision_until_the_root_exceeds_10000": true
+  }
+}

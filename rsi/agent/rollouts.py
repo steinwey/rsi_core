@@ -1,4 +1,4 @@
-"""Five-route training and single-route frozen evaluation."""
+"""Five-route or single-route training, and single-route frozen evaluation."""
 
 MODES = {'parallel': 5, 'single': 1}
 
@@ -7,8 +7,6 @@ def validate_execution_mode(config):
     mode = config.get('execution_mode', 'parallel')
     if mode not in MODES or type(config.get('rollouts')) is not int or config['rollouts'] != MODES[mode]:
         raise ValueError('Use five parallel rollouts or one single rollout')
-    if config.get('evolve', True) and mode != 'parallel':
-        raise ValueError('Training requires exactly five parallel rollouts')
     workers = config.get('rollout_workers', config['rollouts'])
     if type(workers) is not int or workers < 1:
         raise ValueError('rollout_workers must be a positive integer')

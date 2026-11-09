@@ -66,11 +66,14 @@ fail closed. The default factory has no network dependency and never guesses ali
 | gpt-6-luna | Unsupported | Installed tiktoken 0.14.0 has no exact/prefix mapping; no verified offline mapping established. |
 | qwen3.8-max | Unsupported | No verified exact offline mapping bundled for this API model. |
 | qwen3.8-flash | Unsupported | No verified exact offline mapping bundled for this API model. |
+| deepseek-v4.1-flash | Strict, pinned checkpoint tokenizer.json | Counts the published DeepSeek-V4.1-Flash vocabulary. Token Plan usage is not compared. |
 | Unknown/provider aliases | Unsupported | No model-name guessing or fallback. |
 | Explicit injected test counter | Test only | Synthetic units, explicitly not real model tokens. |
 
-**Enabling strict routing on any configured real model currently fails with
-counter_unavailable.** The implementation does not claim production tokenizer accuracy.
+**Enabling strict routing on gpt-6-luna, qwen3.8-max, or qwen3.8-flash fails with
+counter_unavailable.** deepseek-v4.1-flash strict routing counts its pinned checkpoint
+tokenizer.json. That count is exact for the file, and it has not been compared with
+Token Plan usage. The implementation does not claim gateway tokenizer accuracy.
 A later reviewed exact adapter can implement the protocol through the Python
 counter_factory dependency. That is trusted code, not a config escape hatch.
 Test fixtures use accuracy=test_only and one Unicode codepoint per synthetic token;

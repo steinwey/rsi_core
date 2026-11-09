@@ -82,11 +82,33 @@ class EvidenceReader:
         return self.record('run_probe', {'code': code}, result)
 
     def diagnostic_patch(self):
-        """Export the complete current diagnostic tree relative to the task base."""
+        """Export source changes relative to the task base.
+
+        Probe runs such as pytest leave bytecode and test caches in the disposable
+        tree. Those files are removed before staging so the export stays a source
+        patch and can finish inside the analysis container.
+        """
         if self.env is None:
             return self.result['artifact']
         base = self.task['instance']['base_commit']
-        result = self.env.execute('git add -A && git diff --cached --binary ' + shlex.quote(base))
+        # find -prune removes each generated directory without walking its contents.
+        cleanup = (
+            "find . -type d \\( -name __pycache__ -o -name .pytest_cache -o -name .mypy_cache "
+            "-o -name .ruff_cache -o -name htmlcov -o -name '*.egg-info' \\) -prune -exec rm -rf {} + ; "
+            "find . -type f \\( -name '*.pyc' -o -name '*.pyo' -o -name .coverage \\) -delete"
+        )
+        excludes = ' '.join(
+            "':(exclude)" + pattern + "'"
+            for pattern in ('**/__pycache__/**', '**/*.pyc', '**/*.pyo', '**/.pytest_cache/**',
+                            '**/.mypy_cache/**', '**/.ruff_cache/**', '**/htmlcov/**', '**/.coverage',
+                            '**/*.egg-info/**'))
+        command = f'{cleanup} && git add -A -- . {excludes} && git diff --cached --binary ' + shlex.quote(base)
+        previous = self.env.config.timeout
+        self.env.config.timeout = max(previous, 120)
+        try:
+            result = self.env.execute(command)
+        finally:
+            self.env.config.timeout = previous
         if result['returncode']:
             raise RuntimeError('Cannot export final diagnostic patch: ' + result['output'])
         return result['output']

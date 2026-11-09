@@ -52,6 +52,9 @@ def initialize(output, tasks, config, version):
     if reference_settings(config)['enabled']:
         from rsi.skills.consolidation_state import initial_state
         state['reference_maintenance'] = initial_state()
+    from rsi.skills import structural
+    if schema and structural.options(config):
+        state['structural_migration'] = structural.initial_state()
     write_json(Path(output) / 'checkpoint.json', state)
     return state
 
@@ -84,9 +87,16 @@ def resume_request(output):
     from rsi.skills.consolidation_state import initial_state, verify_entry
     reference = reference_settings(config)
     reference_state = initial_state()
+    from rsi.skills import structural
+    structural_active = bool(schema and structural.options(config))
+    structural_state = structural.initial_state()
     for task, entry in zip(tasks, completed):
         if reference['enabled']:
             reference_state = verify_entry(output, reference_state, entry['report'], entry['update'], config)
+        if structural_active:
+            structural_state = structural.verify_entry(structural_state, entry['report'], entry['update'], config)
+        elif 'structural_migration' in entry['update']:
+            raise ValueError('Unexpected structural migration outside configuration')
         verify_maintenance_artifacts(output, entry['report'], entry['update'], config)
         from rsi.skills.routing import verify_receipt
         verify_receipt(output, entry['report'], config, task)
@@ -102,6 +112,8 @@ def resume_request(output):
         verify_version(version)
     if reference['enabled'] and state.get('reference_maintenance') != reference_state:
         raise ValueError('Consolidation checkpoint counter mismatch')
+    if structural_active and state.get('structural_migration') != structural_state:
+        raise ValueError('Structural migration checkpoint state mismatch')
     if version != state['current_skill_version']:
         raise ValueError('Checkpoint Skill pointer mismatch')
     return state, config, [tasks]
@@ -203,6 +215,9 @@ def commit(output, state, report, update):
     if state.get('schema') == 6 and reference_settings(config)['enabled']:
         from rsi.skills.consolidation_state import verify_entry
         next_state['reference_maintenance'] = verify_entry(output, state['reference_maintenance'], report, update, config)
+    if state.get('schema') == 6 and 'structural_migration' in state:
+        from rsi.skills import structural
+        next_state['structural_migration'] = structural.verify_entry(state['structural_migration'], report, update, config)
     # Single commit point: versions exist, but no pointer has changed yet.
     write_json(Path(output) / 'checkpoint.json', next_state)
     publish(output, next_state)

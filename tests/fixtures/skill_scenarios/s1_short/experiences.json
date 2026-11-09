@@ -1,0 +1,26 @@
+{
+  "python_importerror": {
+    "title": "Python ImportError recovery",
+    "condition": "When Python raises `ImportError` during pytest collection, preserve the package layout.",
+    "detail": "Check `sys.path`, the missing module name, and whether the test runner changed the working directory. Do not rewrite unrelated imports.",
+    "target": "references/python_imports.md"
+  },
+  "pytest_fixture_scope": {
+    "title": "pytest fixture scope",
+    "condition": "When a pytest fixture uses function scope, isolate mutable state from later tests.",
+    "detail": "Create the resource inside the fixture and close it in teardown. Do not store that resource on a session object.",
+    "target": "references/testing_strategies.md"
+  },
+  "pytest_asyncio": {
+    "title": "async function tests",
+    "condition": "When pytest runs a coroutine test, await the coroutine before asserting the result.",
+    "detail": "Mark the test with pytest-asyncio and close the event loop after the assertion. Do not call the coroutine without await.",
+    "target": "references/async_tests.md"
+  },
+  "git_apply": {
+    "title": "Git patch application",
+    "condition": "When git apply rejects a patch, run git apply --check before changing the source.",
+    "detail": "Compare the rejected hunk with the current file. Keep the patch limited to the reported lines and rerun the focused pytest.",
+    "target": "references/git_apply.md"
+  }
+}

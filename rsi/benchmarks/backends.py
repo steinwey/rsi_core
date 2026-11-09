@@ -137,7 +137,9 @@ class SWEBackend:
         iid = instance["instance_id"].replace("__", "_1776_")
         # Image convention from ReasoningBank's get_swebench_docker_image_name.
         image = instance.get("image_name") or instance.get("image") or f"swebench/sweb.eval.x86_64.{iid}:latest".lower()
-        # The model is called on the host. The container only needs the local repository and its installed tools.
+        # The model is called on the host. The solver container is offline: task images
+        # already contain dependencies, and an open network can fetch the upstream fix.
+        # Grading stays offline as well.
         run_args = ['--rm', '--network', 'none']
         mounted = (config.get('skill_access', {}).get('enabled') and config.get('_skill_access_snapshot')
                    and config['skill_access'].get('install_mode', 'auto') != 'copy_audited')

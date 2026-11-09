@@ -7,6 +7,7 @@ from yaml.tokens import AliasToken, AnchorToken
 from rsi.skills.directory import INDEX_PATH, REFERENCE_PATH, validate_paths
 
 MAX_INDEX_BYTES = 1024 * 1024
+MIGRATED = re.compile(r'# ([^\n]{1,200})\n\nApplies when: ([^\n\[\]<>]{1,300})\n')
 FIELDS = {'id', 'path', 'title', 'description', 'keywords', 'applies_when', 'exclude_when',
           'content_sha256', 'char_count', 'provenance', 'units'}
 
@@ -130,6 +131,11 @@ def build_index(files, previous=None, *, source_files=None):
                      'keywords': [path.removeprefix('references/').removesuffix('.md')],
                      'applies_when': ['Consult the document for its applicability conditions.'],
                      'exclude_when': [], 'provenance': [{'evidence_kind': 'legacy_unknown'}], 'units': []}
+            migrated = MIGRATED.match(text)
+            if migrated:
+                entry.update(title=migrated[1], applies_when=[migrated[2]],
+                             description='Specific guidance migrated verbatim from SKILL.md.',
+                             keywords=list(dict.fromkeys([entry['keywords'][0], migrated[1].lower()])))
         if (source_files and path in old and path in source_files
                 and old[path]['content_sha256'] == sha(source_files[path])
                 and text != source_files[path] and text.startswith(source_files[path])):

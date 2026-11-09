@@ -1,0 +1,10 @@
+config: ../agent/click15-flash-max-routing-frozen.yaml
+tasks: ../../tasks/click-chain-15.json
+rollouts: 1
+parallel: false
+swe_dataset: D:\RSI\datasets\evoarena-swe\evaluation-e77c3282aa468ee5.json
+swe_split: test
+fixed_skill: true
+initial_skill: D:\RSI-core-skill-routing\runs\20261108-195223__monitored__805ad7\skills\versions\92ccb8f73b1b3c9f
+label: click15-flash-routing-split-merge-retest
+wandb: false

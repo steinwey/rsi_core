@@ -132,6 +132,99 @@ def parse_units(text):
     return units
 
 
+PROTECTED_TITLE = re.compile(r'(?i)^(?:protected core|受保护核心)$')
+# Fixed tools and statements about the Skill's own scope belong to every task the Skill serves.
+FIXED_TOOL = re.compile(r'(?<![\w.-])(?:/opt/rsi-skills/)?(?:scripts|tests)/[\w.-]+')
+SKILL_SCOPE = re.compile(r'(?i)\bthis skill\b|本技能|该技能')
+NAVIGATION = re.compile(r' {0,3}(?:(?:[-*+]|\d{1,3}[A-Za-z]?[.)])[ \t]+)?Specific guidance \([^\n]*\): '
+                        r'\[[^\]\n]+\]\(references/[^)\s]+\)\n*')
+ITEM = re.compile(r'^( {0,3})(?:[-*+]|\d{1,3}[A-Za-z]?[.)])[ \t]+\S')
+
+
+@dataclass(frozen=True)
+class ExperienceUnit:
+    """One top-level list item or paragraph of a heading's own body.
+
+    Nested lists, continuation lines, fences and indented code stay inside the
+    block that introduces them. `fingerprint` ignores trailing blank lines so a
+    unit keeps its identity when neighbours move.
+    """
+    id: str
+    kind: str
+    start: int
+    end: int
+    heading_path: tuple
+    content_sha256: str
+    fingerprint: str
+    text: str
+    protected: bool
+
+    def record(self):
+        return asdict(self)
+
+
+def parse_experience_units(text):
+    lines, outside, headings = _scan(text)
+    positions, offset = [], 0
+    for line in lines:
+        positions.append(offset)
+        offset += len(line)
+    line_at = {p: i for i, p in enumerate(positions)}
+    units, stack = [], []
+    for n, (start, heading_end, level, title) in enumerate(headings):
+        while stack and stack[-1][0] >= level:
+            stack.pop()
+        stack.append((level, title))
+        path = tuple(t for _, t in stack)
+        body_end = headings[n + 1][0] if n + 1 < len(headings) else len(text)
+        first = line_at.get(heading_end, len(lines))
+        blocks, current, blank = [], None, False
+        for i in range(first, len(lines)):
+            if positions[i] >= body_end:
+                break
+            line = lines[i].rstrip('\n')
+            if i not in outside:
+                if current is None:
+                    current = {'kind': 'paragraph', 'indent': 0, 'first': i, 'last': i}
+                    blocks.append(current)
+                current['last'] = i
+                blank = False
+                continue
+            if not line.strip():
+                if current is not None:
+                    current['last'] = i
+                blank = True
+                continue
+            item = ITEM.match(line)
+            indent = len(line) - len(line.lstrip(' '))
+            if current is None:
+                starts = True
+            elif item and (current['kind'] == 'paragraph' or indent <= current['indent']):
+                starts = True
+            elif blank:
+                starts = not (current['kind'] == 'item' and indent >= 2)
+            else:
+                starts = False
+            if starts:
+                current = {'kind': 'item' if item else 'paragraph', 'indent': indent if item else 0,
+                           'first': i, 'last': i}
+                blocks.append(current)
+            current['last'] = i
+            blank = False
+        locked = any(PROTECTED_TITLE.fullmatch(t.strip()) for t in path)
+        for number, block in enumerate(blocks):
+            begin = positions[block['first']]
+            finish = min(body_end, positions[block['last']] + len(lines[block['last']]))
+            body = text[begin:finish]
+            ident = sha('experience:' + str(begin) + ':' + body)[:24]
+            scope = level == 1 and number == 0 and block['kind'] == 'paragraph'
+            protected = (locked or scope or bool(GLOBAL.search(body)) or bool(FIXED_TOOL.search(body))
+                         or bool(SKILL_SCOPE.search(body)) or bool(NAVIGATION.fullmatch(body)))
+            units.append(ExperienceUnit(ident, block['kind'], begin, finish, path, sha(body),
+                                        sha(body.strip()), body, protected))
+    return units
+
+
 def rebase_links(text, source, target, files):
     """Only simple inline Markdown links are supported; ambiguous syntax fails closed."""
     lines, outside, _ = _scan(text)
@@ -154,9 +247,11 @@ def rebase_links(text, source, target, files):
         if i not in outside:
             result.append(line)
             continue
-        if re.search(r'\[[^\]\n]+\]', visible):
+        # Code spans are never links, so `d["key"]` is not a shortcut reference.
+        prose = re.sub(r'(`+)(.*?)\1', '', visible)
+        if re.search(r'\[[^\]\n]+\]', prose):
             raise UnsafeMarkdown('Ambiguous shortcut link or footnote dependency')
-        if '](' in visible:
+        if '](' in prose:
             raise UnsafeMarkdown('Unsupported inline link syntax')
         def replace(match):
             raw = match[2]

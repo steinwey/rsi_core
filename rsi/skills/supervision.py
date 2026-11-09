@@ -80,10 +80,10 @@ def build_supervision(task, results, selected, score):
 
 
 def build_all_supervision(task, results, selected, scores):
-    """Keep five independent labels; training has no selected answer or task grade."""
+    """Keep every route label; training has no selected answer or task grade."""
     ids = {result['rollout'] for result in results}
-    if len(results) != 5 or len(ids) != 5 or set(scores) != ids or (selected is not None and selected not in ids):
-        raise ValueError('All-route supervision requires exactly five matching route grades')
+    if len(results) not in (1, 5) or len(ids) != len(results) or set(scores) != ids or (selected is not None and selected not in ids):
+        raise ValueError('All-route supervision requires one or five matching route grades')
     routes = []
     for route in sorted(ids):
         item = build_supervision(task, results, route, scores[route])
@@ -91,9 +91,11 @@ def build_all_supervision(task, results, selected, scores):
                        **{key: item[key] for key in ('artifact_sha256', 'grade', 'failure_output',
                                                     'report_source', 'report_sha256') if key in item}})
     if selected is None:
+        scope = ('All five artifacts were graded only as training supervision.' if len(results) == 5
+                 else 'The single artifact was graded only as training supervision.')
         return {'schema': 2, 'task_id': task['id'], 'stage': 'post_scoring',
                 'selected_rollout': None, 'accuracy_scope': 'not_applicable', 'routes': routes,
-                'limitations': ['All five artifacts were graded only as training supervision.',
+                'limitations': [scope,
                                 'No answer selection or training accuracy is computed.',
                                 'Passing tests do not prove general correctness; failures alone do not establish causes.']}
     picked = next(route for route in routes if route['rollout'] == selected)

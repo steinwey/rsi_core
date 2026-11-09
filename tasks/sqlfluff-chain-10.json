@@ -1,0 +1,212 @@
+[
+  {
+    "id": "evo-79f25adb-000",
+    "benchmark": "swe-evo",
+    "chain": {
+      "id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "index": 0,
+      "length": 10,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0007_14d78ec8"
+    },
+    "dataset_fingerprint": "617bf63f33e20608",
+    "instance": {
+      "instance_id": "evo-79f25adb-000",
+      "repo": "sqlfluff/sqlfluff",
+      "version": "lc-0007-target",
+      "base_commit": "36b9eb61ed7e555bc0fed60418cc4f4fef3118f5",
+      "image": "rsi-evo/sqlfluff__sqlfluff_lc_0007_14d78ec8:36b9eb61ed7e",
+      "problem_statement": "Implement this sqlfluff project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Oracle: parse TABLESPACE/STORAGE and other table/index options"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  },
+  {
+    "id": "evo-79f25adb-001",
+    "benchmark": "swe-evo",
+    "chain": {
+      "id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "index": 1,
+      "length": 10,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0012_d8ec47d8"
+    },
+    "dataset_fingerprint": "4701d78057b060b7",
+    "instance": {
+      "instance_id": "evo-79f25adb-001",
+      "repo": "sqlfluff/sqlfluff",
+      "version": "lc-0012-target",
+      "base_commit": "8166b15cebadc329f56a537779de4e7b52c55c93",
+      "image": "rsi-evo/sqlfluff__sqlfluff_lc_0012_d8ec47d8:8166b15cebad",
+      "problem_statement": "Implement this sqlfluff project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Fix for empty iterator bug that can occur from Jinja loops"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  },
+  {
+    "id": "evo-79f25adb-002",
+    "benchmark": "swe-evo",
+    "chain": {
+      "id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "index": 2,
+      "length": 10,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0022_15d1db05"
+    },
+    "dataset_fingerprint": "97e65aec9cca455f",
+    "instance": {
+      "instance_id": "evo-79f25adb-002",
+      "repo": "sqlfluff/sqlfluff",
+      "version": "lc-0022-target",
+      "base_commit": "5292030c220d2854998180602019a3ce62fcd499",
+      "image": "rsi-evo/sqlfluff__sqlfluff_lc_0022_15d1db05:5292030c220d",
+      "problem_statement": "Implement this sqlfluff project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Fix crash on malformed inline config using = syntax"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  },
+  {
+    "id": "evo-79f25adb-003",
+    "benchmark": "swe-evo",
+    "chain": {
+      "id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "index": 3,
+      "length": 10,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0028_c43ef991"
+    },
+    "dataset_fingerprint": "74fce3926da567b9",
+    "instance": {
+      "instance_id": "evo-79f25adb-003",
+      "repo": "sqlfluff/sqlfluff",
+      "version": "lc-0028-target",
+      "base_commit": "b4df389933e6c6c26a52c749e79c0cd58f59abf8",
+      "image": "rsi-evo/sqlfluff__sqlfluff_lc_0028_c43ef991:b4df389933e6",
+      "problem_statement": "Implement this sqlfluff project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Add dbt 1.11 function() builtin to Jinja apply_dbt_builtins"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  },
+  {
+    "id": "evo-79f25adb-004",
+    "benchmark": "swe-evo",
+    "chain": {
+      "id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "index": 4,
+      "length": 10,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0051_6ceef78d"
+    },
+    "dataset_fingerprint": "669b664f235e1d6e",
+    "instance": {
+      "instance_id": "evo-79f25adb-004",
+      "repo": "sqlfluff/sqlfluff",
+      "version": "lc-0051-target",
+      "base_commit": "fa8f2af03682ce762cc45ab82e56c8dc763308e7",
+      "image": "rsi-evo/sqlfluff__sqlfluff_lc_0051_6ceef78d:fa8f2af03682",
+      "problem_statement": "Implement this sqlfluff project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Apply warning-level fixes even when no errors present"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  },
+  {
+    "id": "evo-79f25adb-005",
+    "benchmark": "swe-evo",
+    "chain": {
+      "id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "index": 5,
+      "length": 10,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0070_13753d6c"
+    },
+    "dataset_fingerprint": "d6e9f0d6a0c3878c",
+    "instance": {
+      "instance_id": "evo-79f25adb-005",
+      "repo": "sqlfluff/sqlfluff",
+      "version": "lc-0070-target",
+      "base_commit": "99f6fcb74b5dda2d390fde32eb42bff6e6f5aca2",
+      "image": "rsi-evo/sqlfluff__sqlfluff_lc_0070_13753d6c:99f6fcb74b5d",
+      "problem_statement": "Implement this sqlfluff project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Add option for non-zero exit on large_file_skip"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  },
+  {
+    "id": "evo-79f25adb-006",
+    "benchmark": "swe-evo",
+    "chain": {
+      "id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "index": 6,
+      "length": 10,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0091_2cff769f"
+    },
+    "dataset_fingerprint": "cdd4c461b3366ee9",
+    "instance": {
+      "instance_id": "evo-79f25adb-006",
+      "repo": "sqlfluff/sqlfluff",
+      "version": "lc-0091-target",
+      "base_commit": "f32ab9fb717de65d3e6e67571aed522b55c1d617",
+      "image": "rsi-evo/sqlfluff__sqlfluff_lc_0091_2cff769f:f32ab9fb717d",
+      "problem_statement": "Implement this sqlfluff project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Preserve mocked dbt `var()` placeholders under Jinja subscripting"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  },
+  {
+    "id": "evo-79f25adb-007",
+    "benchmark": "swe-evo",
+    "chain": {
+      "id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "index": 7,
+      "length": 10,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0093_08e473ac"
+    },
+    "dataset_fingerprint": "d4c7f8fd825c6ba1",
+    "instance": {
+      "instance_id": "evo-79f25adb-007",
+      "repo": "sqlfluff/sqlfluff",
+      "version": "lc-0093-target",
+      "base_commit": "17928b67fba514a29b34779f951df954b8912fd2",
+      "image": "rsi-evo/sqlfluff__sqlfluff_lc_0093_08e473ac:17928b67fba5",
+      "problem_statement": "Implement this sqlfluff project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Handle shorthand-casted aggregates correctly in ST06 column ordering"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  },
+  {
+    "id": "evo-79f25adb-008",
+    "benchmark": "swe-evo",
+    "chain": {
+      "id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "index": 8,
+      "length": 10,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0111_048591f5"
+    },
+    "dataset_fingerprint": "789e9bd132e673e1",
+    "instance": {
+      "instance_id": "evo-79f25adb-008",
+      "repo": "sqlfluff/sqlfluff",
+      "version": "lc-0111-target",
+      "base_commit": "a276af13212f085c050f421550dfe840c2db03b7",
+      "image": "rsi-evo/sqlfluff__sqlfluff_lc_0111_048591f5:a276af13212f",
+      "problem_statement": "Implement this sqlfluff project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Ensure `pool.join()` is called in ParallelRunner"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  },
+  {
+    "id": "evo-79f25adb-009",
+    "benchmark": "swe-evo",
+    "chain": {
+      "id": "sqlfluff__sqlfluff_multistep_v25_L10_s0",
+      "index": 9,
+      "length": 10,
+      "source_instance_id": "sqlfluff__sqlfluff_lc_0128_7ad7b4ca"
+    },
+    "dataset_fingerprint": "cdcec38db30872e9",
+    "instance": {
+      "instance_id": "evo-79f25adb-009",
+      "repo": "sqlfluff/sqlfluff",
+      "version": "lc-0128-target",
+      "base_commit": "fc34c36e65de11e4c6e52a4e75e5cc5c1da93e45",
+      "image": "rsi-evo/sqlfluff__sqlfluff_lc_0128_7ad7b4ca:fc34c36e65de",
+      "problem_statement": "Implement this sqlfluff project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Force color output when --color is requested"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a"
+  }
+]

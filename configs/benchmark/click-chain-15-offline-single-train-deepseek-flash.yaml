@@ -1,0 +1,9 @@
+config: ../agent/click15-deepseek-v41-flash.yaml
+tasks: ../../tasks/click-chain-15.json
+rollouts: 1
+parallel: false
+swe_dataset: D:\RSI\datasets\evoarena-swe\evaluation-e77c3282aa468ee5.json
+swe_split: test
+fixed_skill: false
+label: click15-deepseek-v41-flash-offline-single-train
+wandb: false
