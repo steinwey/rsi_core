@@ -2,7 +2,7 @@ import json
 import unittest
 from pathlib import Path
 
-from rsi.skills.trace2skill.pathology import default_is_edit, detect, load_rollout_steps
+from rsi.skills.trace2skill.pathology import PathologyTracker, default_is_edit, detect, load_rollout_steps
 
 
 def step(number, command=None, sha='a' * 64, truncated=False, format_failed=False, error_type=None, output=None):
@@ -98,6 +98,60 @@ EOF"""
         self.assertTrue(default_is_edit('shutil.move(src, dst)'))
         self.assertTrue(default_is_edit('os.rename(src, dst)'))
         self.assertTrue(default_is_edit('os.replace(src, dst)'))
+
+
+def _event_key(event):
+    return event['type'], event['start_step'], event['end_step'], event['count']
+
+
+def _finding_key(finding):
+    evidence = finding['evidence']
+    return finding['type'], finding['start_step'], finding['end_step'], evidence.get('count', evidence.get('steps'))
+
+
+class IncrementalTests(unittest.TestCase):
+    def assert_matches_offline(self, steps, **kwargs):
+        tracker = PathologyTracker(**kwargs)
+        for index, item in enumerate(steps, start=1):
+            events = tracker.observe(item.get('command'), item.get('output_sha256'),
+                                     item.get('truncated', False), item.get('format_failed', False))
+            offline = [found for found in detect(steps[:index], **kwargs) if found['end_step'] == index]
+            self.assertEqual([_event_key(event) for event in events], [_finding_key(found) for found in offline])
+
+    def test_prefixes_match_the_offline_scan(self):
+        read = "cd /testbed && nl -ba src/click/core.py | sed -n '2836,2847p'"
+        heredoc = """cd /testbed && python - <<'EOF'
+path = "src/click/core.py"
+src = open(path).read()
+open(path, "w").write(src)
+print("patched")
+EOF"""
+        sequences = [
+            [step(1, 'grep x'), step(2, 'ls'), step(3, 'grep x'), step(4, 'grep x')],
+            [step(1, 'grep x', sha='a'), step(2, 'grep x', sha='b'), step(3, 'grep x', sha='c')],
+            [step(1, 'grep x'), step(2, 'cat > src/a.py <<EOF\nx\nEOF'), step(3, 'grep x'), step(4, 'grep x')],
+            [step(1, read), step(2, heredoc), step(3, read), step(4, read)],
+            [step(index, 'grep x', truncated=True) for index in range(1, 5)],
+            [step(index, None, format_failed=True, error_type='missing_or_unclosed_bash_block') for index in range(1, 5)],
+            [step(index, 'grep x') for index in range(1, 6)],
+        ]
+        for steps in sequences:
+            self.assert_matches_offline(steps, k1=3, k2=3, k3=3, step_limit=6)
+        self.assert_matches_offline(
+            [step(1, 'grep x'), step(2, 'EDIT'), step(3, 'grep x'), step(4, 'grep x')],
+            k1=3, is_edit=lambda command: command == 'EDIT')
+
+    def test_heredoc_open_write_cuts_the_live_chain(self):
+        read = "cd /testbed && nl -ba src/click/core.py | sed -n '2836,2847p'"
+        heredoc = """cd /testbed && python - <<'EOF'
+open(path, "w").write(src)
+EOF"""
+        tracker = PathologyTracker(k1=3)
+        events = []
+        for command in (read, heredoc, read, read):
+            events.extend(tracker.observe(command, 'a' * 64, False, False))
+        self.assertFalse([event for event in events if event['type'] == 'repeated_command'])
+        self.assertEqual(len(tracker.chains[read]), 2)
 
 
 class LoaderTests(unittest.TestCase):

@@ -121,6 +121,19 @@ def _prepare(step, index, is_edit):
             'error_type': step.get('error_type')}
 
 
+def repeat_continues(chain, step, steps):
+    """Same command bucket, same output sha, and no edit strictly between the two steps."""
+    if not chain or step.get('sha') != chain[0]['sha']:
+        return False
+    return not _edit_between(steps, chain[-1]['step'], step['step'])
+
+
+def extend_flag_run(run, item, flag):
+    if item[flag]:
+        return [*run, item]
+    return []
+
+
 def _repeated_commands(steps, k1):
     grouped = {}
     for item in steps:
@@ -129,16 +142,12 @@ def _repeated_commands(steps, k1):
     findings = []
     for occurrences in grouped.values():
         chain = []
-        previous = None
         for item in occurrences:
-            blocked = previous is not None and _edit_between(steps, previous['step'], item['step'])
-            same = chain and item['sha'] == chain[0]['sha'] and not blocked
-            if same:
+            if repeat_continues(chain, item, steps):
                 chain.append(item)
             else:
                 findings.extend(_emit_repeat(chain, k1))
                 chain = [item]
-            previous = item
         findings.extend(_emit_repeat(chain, k1))
     return findings
 
@@ -159,8 +168,9 @@ def _consecutive(steps, flag, kind, threshold):
     findings = []
     run = []
     for item in steps:
-        if item[flag]:
-            run.append(item)
+        extended = extend_flag_run(run, item, flag)
+        if extended:
+            run = extended
             continue
         findings.extend(_emit_run(run, kind, threshold))
         run = []
@@ -184,6 +194,53 @@ def _zero_edit_stall(steps, step_limit):
         return None
     return _finding('zero_edit_stall', steps[0]['step'], steps[-1]['step'], len(steps), step_limit, {
         'steps': len(steps), 'step_limit': step_limit, 'edit_count': 0})
+
+
+def _events(findings):
+    events = []
+    for finding in findings:
+        evidence = finding['evidence']
+        events.append({'type': finding['type'], 'step': finding['end_step'],
+                       'start_step': finding['start_step'], 'end_step': finding['end_step'],
+                       'count': evidence.get('count', evidence.get('steps'))})
+    return events
+
+
+class PathologyTracker:
+    """Online chain state. `observe` uses the same chain and run helpers as `detect`."""
+
+    def __init__(self, *, k1=3, k2=3, k3=3, step_limit=None, is_edit=None):
+        self.k1, self.k2, self.k3 = k1, k2, k3
+        self.step_limit = step_limit
+        self.is_edit = is_edit or default_is_edit
+        self.steps = []
+        self.chains = {}
+        self.trunc_run = []
+        self.format_run = []
+
+    def observe(self, command, output_sha, truncated=False, parse_failed=False, is_edit=None):
+        """Record one finished step and return the events that close on it."""
+        predicate = self.is_edit if is_edit is None else (lambda _command: bool(is_edit))
+        item = _prepare({'step': len(self.steps) + 1, 'command': command, 'output_sha256': output_sha,
+                         'truncated': bool(truncated), 'format_failed': bool(parse_failed)},
+                        len(self.steps), predicate)
+        events = []
+        if item['normalized']:
+            chain = self.chains.get(item['normalized'], [])
+            chain = [*chain, item] if repeat_continues(chain, item, self.steps) else [item]
+            self.chains[item['normalized']] = chain
+            events.extend(_events(_emit_repeat(chain, self.k1)))
+        self.trunc_run = extend_flag_run(self.trunc_run, item, 'truncated')
+        if item['truncated']:
+            events.extend(_events(_emit_run(self.trunc_run, 'truncation_loop', self.k2)))
+        self.format_run = extend_flag_run(self.format_run, item, 'format_failed')
+        if item['format_failed']:
+            events.extend(_events(_emit_run(self.format_run, 'format_death', self.k3)))
+        self.steps.append(item)
+        stall = _zero_edit_stall(self.steps, self.step_limit)
+        if stall:
+            events.extend(_events([stall]))
+        return events
 
 
 def _finding(kind, start, end, count, threshold, evidence):
