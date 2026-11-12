@@ -1,0 +1,3542 @@
+{
+  "defaults": {
+    "k1": 3,
+    "k2": 3,
+    "k3": 3
+  },
+  "runs": [
+    "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+    "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+    "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+    "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+    "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+    "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+    "20261110-152609__monitored__7865cf",
+    "20261110-161443__monitored__f266b9",
+    "20261110-161536__monitored__a2d7df",
+    "20261110-190921__click4-wide-conflict-reu__swe-fixed__deepseek-v4.1-flash__4tasks__v-7095e846",
+    "20261110-191001__click4-wide-conflict-reu__swe-fixed__deepseek-v4.1-flash__4tasks__v-7095e846",
+    "20261110-202219__click2-conflict-guard__swe-fixed__deepseek-v4.1-flash__2tasks__v-c018dbf1",
+    "20261110-224455__click000-conflict-guard-__swe-fixed__deepseek-v4.1-flash__1tasks__v-782bc7e3",
+    "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391",
+    "20261106-000907__monitored__5eb57b",
+    "20261108-195223__monitored__805ad7"
+  ],
+  "skipped": [
+    {
+      "run": "20261110-161443__monitored__f266b9",
+      "reason": "no rollout directories"
+    },
+    {
+      "run": "20261110-190921__click4-wide-conflict-reu__swe-fixed__deepseek-v4.1-flash__4tasks__v-7095e846",
+      "reason": "no rollout directories"
+    }
+  ],
+  "rollouts": [
+    {
+      "run": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-0",
+      "path": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339/evo-f881cb75-001/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 40,
+      "findings": []
+    },
+    {
+      "run": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-0",
+      "path": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339/evo-f881cb75-003/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 80,
+      "findings": []
+    },
+    {
+      "run": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-0",
+      "path": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339/evo-f881cb75-004/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 61,
+      "findings": []
+    },
+    {
+      "run": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-0",
+      "path": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339/evo-f881cb75-005/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 46,
+      "findings": []
+    },
+    {
+      "run": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-0",
+      "path": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339/evo-f881cb75-006/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 69,
+      "findings": []
+    },
+    {
+      "run": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-0",
+      "path": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339/evo-f881cb75-007/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 103,
+      "findings": []
+    },
+    {
+      "run": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-0",
+      "path": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339/evo-f881cb75-008/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 87,
+      "findings": []
+    },
+    {
+      "run": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "task": "evo-f881cb75-012",
+      "rollout": "rollout-0",
+      "path": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339/evo-f881cb75-012/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 64,
+      "findings": []
+    },
+    {
+      "run": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-0",
+      "path": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339/evo-f881cb75-001/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 38,
+      "findings": []
+    },
+    {
+      "run": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-0",
+      "path": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339/evo-f881cb75-003/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 96,
+      "findings": []
+    },
+    {
+      "run": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-0",
+      "path": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339/evo-f881cb75-004/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 109,
+      "findings": []
+    },
+    {
+      "run": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-0",
+      "path": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339/evo-f881cb75-005/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 125,
+      "findings": []
+    },
+    {
+      "run": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-0",
+      "path": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339/evo-f881cb75-006/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 113,
+      "findings": []
+    },
+    {
+      "run": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-0",
+      "path": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339/evo-f881cb75-007/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 59,
+      "findings": []
+    },
+    {
+      "run": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-0",
+      "path": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339/evo-f881cb75-008/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 78,
+      "findings": []
+    },
+    {
+      "run": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "task": "evo-f881cb75-012",
+      "rollout": "rollout-0",
+      "path": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339/evo-f881cb75-012/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 100,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 12,
+          "end_step": 100,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && grep -rn \"hide_input\\|invalid\\|Error:\" tests/test_termui.py | sed -n '1,60p'",
+            "count": 89,
+            "output_sha256": "48444b88aa04cab4b6d098258aa8c482e6f6b4336e2c3a940b27f2b1efaf29f3"
+          }
+        },
+        {
+          "type": "zero_edit_stall",
+          "start_step": 1,
+          "end_step": 100,
+          "severity": "high",
+          "evidence": {
+            "steps": 100,
+            "step_limit": 100,
+            "edit_count": 0
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-0",
+      "path": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9/evo-f881cb75-001/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 40,
+      "findings": []
+    },
+    {
+      "run": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-0",
+      "path": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9/evo-f881cb75-003/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 119,
+      "findings": []
+    },
+    {
+      "run": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-0",
+      "path": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9/evo-f881cb75-004/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 84,
+      "findings": []
+    },
+    {
+      "run": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-0",
+      "path": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9/evo-f881cb75-005/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 67,
+      "findings": []
+    },
+    {
+      "run": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-0",
+      "path": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9/evo-f881cb75-006/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 100,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 56,
+          "end_step": 100,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && grep -rn \"default\" docs/parameters.md docs/option-decorators.md docs/arguments.md docs/commands-and-groups.md | head -40; sed -n '1,60p' docs/parameters.md",
+            "count": 45,
+            "output_sha256": "f3f2d9be55721c3ab921bda408ec2acfbc8665b08ef44db1a7109318209cbb09"
+          }
+        },
+        {
+          "type": "zero_edit_stall",
+          "start_step": 1,
+          "end_step": 100,
+          "severity": "high",
+          "evidence": {
+            "steps": 100,
+            "step_limit": 100,
+            "edit_count": 0
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-0",
+      "path": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9/evo-f881cb75-007/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 100,
+      "findings": []
+    },
+    {
+      "run": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-0",
+      "path": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9/evo-f881cb75-008/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 100,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 22,
+          "end_step": 100,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && grep -rn \"UNSET\" src/click/ | grep -v \"core.py\" | grep -v \"_utils.py\" | grep -v \"parser.py\" || echo \"none found\"; echo ---; grep -rn \"UNSET\" src/click/ | grep -v \"core.py\" | grep -v \"_utils.py\" | grep -v \"parser.py\" || echo \"none found\"",
+            "count": 79,
+            "output_sha256": "a0567e79579b39ff291c4447dee4c60a98d76017f5c4e890a70c3317b8e72fda"
+          }
+        },
+        {
+          "type": "zero_edit_stall",
+          "start_step": 1,
+          "end_step": 100,
+          "severity": "high",
+          "evidence": {
+            "steps": 100,
+            "step_limit": 100,
+            "edit_count": 0
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "task": "evo-f881cb75-012",
+      "rollout": "rollout-0",
+      "path": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9/evo-f881cb75-012/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 28,
+      "findings": []
+    },
+    {
+      "run": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-0",
+      "path": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9/evo-f881cb75-001/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 58,
+      "findings": []
+    },
+    {
+      "run": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-0",
+      "path": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9/evo-f881cb75-003/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 112,
+      "findings": []
+    },
+    {
+      "run": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-0",
+      "path": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9/evo-f881cb75-004/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 122,
+      "findings": []
+    },
+    {
+      "run": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-0",
+      "path": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9/evo-f881cb75-005/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 78,
+      "findings": []
+    },
+    {
+      "run": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-0",
+      "path": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9/evo-f881cb75-006/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 100,
+      "findings": []
+    },
+    {
+      "run": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-0",
+      "path": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9/evo-f881cb75-007/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 100,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 29,
+          "end_step": 100,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && grep -rn \"show_default\" docs/ | grep -v \"documentation.md\\|prompts.md\" | head -20 && echo \"=== api docs ===\" && grep -rn \"show_default\\|prompt\" docs/api.md 2>/dev/null | head",
+            "count": 71,
+            "output_sha256": "e160f854bccee41ef7cfcf1ce9f1f9d641c9b719bab3a11027d3a44af9afc2a9"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-0",
+      "path": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9/evo-f881cb75-008/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 43,
+      "findings": []
+    },
+    {
+      "run": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "task": "evo-f881cb75-012",
+      "rollout": "rollout-0",
+      "path": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9/evo-f881cb75-012/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 100,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 19,
+          "end_step": 100,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && grep -rn \"hide_input\\|value you entered\" docs/ | head; grep -rn \"hide_input\" docs/parameters.rst docs/prompts.rst 2>/dev/null | head",
+            "count": 82,
+            "output_sha256": "7978de2b9b578dac679389a5100d6e8eb3cec5d9f3ba63c42f1f4858d9e65a93"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-0",
+      "path": "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770/evo-f881cb75-001/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 36,
+      "findings": []
+    },
+    {
+      "run": "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-0",
+      "path": "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770/evo-f881cb75-003/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 64,
+      "findings": []
+    },
+    {
+      "run": "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-0",
+      "path": "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770/evo-f881cb75-004/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 100,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 20,
+          "end_step": 25,
+          "severity": "medium",
+          "evidence": {
+            "command": "cd /testbed && grep -rni \"debugger\\|breakpoint\\|pdb\\|gettrace\\|settrace\" . --include=\"*.py\" --include=\"*.rst\" --include=\"*.md\" --include=\"*.toml\" 2>/dev/null | grep -v \"\\.git/\" | head -20",
+            "count": 5,
+            "output_sha256": "b9bd1a9ce68da8d07cf47d3d4a97d02bf5ec7ec47e002c13cd82c0ce13368ac3"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 29,
+          "end_step": 100,
+          "severity": "high",
+          "evidence": {
+            "command": "find / -path \"*click/testing.py\" 2>/dev/null; find / -name \"*.whl\" 2>/dev/null | grep -i click; ls ~/.cache/pip 2>/dev/null",
+            "count": 72,
+            "output_sha256": "3f27fbfa940e29987da7b40c8af367e19037a4d9fe5a91f82c780a5736eca947"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-0",
+      "path": "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770/evo-f881cb75-005/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 24,
+      "findings": []
+    },
+    {
+      "run": "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-0",
+      "path": "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770/evo-f881cb75-006/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 100,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 31,
+          "end_step": 100,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && grep -n \"def _match_short_opt\" -A 45 src/click/parser.py",
+            "count": 70,
+            "output_sha256": "e67a320466176d16ac7ba271e8da56eb5445af88c3028aa9a1cef5953b222ef3"
+          }
+        },
+        {
+          "type": "zero_edit_stall",
+          "start_step": 1,
+          "end_step": 100,
+          "severity": "high",
+          "evidence": {
+            "steps": 100,
+            "step_limit": 100,
+            "edit_count": 0
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-0",
+      "path": "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770/evo-f881cb75-007/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 24,
+      "findings": []
+    },
+    {
+      "run": "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-0",
+      "path": "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770/evo-f881cb75-008/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 46,
+      "findings": []
+    },
+    {
+      "run": "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "task": "evo-f881cb75-012",
+      "rollout": "rollout-0",
+      "path": "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770/evo-f881cb75-012/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 55,
+      "findings": []
+    },
+    {
+      "run": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-0",
+      "path": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770/evo-f881cb75-001/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 38,
+      "findings": []
+    },
+    {
+      "run": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-0",
+      "path": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770/evo-f881cb75-003/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 117,
+      "findings": []
+    },
+    {
+      "run": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-0",
+      "path": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770/evo-f881cb75-004/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 134,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 43,
+          "end_step": 50,
+          "severity": "medium",
+          "evidence": {
+            "command": "cd /testbed && sed -n \"579,620p\" src/click/_compat.py",
+            "count": 4,
+            "output_sha256": "866def66a8ef5095dd3bbb6912a79e37af0dd5a23cbf8a002f28726a653ddb92"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 59,
+          "end_step": 99,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && python - <<'PY'\np = \"src/click/testing.py\"\ns = open(p).read()\nold = \"\"\"        old_stdin = sys.stdin\n        old_stdout = sys.stdout\n        old_stderr = sys.stderr\n        old_forced_width = formatting.FORCED_WIDTH\n        formatting.FORCED_WIDTH = 80\n\"\"\"\nnew = \"\"\"        old_stdin = sys.stdin\n        old_stdout = sys.stdout\n        old_stderr = sys.stderr\n        old_forced_width = formatting.FORCED_WIDTH\n        formatting.FORCED_WIDTH = 80\n\n        # If a debugger is active, d",
+            "count": 20,
+            "output_sha256": "d117fa006ba9208500b2930ce69cbde436c647afa917cb7396a9bc9111a46dd2"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-0",
+      "path": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770/evo-f881cb75-005/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 130,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 84,
+          "end_step": 96,
+          "severity": "medium",
+          "evidence": {
+            "command": "cd /testbed && sed -n \"520,600p\" tests/test_testing.py",
+            "count": 3,
+            "output_sha256": "ceabdee1a9a7e2fc67fd05639ceb0fc91d056d17323d281cfe1f17a7688ce5c8"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 86,
+          "end_step": 98,
+          "severity": "medium",
+          "evidence": {
+            "command": "find / -name \"click-*.whl\"",
+            "count": 3,
+            "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 88,
+          "end_step": 100,
+          "severity": "medium",
+          "evidence": {
+            "command": "find /opt/miniconda3 -name \"testing.py\"",
+            "count": 3,
+            "output_sha256": "31277861bb6b57a0d4869966e618de2c9ec6c7ff3cd75418e07037bafec8eb2b"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-0",
+      "path": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770/evo-f881cb75-006/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 132,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 53,
+          "end_step": 57,
+          "severity": "medium",
+          "evidence": {
+            "command": "cd /testbed && sed -n '2279,2300p' tests/test_options.py",
+            "count": 3,
+            "output_sha256": "ee4e6b8b9d978ebe876f77bf4148cc35de1909fefe415934e385245b7435486e"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 66,
+          "end_step": 100,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && grep -n \"3111\\|activation\" CHANGES.rst",
+            "count": 18,
+            "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-0",
+      "path": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770/evo-f881cb75-007/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 83,
+      "findings": []
+    },
+    {
+      "run": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-0",
+      "path": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770/evo-f881cb75-008/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 61,
+      "findings": []
+    },
+    {
+      "run": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "task": "evo-f881cb75-012",
+      "rollout": "rollout-0",
+      "path": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770/evo-f881cb75-012/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 79,
+      "findings": []
+    },
+    {
+      "run": "20261110-152609__monitored__7865cf",
+      "task": "evo-f881cb75-000",
+      "rollout": "rollout-0",
+      "path": "20261110-152609__monitored__7865cf/evo-f881cb75-000/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 51,
+      "findings": []
+    },
+    {
+      "run": "20261110-152609__monitored__7865cf",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-0",
+      "path": "20261110-152609__monitored__7865cf/evo-f881cb75-001/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 67,
+      "findings": []
+    },
+    {
+      "run": "20261110-152609__monitored__7865cf",
+      "task": "evo-f881cb75-002",
+      "rollout": "rollout-0",
+      "path": "20261110-152609__monitored__7865cf/evo-f881cb75-002/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 14,
+      "findings": []
+    },
+    {
+      "run": "20261110-152609__monitored__7865cf",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-0",
+      "path": "20261110-152609__monitored__7865cf/evo-f881cb75-003/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 104,
+      "findings": []
+    },
+    {
+      "run": "20261110-152609__monitored__7865cf",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-0",
+      "path": "20261110-152609__monitored__7865cf/evo-f881cb75-004/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 120,
+      "findings": []
+    },
+    {
+      "run": "20261110-152609__monitored__7865cf",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-0",
+      "path": "20261110-152609__monitored__7865cf/evo-f881cb75-005/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 106,
+      "findings": []
+    },
+    {
+      "run": "20261110-152609__monitored__7865cf",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-0",
+      "path": "20261110-152609__monitored__7865cf/evo-f881cb75-006/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 100,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 37,
+          "end_step": 100,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && grep -rn \"default_map\" docs/ | wc -l && grep -rn \"default_map\" docs/ | tail -20",
+            "count": 64,
+            "output_sha256": "0d88345ffd556bdd94a0738b79f3c205852bd940a1be356395a4bcba40d3121e"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261110-152609__monitored__7865cf",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-0",
+      "path": "20261110-152609__monitored__7865cf/evo-f881cb75-007/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 92,
+      "findings": []
+    },
+    {
+      "run": "20261110-152609__monitored__7865cf",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-0",
+      "path": "20261110-152609__monitored__7865cf/evo-f881cb75-008/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 76,
+      "findings": []
+    },
+    {
+      "run": "20261110-152609__monitored__7865cf",
+      "task": "evo-f881cb75-009",
+      "rollout": "rollout-0",
+      "path": "20261110-152609__monitored__7865cf/evo-f881cb75-009/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 26,
+      "findings": []
+    },
+    {
+      "run": "20261110-152609__monitored__7865cf",
+      "task": "evo-f881cb75-010",
+      "rollout": "rollout-0",
+      "path": "20261110-152609__monitored__7865cf/evo-f881cb75-010/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 26,
+      "findings": []
+    },
+    {
+      "run": "20261110-152609__monitored__7865cf",
+      "task": "evo-f881cb75-011",
+      "rollout": "rollout-0",
+      "path": "20261110-152609__monitored__7865cf/evo-f881cb75-011/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 10,
+      "findings": []
+    },
+    {
+      "run": "20261110-152609__monitored__7865cf",
+      "task": "evo-f881cb75-012",
+      "rollout": "rollout-0",
+      "path": "20261110-152609__monitored__7865cf/evo-f881cb75-012/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 18,
+      "findings": []
+    },
+    {
+      "run": "20261110-161536__monitored__a2d7df",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-0",
+      "path": "20261110-161536__monitored__a2d7df/evo-f881cb75-003/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 81,
+      "findings": []
+    },
+    {
+      "run": "20261110-161536__monitored__a2d7df",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-0",
+      "path": "20261110-161536__monitored__a2d7df/evo-f881cb75-004/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 121,
+      "findings": []
+    },
+    {
+      "run": "20261110-161536__monitored__a2d7df",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-0",
+      "path": "20261110-161536__monitored__a2d7df/evo-f881cb75-006/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 100,
+      "findings": []
+    },
+    {
+      "run": "20261110-161536__monitored__a2d7df",
+      "task": "evo-f881cb75-012",
+      "rollout": "rollout-0",
+      "path": "20261110-161536__monitored__a2d7df/evo-f881cb75-012/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 17,
+      "findings": []
+    },
+    {
+      "run": "20261110-191001__click4-wide-conflict-reu__swe-fixed__deepseek-v4.1-flash__4tasks__v-7095e846",
+      "task": "evo-f881cb75-000",
+      "rollout": "rollout-0",
+      "path": "20261110-191001__click4-wide-conflict-reu__swe-fixed__deepseek-v4.1-flash__4tasks__v-7095e846/evo-f881cb75-000/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 43,
+      "findings": []
+    },
+    {
+      "run": "20261110-191001__click4-wide-conflict-reu__swe-fixed__deepseek-v4.1-flash__4tasks__v-7095e846",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-0",
+      "path": "20261110-191001__click4-wide-conflict-reu__swe-fixed__deepseek-v4.1-flash__4tasks__v-7095e846/evo-f881cb75-005/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 49,
+      "findings": []
+    },
+    {
+      "run": "20261110-191001__click4-wide-conflict-reu__swe-fixed__deepseek-v4.1-flash__4tasks__v-7095e846",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-0",
+      "path": "20261110-191001__click4-wide-conflict-reu__swe-fixed__deepseek-v4.1-flash__4tasks__v-7095e846/evo-f881cb75-007/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 45,
+      "findings": []
+    },
+    {
+      "run": "20261110-191001__click4-wide-conflict-reu__swe-fixed__deepseek-v4.1-flash__4tasks__v-7095e846",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-0",
+      "path": "20261110-191001__click4-wide-conflict-reu__swe-fixed__deepseek-v4.1-flash__4tasks__v-7095e846/evo-f881cb75-008/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 102,
+      "findings": []
+    },
+    {
+      "run": "20261110-202219__click2-conflict-guard__swe-fixed__deepseek-v4.1-flash__2tasks__v-c018dbf1",
+      "task": "evo-f881cb75-000",
+      "rollout": "rollout-0",
+      "path": "20261110-202219__click2-conflict-guard__swe-fixed__deepseek-v4.1-flash__2tasks__v-c018dbf1/evo-f881cb75-000/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 22,
+      "findings": []
+    },
+    {
+      "run": "20261110-202219__click2-conflict-guard__swe-fixed__deepseek-v4.1-flash__2tasks__v-c018dbf1",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-0",
+      "path": "20261110-202219__click2-conflict-guard__swe-fixed__deepseek-v4.1-flash__2tasks__v-c018dbf1/evo-f881cb75-007/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 104,
+      "findings": []
+    },
+    {
+      "run": "20261110-224455__click000-conflict-guard-__swe-fixed__deepseek-v4.1-flash__1tasks__v-782bc7e3",
+      "task": "evo-f881cb75-000",
+      "rollout": "rollout-0",
+      "path": "20261110-224455__click000-conflict-guard-__swe-fixed__deepseek-v4.1-flash__1tasks__v-782bc7e3/evo-f881cb75-000/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 17,
+      "findings": []
+    },
+    {
+      "run": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-0",
+      "path": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391/evo-f881cb75-001/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 16,
+      "findings": []
+    },
+    {
+      "run": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-0",
+      "path": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391/evo-f881cb75-003/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 59,
+      "findings": []
+    },
+    {
+      "run": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-0",
+      "path": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391/evo-f881cb75-004/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 142,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 36,
+          "end_step": 100,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && git log --all --oneline --grep=\"debugger\" -i",
+            "count": 33,
+            "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-0",
+      "path": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391/evo-f881cb75-005/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 98,
+      "findings": []
+    },
+    {
+      "run": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-0",
+      "path": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391/evo-f881cb75-006/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 109,
+      "findings": []
+    },
+    {
+      "run": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-0",
+      "path": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391/evo-f881cb75-007/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 100,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 28,
+          "end_step": 100,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && grep -rn \"show_default\" docs/ | cat; echo ---; grep -rn \"show_default\" docs/options.md docs/parameters.md docs/option-decorators.md | cat",
+            "count": 73,
+            "output_sha256": "49f566083b77e12df2d7f31f5985c67171476a86cd50a02b604f99845a5e9f1c"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-0",
+      "path": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391/evo-f881cb75-008/rollout-0",
+      "success": true,
+      "step_limit": 100,
+      "steps": 90,
+      "findings": []
+    },
+    {
+      "run": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391",
+      "task": "evo-f881cb75-012",
+      "rollout": "rollout-0",
+      "path": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391/evo-f881cb75-012/rollout-0",
+      "success": false,
+      "step_limit": 100,
+      "steps": 11,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-000",
+      "rollout": "rollout-0",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-000/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 18,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-000",
+      "rollout": "rollout-1",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-000/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 36,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-000",
+      "rollout": "rollout-2",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-000/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 66,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-000",
+      "rollout": "rollout-3",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-000/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 27,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-000",
+      "rollout": "rollout-4",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-000/rollout-4",
+      "success": true,
+      "step_limit": 200,
+      "steps": 35,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-0",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-001/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 201,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-1",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-001/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 206,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 179,
+          "end_step": 194,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && sed -n '2342,2400p' src/click/core.py | grep -n \"callable\\|value()\"",
+            "count": 7,
+            "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-2",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-001/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 227,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-3",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-001/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 197,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-4",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-001/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 62,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-002",
+      "rollout": "rollout-0",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-002/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 137,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-002",
+      "rollout": "rollout-1",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-002/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 113,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-002",
+      "rollout": "rollout-2",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-002/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 133,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 106,
+          "end_step": 133,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && grep -n \"def get_help_record\\|class Argument\" src/click/core.py | head",
+            "count": 15,
+            "output_sha256": "7bab90c8210bd41b51638134f362c2e55e402830aaa2590de893e9e62cc347ba"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 107,
+          "end_step": 132,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && sed -n '3007,3050p' src/click/core.py",
+            "count": 13,
+            "output_sha256": "897947ec76b9060261a4ca9ee1a01c7a3fc64efd5f02a40a3711ca999b4cbed7"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-002",
+      "rollout": "rollout-3",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-002/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 113,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-002",
+      "rollout": "rollout-4",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-002/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 119,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-0",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-003/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 39,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-1",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-003/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 74,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-2",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-003/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 63,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-3",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-003/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 200,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 32,
+          "end_step": 116,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && sed -n '480,560p' src/click/testing.py",
+            "count": 47,
+            "output_sha256": "3f867dc1c162fcf6a2839e94bd9fdf9ada4e417b9354e1e6c81a3ec4b0e845be"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 30,
+          "end_step": 87,
+          "severity": "medium",
+          "evidence": {
+            "command": "cd /testbed && grep -rn \"invoke\" docs/testing.md | head; echo \"---testing.py Result class---\"; sed -n '1,50p' src/click/testing.py | grep -n \"class\\|def\"",
+            "count": 4,
+            "output_sha256": "f6ad870491cf3b6bb6f89996807bb6b74f93eb3756bfcbf0405175b0336f1623"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 42,
+          "end_step": 118,
+          "severity": "high",
+          "evidence": {
+            "command": "grep -n \"def \\|class \" src/click/testing.py | head -40",
+            "count": 34,
+            "output_sha256": "a3ff0f6ebff52bf6c17a362cb7b173e75de83f7135b9cd004fdc6afa9d2b77fb"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 105,
+          "end_step": 141,
+          "severity": "high",
+          "evidence": {
+            "command": "awk 'NR>=485 && NR<=500' src/click/testing.py",
+            "count": 24,
+            "output_sha256": "06352da3929bbbb231e5d15617e4685a771a85ed6cb022aa460c6a37b1cd7561"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 143,
+          "end_step": 199,
+          "severity": "high",
+          "evidence": {
+            "command": "nl -ba src/click/testing.py | sed -n '483,526p'",
+            "count": 57,
+            "output_sha256": "f39e0e595b40be576955e0e9984d8f9709843f42380b0c55e2624884a8e2cd7f"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-4",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-003/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 62,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-0",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-004/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 113,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-1",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-004/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 185,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 96,
+          "end_step": 114,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && grep -n \"import\\|__all__\" src/click/__init__.py | head -40",
+            "count": 8,
+            "output_sha256": "02bea17aeaf107a81c4b706913a69f8e61e05f06de49cc59ff09b3dcf26b5924"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-2",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-004/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 241,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 49,
+          "end_step": 92,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && timeout 25 python -c \"\nimport click, sys\nfrom click.testing import CliRunner\n\nseen = {}\n\nclass FakeTTYReader:\n    def readline(self, prompt=None):\n        seen['stdin'] = sys.stdin\n        return 'cont\\n'\n    def isatty(self): return True\n\nimport pdb\norig = pdb.Pdb.__init__\ndef patched(self, *a, **k):\n    orig(self, *a, **k)\n    self.stdin = FakeTTYReader()\n    self.use_rawinput = 0\npdb.Pdb.__init__ = patched\n\n@click.command()\ndef cmd():\n    breakpoint()\n    print('after')\n\nrunner",
+            "count": 15,
+            "output_sha256": "4b26a2fa74fc90a562b1e7263f5a583378aaa8b796197a450bde6d2bc0b2e06f"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 50,
+          "end_step": 91,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && timeout 25 python -c \"\nimport click, sys\nfrom click.testing import CliRunner\n\nseen = {}\n\nclass FakeTTYReader:\n    def readline(self, prompt=None):\n        seen['stdin'] = sys.stdin\n        return 'cont\\n'\n    def isatty(self): return True\n\nimport pdb\norig = pdb.Pdb.__init__\ndef patched(self, *a, **k):\n    orig(self, *a, **k)\n    self.stdin = FakeTTYReader()\n    self.use_rawinput = 0\npdb.Pdb.__init__ = patched\n\n@click.command()\ndef cmd():\n    breakpoint()\n    print('after')\n\nrunner",
+            "count": 13,
+            "output_sha256": "4b26a2fa74fc90a562b1e7263f5a583378aaa8b796197a450bde6d2bc0b2e06f"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 52,
+          "end_step": 90,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && timeout 25 python -c \"\nimport click, sys\nfrom click.testing import CliRunner\n\nseen = {}\n\nclass FakeTTYReader:\n    def readline(self, prompt=None):\n        seen['stdin'] = sys.stdin\n        return 'cont\\n'\n    def isatty(self): return True\n\nimport pdb\norig = pdb.Pdb.__init__\ndef patched(self, *a, **k):\n    orig(self, *a, **k)\n    self.stdin = FakeTTYReader()\n    self.use_rawinput = 0\npdb.Pdb.__init__ = patched\n\n@click.command()\ndef cmd():\n    breakpoint()\n    print('after')\n\nrunner",
+            "count": 15,
+            "output_sha256": "4b26a2fa74fc90a562b1e7263f5a583378aaa8b796197a450bde6d2bc0b2e06f"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-3",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-004/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 40,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-4",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-004/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 46,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-0",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-005/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 61,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-1",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-005/rollout-1",
+      "success": true,
+      "step_limit": 200,
+      "steps": 106,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-2",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-005/rollout-2",
+      "success": true,
+      "step_limit": 200,
+      "steps": 47,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-3",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-005/rollout-3",
+      "success": true,
+      "step_limit": 200,
+      "steps": 76,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-4",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-005/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 91,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-0",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-006/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 105,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-1",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-006/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 114,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-2",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-006/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 107,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-3",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-006/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 102,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-4",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-006/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 180,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 39,
+          "end_step": 48,
+          "severity": "medium",
+          "evidence": {
+            "command": "cd /testbed && grep -n \"UNSET\" src/click/__init__.py",
+            "count": 4,
+            "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 49,
+          "end_step": 177,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && grep -n \"UNSET\" src/click/__init__.py || echo \"not found in __init__\"",
+            "count": 129,
+            "output_sha256": "fae99a47e3452c7da044422d33f142bd12afc575c6e918a5fd07fbc943bfd96d"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-0",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-007/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 40,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-1",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-007/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 41,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-2",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-007/rollout-2",
+      "success": true,
+      "step_limit": 200,
+      "steps": 200,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 127,
+          "end_step": 130,
+          "severity": "medium",
+          "evidence": {
+            "command": "cd /testbed && grep -n \"prompt_for_value\" src/click/core.py",
+            "count": 3,
+            "output_sha256": "9717dbb0c46c90eb19a7dc781961b003e97654d3ea7dcf3b952d11e613f5585a"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 196,
+          "end_step": 200,
+          "severity": "medium",
+          "evidence": {
+            "command": "cd /testbed && find . -name \"__pycache__\" | head; echo \"===\"; python -c \"\nimport click.termui as tu, inspect\nsrc = inspect.getsource(tu.prompt)\nprint('default_string param present:', 'default_string: str | None = None' in src)\nprint('_build_prompt call line:', [l.strip() for l in src.splitlines() if '_build_prompt(' in l])\n\"",
+            "count": 5,
+            "output_sha256": "ed052fb6ccad5123a720ae45f37785d6e4e472cde1f80649258a56b510e40ec4"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-3",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-007/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 46,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-4",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-007/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 201,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-0",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-008/rollout-0",
+      "success": true,
+      "step_limit": 200,
+      "steps": 47,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-1",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-008/rollout-1",
+      "success": true,
+      "step_limit": 200,
+      "steps": 77,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-2",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-008/rollout-2",
+      "success": true,
+      "step_limit": 200,
+      "steps": 47,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-3",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-008/rollout-3",
+      "success": true,
+      "step_limit": 200,
+      "steps": 73,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-4",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-008/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 46,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-009",
+      "rollout": "rollout-0",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-009/rollout-0",
+      "success": true,
+      "step_limit": 200,
+      "steps": 68,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-009",
+      "rollout": "rollout-1",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-009/rollout-1",
+      "success": true,
+      "step_limit": 200,
+      "steps": 128,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-009",
+      "rollout": "rollout-2",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-009/rollout-2",
+      "success": true,
+      "step_limit": 200,
+      "steps": 45,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-009",
+      "rollout": "rollout-3",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-009/rollout-3",
+      "success": true,
+      "step_limit": 200,
+      "steps": 108,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-009",
+      "rollout": "rollout-4",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-009/rollout-4",
+      "success": true,
+      "step_limit": 200,
+      "steps": 72,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-010",
+      "rollout": "rollout-0",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-010/rollout-0",
+      "success": true,
+      "step_limit": 200,
+      "steps": 218,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-010",
+      "rollout": "rollout-1",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-010/rollout-1",
+      "success": true,
+      "step_limit": 200,
+      "steps": 195,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-010",
+      "rollout": "rollout-2",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-010/rollout-2",
+      "success": true,
+      "step_limit": 200,
+      "steps": 75,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-010",
+      "rollout": "rollout-3",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-010/rollout-3",
+      "success": true,
+      "step_limit": 200,
+      "steps": 263,
+      "findings": []
+    },
+    {
+      "run": "20261106-000907__monitored__5eb57b",
+      "task": "evo-f881cb75-010",
+      "rollout": "rollout-4",
+      "path": "20261106-000907__monitored__5eb57b/evo-f881cb75-010/rollout-4",
+      "success": true,
+      "step_limit": 200,
+      "steps": 153,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 119,
+          "end_step": 131,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && python -m pytest \"tests/test_options.py::test_custom_type_flag_value_standalone_option[opt_params15-args15-42]\" -q 2>&1 | grep -E \"^E |opt_params =|args =\" | head",
+            "count": 13,
+            "output_sha256": "77d235609b43a00cb5e07c2ee6665a9148711f3e8b2305ea6a1b312a1147db0d"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-000",
+      "rollout": "rollout-0",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-000/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 87,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-000",
+      "rollout": "rollout-1",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-000/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 28,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-000",
+      "rollout": "rollout-2",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-000/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 34,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-000",
+      "rollout": "rollout-3",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-000/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 37,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-000",
+      "rollout": "rollout-4",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-000/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 42,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-0",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-001/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 118,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-1",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-001/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 96,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-2",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-001/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 135,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-3",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-001/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 136,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-001",
+      "rollout": "rollout-4",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-001/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 241,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-002",
+      "rollout": "rollout-0",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-002/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 139,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 49,
+          "end_step": 139,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && python3 -c \"\nimport click\nopt = click.Option(['--x'], type=click.Choice(['', 'a']), default='', show_default=True)\nctx = click.Context(click.Command('cli'))\nprint('extra:', opt.get_help_extra(ctx))\n\" 2>&1 | tail",
+            "count": 79,
+            "output_sha256": "c0cdfcef52b7bbaf5022605b2bf56bbb56b125dd84b55d185673fb52905822e6"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-002",
+      "rollout": "rollout-1",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-002/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 128,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 91,
+          "end_step": 126,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && nl -ba src/click/core.py | sed -n '3085,3120p'",
+            "count": 36,
+            "output_sha256": "ca5889a70e0575b80a12c78d15b9ff8091d197df31858084729d3fd3a7efd53a"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-002",
+      "rollout": "rollout-2",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-002/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 141,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-002",
+      "rollout": "rollout-3",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-002/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 136,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 127,
+          "end_step": 136,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && sed -n '2760,2810p' src/click/core.py",
+            "count": 8,
+            "output_sha256": "e07fb0f211088f4e3023b5b1f35c404704d57de7744d71b10f72d3e3b5a3a177"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-002",
+      "rollout": "rollout-4",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-002/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 146,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-0",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-003/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 87,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-1",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-003/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 100,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 67,
+          "end_step": 75,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && grep -rn \"shlex\\|sanitiz\\|command.*split\" src/click/testing.py; echo \"---\"; sed -n '440,460p' src/click/testing.py",
+            "count": 9,
+            "output_sha256": "a3b500099386fcdf783ceacef52c8cdfe10c803f108927521779a92e6b9a80f7"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-2",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-003/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 177,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-3",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-003/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 65,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-003",
+      "rollout": "rollout-4",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-003/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 35,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-0",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-004/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 61,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-1",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-004/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 45,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-2",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-004/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 188,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-3",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-004/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 46,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-004",
+      "rollout": "rollout-4",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-004/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 53,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-0",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-005/rollout-0",
+      "success": true,
+      "step_limit": 200,
+      "steps": 39,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-1",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-005/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 33,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-2",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-005/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 49,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-3",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-005/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 63,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-005",
+      "rollout": "rollout-4",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-005/rollout-4",
+      "success": true,
+      "step_limit": 200,
+      "steps": 66,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-0",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-006/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 112,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-1",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-006/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 121,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-2",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-006/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 128,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-3",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-006/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 124,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-006",
+      "rollout": "rollout-4",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-006/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 93,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-0",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-007/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 68,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-1",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-007/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 51,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-2",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-007/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 37,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-3",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-007/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 62,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-007",
+      "rollout": "rollout-4",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-007/rollout-4",
+      "success": true,
+      "step_limit": 200,
+      "steps": 267,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 62,
+          "end_step": 133,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && python -c \"\nimport click, inspect\nsrc = inspect.getsource(click.Option.prompt_for_value)\nprint(src[1500:])\n\" 2>&1 | sed -n '38,70p'",
+            "count": 72,
+            "output_sha256": "3c48b54a74160356e298dd6f1c220ec0ac500fd8d89755d7208e11e48155d263"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-0",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-008/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 107,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-1",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-008/rollout-1",
+      "success": true,
+      "step_limit": 200,
+      "steps": 173,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-2",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-008/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 276,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-3",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-008/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 275,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-008",
+      "rollout": "rollout-4",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-008/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 115,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-009",
+      "rollout": "rollout-0",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-009/rollout-0",
+      "success": true,
+      "step_limit": 200,
+      "steps": 38,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-009",
+      "rollout": "rollout-1",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-009/rollout-1",
+      "success": true,
+      "step_limit": 200,
+      "steps": 51,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-009",
+      "rollout": "rollout-2",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-009/rollout-2",
+      "success": true,
+      "step_limit": 200,
+      "steps": 40,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-009",
+      "rollout": "rollout-3",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-009/rollout-3",
+      "success": true,
+      "step_limit": 200,
+      "steps": 38,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-009",
+      "rollout": "rollout-4",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-009/rollout-4",
+      "success": true,
+      "step_limit": 200,
+      "steps": 49,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-010",
+      "rollout": "rollout-0",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-010/rollout-0",
+      "success": true,
+      "step_limit": 200,
+      "steps": 51,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-010",
+      "rollout": "rollout-1",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-010/rollout-1",
+      "success": true,
+      "step_limit": 200,
+      "steps": 157,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 115,
+          "end_step": 127,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && sed -n '2743,2768p' src/click/core.py | grep -n \"default\"",
+            "count": 11,
+            "output_sha256": "fe339ae24df548cceff7fa05a74e441387ee920c0fdcbeeba71d2af54f083403"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 129,
+          "end_step": 148,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && awk 'NR>=2743 && NR<=2768' src/click/core.py | grep -n \"default\\|flag_value\"",
+            "count": 17,
+            "output_sha256": "64c90f459f9029a19f75eb05ec1c98fe13530dfff9bb6b1cc9946ae145cb9208"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 144,
+          "end_step": 150,
+          "severity": "medium",
+          "evidence": {
+            "command": "cd /testbed && awk 'NR>=2743 && NR<=2768' src/click/core.py | grep -n \"default\\|flag_value\"\n</parameter>",
+            "count": 5,
+            "output_sha256": "73cd277d93cafcff6d1b152d31c9218b32ff7f232cde50ddb91374d68673e80a"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-010",
+      "rollout": "rollout-2",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-010/rollout-2",
+      "success": true,
+      "step_limit": 200,
+      "steps": 84,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-010",
+      "rollout": "rollout-3",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-010/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 144,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-010",
+      "rollout": "rollout-4",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-010/rollout-4",
+      "success": true,
+      "step_limit": 200,
+      "steps": 126,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 121,
+          "end_step": 124,
+          "severity": "medium",
+          "evidence": {
+            "command": "cd /testbed && grep -rn \"None\" docs/options.md | sed -n '1,60p'",
+            "count": 4,
+            "output_sha256": "3ca3c6a4d9177e6f419272600239ef263f74786fed291628873390091acb5081"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-011",
+      "rollout": "rollout-0",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-011/rollout-0",
+      "success": true,
+      "step_limit": 200,
+      "steps": 62,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-011",
+      "rollout": "rollout-1",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-011/rollout-1",
+      "success": true,
+      "step_limit": 200,
+      "steps": 12,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-011",
+      "rollout": "rollout-2",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-011/rollout-2",
+      "success": true,
+      "step_limit": 200,
+      "steps": 28,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-011",
+      "rollout": "rollout-3",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-011/rollout-3",
+      "success": true,
+      "step_limit": 200,
+      "steps": 16,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-011",
+      "rollout": "rollout-4",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-011/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 200,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 34,
+          "end_step": 198,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && python -c \"\nimport click\n@click.command()\n@click.option('--x', type=range)\ndef cli(x): pass\nfrom click.testing import CliRunner\nr=CliRunner().invoke(cli, ['--x','foo'])\nprint('exit', r.exit_code)\nprint(repr(r.output))\n\"",
+            "count": 163,
+            "output_sha256": "b4de3f2616cbae7fb30f4751d45d81136dea91e1151b7d972e90ff04466ab93b"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-012",
+      "rollout": "rollout-0",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-012/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 247,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 81,
+          "end_step": 83,
+          "severity": "medium",
+          "evidence": {
+            "command": "cd /testbed && grep -n \"def fail\\|class ParamType\" src/click/types.py; sed -n '100,150p' src/click/types.py | grep -n \"def \\|param_type\\|self\\.\"",
+            "count": 3,
+            "output_sha256": "84e62c4389c000db505dfcca0290b574f50a6faeb1049e964ae9fa689231e0e9"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 100,
+          "end_step": 152,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && grep -n \"def fail\\|class ParamType\" src/click/types.py; sed -n '146,155p' src/click/types.py",
+            "count": 53,
+            "output_sha256": "fe0a18e49c1da24e7f4580985f7303a7e80ed32fa8f8704d74fd894dc7f3ec6d"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-012",
+      "rollout": "rollout-1",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-012/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 37,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-012",
+      "rollout": "rollout-2",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-012/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 88,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-012",
+      "rollout": "rollout-3",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-012/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 17,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-012",
+      "rollout": "rollout-4",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-012/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 69,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-013",
+      "rollout": "rollout-0",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-013/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 80,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-013",
+      "rollout": "rollout-1",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-013/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 211,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-013",
+      "rollout": "rollout-2",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-013/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 96,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-013",
+      "rollout": "rollout-3",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-013/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 110,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-013",
+      "rollout": "rollout-4",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-013/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 116,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-014",
+      "rollout": "rollout-0",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-014/rollout-0",
+      "success": false,
+      "step_limit": 200,
+      "steps": 41,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-014",
+      "rollout": "rollout-1",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-014/rollout-1",
+      "success": false,
+      "step_limit": 200,
+      "steps": 52,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-014",
+      "rollout": "rollout-2",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-014/rollout-2",
+      "success": false,
+      "step_limit": 200,
+      "steps": 204,
+      "findings": [
+        {
+          "type": "repeated_command",
+          "start_step": 78,
+          "end_step": 80,
+          "severity": "medium",
+          "evidence": {
+            "command": "cd /testbed && python -c \"import faulthandler\" >/dev/null && python /tmp/repro3.py 2>/dev/null; echo === ; python /tmp/repro3.py 2>/dev/null",
+            "count": 3,
+            "output_sha256": "ef1b1d29adb85ff6a35047db3f51b1daf779677f9c493e11f47b56d1f62f32d7"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 85,
+          "end_step": 87,
+          "severity": "medium",
+          "evidence": {
+            "command": "cd /testbed && python -c \"import faulthandler\" >/dev/null && python /tmp/repro3.py 2>/dev/null; echo === ; python /tmp/repro3.py 2>/dev/null",
+            "count": 3,
+            "output_sha256": "ef1b1d29adb85ff6a35047db3f51b1daf779677f9c493e11f47b56d1f62f32d7"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 92,
+          "end_step": 94,
+          "severity": "medium",
+          "evidence": {
+            "command": "cd /testbed && python -c \"import faulthandler\" >/dev/null && python /tmp/repro3.py 2>/dev/null; echo === ; python /tmp/repro3.py 2>/dev/null",
+            "count": 3,
+            "output_sha256": "ef1b1d29adb85ff6a35047db3f51b1daf779677f9c493e11f47b56d1f62f32d7"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 144,
+          "end_step": 146,
+          "severity": "medium",
+          "evidence": {
+            "command": "cd /testbed && python -c \"import faulthandler\" >/dev/null && python /tmp/repro3.py 2>/dev/null; echo === ; python /tmp/repro3.py 2>/dev/null",
+            "count": 3,
+            "output_sha256": "6cc930153976747e6a09c5436b4c4c152bd088ecaf7a17412352219fdb12ced1"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 147,
+          "end_step": 152,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && python -c \"import faulthandler\" >/dev/null && python /tmp/repro3.py 2>/dev/null; echo === ; python /tmp/repro3.py 2>/dev/null",
+            "count": 6,
+            "output_sha256": "ef1b1d29adb85ff6a35047db3f51b1daf779677f9c493e11f47b56d1f62f32d7"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 156,
+          "end_step": 162,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && python -c \"import faulthandler\" >/dev/null && python /tmp/repro3.py 2>/dev/null; echo === ; python /tmp/repro3.py 2>/dev/null",
+            "count": 7,
+            "output_sha256": "ff1b28f0b5da5f1d61620387d40e94bc5938762842e0493547ca82b63b4db7ea"
+          }
+        },
+        {
+          "type": "repeated_command",
+          "start_step": 176,
+          "end_step": 195,
+          "severity": "high",
+          "evidence": {
+            "command": "cd /testbed && python -c \"import faulthandler\" >/dev/null && python /tmp/repro3.py 2>/dev/null; echo === ; python /tmp/repro3.py 2>/dev/null",
+            "count": 19,
+            "output_sha256": "4f83336cf9609d50266ce4f39b35026f7cf5c3339b1b5b3a306831ae937705f8"
+          }
+        }
+      ]
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-014",
+      "rollout": "rollout-3",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-014/rollout-3",
+      "success": false,
+      "step_limit": 200,
+      "steps": 163,
+      "findings": []
+    },
+    {
+      "run": "20261108-195223__monitored__805ad7",
+      "task": "evo-f881cb75-014",
+      "rollout": "rollout-4",
+      "path": "20261108-195223__monitored__805ad7/evo-f881cb75-014/rollout-4",
+      "success": false,
+      "step_limit": 200,
+      "steps": 285,
+      "findings": []
+    }
+  ],
+  "notes": {
+    "truncation_events": 154,
+    "max_consecutive_truncation": 1,
+    "format_failure_events": 1543,
+    "max_consecutive_format_failure": 1
+  },
+  "model_chains": {
+    "deepseek-v4.1-flash": {
+      "success_rollouts": 21,
+      "failure_rollouts": 59,
+      "success_max": 3,
+      "failure_max": 89,
+      "success_histogram": [
+        {
+          "max_chain": 1,
+          "rollouts": 20
+        },
+        {
+          "max_chain": 3,
+          "rollouts": 1
+        }
+      ],
+      "failure_histogram": [
+        {
+          "max_chain": 1,
+          "rollouts": 47
+        },
+        {
+          "max_chain": 18,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 20,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 33,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 45,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 64,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 70,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 71,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 72,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 73,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 79,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 82,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 89,
+          "rollouts": 1
+        }
+      ],
+      "success_top": [
+        {
+          "success": true,
+          "max_chain": 3,
+          "run": "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+          "task": "evo-f881cb75-005",
+          "rollout": "rollout-0"
+        },
+        {
+          "success": true,
+          "max_chain": 1,
+          "run": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+          "task": "evo-f881cb75-005",
+          "rollout": "rollout-0"
+        },
+        {
+          "success": true,
+          "max_chain": 1,
+          "run": "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+          "task": "evo-f881cb75-008",
+          "rollout": "rollout-0"
+        },
+        {
+          "success": true,
+          "max_chain": 1,
+          "run": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+          "task": "evo-f881cb75-005",
+          "rollout": "rollout-0"
+        },
+        {
+          "success": true,
+          "max_chain": 1,
+          "run": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+          "task": "evo-f881cb75-007",
+          "rollout": "rollout-0"
+        },
+        {
+          "success": true,
+          "max_chain": 1,
+          "run": "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+          "task": "evo-f881cb75-008",
+          "rollout": "rollout-0"
+        },
+        {
+          "success": true,
+          "max_chain": 1,
+          "run": "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+          "task": "evo-f881cb75-005",
+          "rollout": "rollout-0"
+        },
+        {
+          "success": true,
+          "max_chain": 1,
+          "run": "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+          "task": "evo-f881cb75-005",
+          "rollout": "rollout-0"
+        }
+      ]
+    },
+    "qwen3.8-flash": {
+      "success_rollouts": 36,
+      "failure_rollouts": 94,
+      "success_max": 72,
+      "failure_max": 163,
+      "success_histogram": [
+        {
+          "max_chain": 1,
+          "rollouts": 30
+        },
+        {
+          "max_chain": 2,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 4,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 5,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 13,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 17,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 72,
+          "rollouts": 1
+        }
+      ],
+      "failure_histogram": [
+        {
+          "max_chain": 1,
+          "rollouts": 79
+        },
+        {
+          "max_chain": 2,
+          "rollouts": 2
+        },
+        {
+          "max_chain": 7,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 8,
+          "rollouts": 2
+        },
+        {
+          "max_chain": 9,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 15,
+          "rollouts": 2
+        },
+        {
+          "max_chain": 19,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 36,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 53,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 57,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 79,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 129,
+          "rollouts": 1
+        },
+        {
+          "max_chain": 163,
+          "rollouts": 1
+        }
+      ],
+      "success_top": [
+        {
+          "success": true,
+          "max_chain": 72,
+          "run": "20261108-195223__monitored__805ad7",
+          "task": "evo-f881cb75-007",
+          "rollout": "rollout-4"
+        },
+        {
+          "success": true,
+          "max_chain": 17,
+          "run": "20261108-195223__monitored__805ad7",
+          "task": "evo-f881cb75-010",
+          "rollout": "rollout-1"
+        },
+        {
+          "success": true,
+          "max_chain": 13,
+          "run": "20261106-000907__monitored__5eb57b",
+          "task": "evo-f881cb75-010",
+          "rollout": "rollout-4"
+        },
+        {
+          "success": true,
+          "max_chain": 5,
+          "run": "20261106-000907__monitored__5eb57b",
+          "task": "evo-f881cb75-007",
+          "rollout": "rollout-2"
+        },
+        {
+          "success": true,
+          "max_chain": 4,
+          "run": "20261108-195223__monitored__805ad7",
+          "task": "evo-f881cb75-010",
+          "rollout": "rollout-4"
+        },
+        {
+          "success": true,
+          "max_chain": 2,
+          "run": "20261106-000907__monitored__5eb57b",
+          "task": "evo-f881cb75-009",
+          "rollout": "rollout-4"
+        },
+        {
+          "success": true,
+          "max_chain": 1,
+          "run": "20261106-000907__monitored__5eb57b",
+          "task": "evo-f881cb75-000",
+          "rollout": "rollout-4"
+        },
+        {
+          "success": true,
+          "max_chain": 1,
+          "run": "20261106-000907__monitored__5eb57b",
+          "task": "evo-f881cb75-005",
+          "rollout": "rollout-1"
+        }
+      ]
+    }
+  },
+  "thresholds": [
+    {
+      "k1": 2,
+      "k2": 2,
+      "k3": 2,
+      "success_rollouts": 57,
+      "success_flagged": 7,
+      "false_positive_rate": 0.1228,
+      "failure_rollouts": 153,
+      "failure_flagged": 27,
+      "detection_rate": 0.1765
+    },
+    {
+      "k1": 2,
+      "k2": 2,
+      "k3": 3,
+      "success_rollouts": 57,
+      "success_flagged": 7,
+      "false_positive_rate": 0.1228,
+      "failure_rollouts": 153,
+      "failure_flagged": 27,
+      "detection_rate": 0.1765
+    },
+    {
+      "k1": 2,
+      "k2": 2,
+      "k3": 4,
+      "success_rollouts": 57,
+      "success_flagged": 7,
+      "false_positive_rate": 0.1228,
+      "failure_rollouts": 153,
+      "failure_flagged": 27,
+      "detection_rate": 0.1765
+    },
+    {
+      "k1": 2,
+      "k2": 3,
+      "k3": 2,
+      "success_rollouts": 57,
+      "success_flagged": 7,
+      "false_positive_rate": 0.1228,
+      "failure_rollouts": 153,
+      "failure_flagged": 27,
+      "detection_rate": 0.1765
+    },
+    {
+      "k1": 2,
+      "k2": 3,
+      "k3": 3,
+      "success_rollouts": 57,
+      "success_flagged": 7,
+      "false_positive_rate": 0.1228,
+      "failure_rollouts": 153,
+      "failure_flagged": 27,
+      "detection_rate": 0.1765
+    },
+    {
+      "k1": 2,
+      "k2": 3,
+      "k3": 4,
+      "success_rollouts": 57,
+      "success_flagged": 7,
+      "false_positive_rate": 0.1228,
+      "failure_rollouts": 153,
+      "failure_flagged": 27,
+      "detection_rate": 0.1765
+    },
+    {
+      "k1": 2,
+      "k2": 4,
+      "k3": 2,
+      "success_rollouts": 57,
+      "success_flagged": 7,
+      "false_positive_rate": 0.1228,
+      "failure_rollouts": 153,
+      "failure_flagged": 27,
+      "detection_rate": 0.1765
+    },
+    {
+      "k1": 2,
+      "k2": 4,
+      "k3": 3,
+      "success_rollouts": 57,
+      "success_flagged": 7,
+      "false_positive_rate": 0.1228,
+      "failure_rollouts": 153,
+      "failure_flagged": 27,
+      "detection_rate": 0.1765
+    },
+    {
+      "k1": 2,
+      "k2": 4,
+      "k3": 4,
+      "success_rollouts": 57,
+      "success_flagged": 7,
+      "false_positive_rate": 0.1228,
+      "failure_rollouts": 153,
+      "failure_flagged": 27,
+      "detection_rate": 0.1765
+    },
+    {
+      "k1": 3,
+      "k2": 2,
+      "k3": 2,
+      "success_rollouts": 57,
+      "success_flagged": 6,
+      "false_positive_rate": 0.1053,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 3,
+      "k2": 2,
+      "k3": 3,
+      "success_rollouts": 57,
+      "success_flagged": 6,
+      "false_positive_rate": 0.1053,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 3,
+      "k2": 2,
+      "k3": 4,
+      "success_rollouts": 57,
+      "success_flagged": 6,
+      "false_positive_rate": 0.1053,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 3,
+      "k2": 3,
+      "k3": 2,
+      "success_rollouts": 57,
+      "success_flagged": 6,
+      "false_positive_rate": 0.1053,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 3,
+      "k2": 3,
+      "k3": 3,
+      "success_rollouts": 57,
+      "success_flagged": 6,
+      "false_positive_rate": 0.1053,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 3,
+      "k2": 3,
+      "k3": 4,
+      "success_rollouts": 57,
+      "success_flagged": 6,
+      "false_positive_rate": 0.1053,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 3,
+      "k2": 4,
+      "k3": 2,
+      "success_rollouts": 57,
+      "success_flagged": 6,
+      "false_positive_rate": 0.1053,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 3,
+      "k2": 4,
+      "k3": 3,
+      "success_rollouts": 57,
+      "success_flagged": 6,
+      "false_positive_rate": 0.1053,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 3,
+      "k2": 4,
+      "k3": 4,
+      "success_rollouts": 57,
+      "success_flagged": 6,
+      "false_positive_rate": 0.1053,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 4,
+      "k2": 2,
+      "k3": 2,
+      "success_rollouts": 57,
+      "success_flagged": 5,
+      "false_positive_rate": 0.0877,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 4,
+      "k2": 2,
+      "k3": 3,
+      "success_rollouts": 57,
+      "success_flagged": 5,
+      "false_positive_rate": 0.0877,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 4,
+      "k2": 2,
+      "k3": 4,
+      "success_rollouts": 57,
+      "success_flagged": 5,
+      "false_positive_rate": 0.0877,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 4,
+      "k2": 3,
+      "k3": 2,
+      "success_rollouts": 57,
+      "success_flagged": 5,
+      "false_positive_rate": 0.0877,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 4,
+      "k2": 3,
+      "k3": 3,
+      "success_rollouts": 57,
+      "success_flagged": 5,
+      "false_positive_rate": 0.0877,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 4,
+      "k2": 3,
+      "k3": 4,
+      "success_rollouts": 57,
+      "success_flagged": 5,
+      "false_positive_rate": 0.0877,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 4,
+      "k2": 4,
+      "k3": 2,
+      "success_rollouts": 57,
+      "success_flagged": 5,
+      "false_positive_rate": 0.0877,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 4,
+      "k2": 4,
+      "k3": 3,
+      "success_rollouts": 57,
+      "success_flagged": 5,
+      "false_positive_rate": 0.0877,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 4,
+      "k2": 4,
+      "k3": 4,
+      "success_rollouts": 57,
+      "success_flagged": 5,
+      "false_positive_rate": 0.0877,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 5,
+      "k2": 2,
+      "k3": 2,
+      "success_rollouts": 57,
+      "success_flagged": 4,
+      "false_positive_rate": 0.0702,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 5,
+      "k2": 2,
+      "k3": 3,
+      "success_rollouts": 57,
+      "success_flagged": 4,
+      "false_positive_rate": 0.0702,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 5,
+      "k2": 2,
+      "k3": 4,
+      "success_rollouts": 57,
+      "success_flagged": 4,
+      "false_positive_rate": 0.0702,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 5,
+      "k2": 3,
+      "k3": 2,
+      "success_rollouts": 57,
+      "success_flagged": 4,
+      "false_positive_rate": 0.0702,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 5,
+      "k2": 3,
+      "k3": 3,
+      "success_rollouts": 57,
+      "success_flagged": 4,
+      "false_positive_rate": 0.0702,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 5,
+      "k2": 3,
+      "k3": 4,
+      "success_rollouts": 57,
+      "success_flagged": 4,
+      "false_positive_rate": 0.0702,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 5,
+      "k2": 4,
+      "k3": 2,
+      "success_rollouts": 57,
+      "success_flagged": 4,
+      "false_positive_rate": 0.0702,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 5,
+      "k2": 4,
+      "k3": 3,
+      "success_rollouts": 57,
+      "success_flagged": 4,
+      "false_positive_rate": 0.0702,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    },
+    {
+      "k1": 5,
+      "k2": 4,
+      "k3": 4,
+      "success_rollouts": 57,
+      "success_flagged": 4,
+      "false_positive_rate": 0.0702,
+      "failure_rollouts": 153,
+      "failure_flagged": 25,
+      "detection_rate": 0.1634
+    }
+  ],
+  "known_cases": {
+    "searched_runs": [
+      "20261106-000907__monitored__5eb57b",
+      "20261108-195223__monitored__805ad7",
+      "20261110-152609__monitored__7865cf",
+      "20261110-161536__monitored__a2d7df",
+      "20261110-191001__click4-wide-conflict-reu__swe-fixed__deepseek-v4.1-flash__4tasks__v-7095e846",
+      "20261110-202219__click2-conflict-guard__swe-fixed__deepseek-v4.1-flash__2tasks__v-c018dbf1",
+      "20261110-224455__click000-conflict-guard-__swe-fixed__deepseek-v4.1-flash__1tasks__v-782bc7e3",
+      "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391",
+      "20261112-115416__ablation-g1-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "20261112-115649__ablation-g1-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-7ee30339",
+      "20261112-115650__ablation-g0-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "20261112-115651__ablation-g0-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-bb3f1cd9",
+      "20261112-115651__ablation-g2-rep1__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770",
+      "20261112-115653__ablation-g2-rep2__swe-fixed__deepseek-v4.1-flash__8tasks__v-a2385770"
+    ],
+    "show_default_007": [
+      {
+        "path": "20261110-224917__click15-failures-except-__swe-fixed__deepseek-v4.1-flash__8tasks__v-19d7d391/evo-f881cb75-007/rollout-0",
+        "success": false,
+        "detected": true,
+        "findings": [
+          {
+            "type": "repeated_command",
+            "start_step": 28,
+            "end_step": 100,
+            "severity": "high",
+            "evidence": {
+              "command": "cd /testbed && grep -rn \"show_default\" docs/ | cat; echo ---; grep -rn \"show_default\" docs/options.md docs/parameters.md docs/option-decorators.md | cat",
+              "count": 73,
+              "output_sha256": "49f566083b77e12df2d7f31f5985c67171476a86cd50a02b604f99845a5e9f1c"
+            }
+          }
+        ]
+      }
+    ],
+    "pytest_tail5": []
+  },
+  "recommendation": {
+    "k1": 3,
+    "k2": 3,
+    "k3": 3,
+    "false_positive_rate": 0.1053,
+    "detection_rate": 0.1634,
+    "lowest_false_positive": {
+      "k1": 5,
+      "k2": 3,
+      "k3": 3,
+      "false_positive_rate": 0.0702,
+      "detection_rate": 0.1634
+    },
+    "rule": "no grid point has a zero false-positive rate. K2 and K3 do not move the rates on this corpus. Keep the documented 3/3/3. K1=5 is the lowest false-positive corner and does not detect more failures than K1=3."
+  }
+}
