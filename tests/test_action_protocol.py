@@ -327,8 +327,8 @@ class ActionProtocolIntegrationTests(unittest.TestCase):
             with patch('rsi.agent.runner.functional_gate', return_value={'passed': True}):
                 report = run_experiment([{'id': 'task', 'benchmark': 'swe', 'prompt': 'fix'}], config, output,
                                        backend_factory=Backend, model_factory=RepairModels())[0]
-            self.assertEqual(report['input_tokens'], 220)
-            self.assertEqual(report['output_tokens'], 110)
+            self.assertEqual(report['input_tokens'], 210)  # durable write-back skips the translation call on json patches (one fewer model call)
+            self.assertEqual(report['output_tokens'], 105)  # durable write-back skips the translation call on json patches (one fewer model call)
             for i in range(5):
                 route = read_json(output / f'task/rollout-{i}/trajectory.json')
                 self.assertEqual(route['status'], 'Submitted')
