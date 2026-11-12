@@ -31,8 +31,35 @@ def skill_prompt(skill):
             f"Read linked references on demand under {SKILL_ROOT}/references/; relative links resolve from the toolkit root.\n"
             f"Available scripts:\n{tools}\n\n" + (skill / "SKILL.md").read_text(encoding="utf-8").strip())
 
+def installable_skill(skill, schema, staging_root):
+    """Return a directory accepted by the schema-1 snapshot installer.
+
+    Published runtime skills stay at task-skill/ for inspection. The installer
+    still requires the directory name to equal the content digest, so a
+    runtime directory is staged under that name without weakening the check.
+    """
+    from pathlib import Path
+    skill = Path(skill)
+    if not schema:
+        return skill
+    files = read_skill_directory(skill, directory_schema=schema)
+    version = digest(files)
+    if skill.name == version:
+        return skill
+    staged = Path(staging_root) / version
+    staged.mkdir(parents=True, exist_ok=True)
+    for name, text in files.items():
+        destination = staged / name
+        if not destination.is_file():
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_text(text, encoding='utf-8', newline='\n')
+    verified = read_skill_directory(staged, directory_schema=schema)
+    if digest(verified) != version:
+        raise ValueError('Runtime Skill snapshot hash mismatch')
+    return staged
+
 def execute_one(task, index, folder, skill, config, backend_factory=make_backend,
-                model_factory: ModelFactory = Model, *, skill_context=None, counter_factory=None):
+                model_factory: ModelFactory = Model, *, skill_context=None, counter_factory=None, runtime_skill=None):
     from minisweagent.agents.default import LimitsExceeded
     validate_action_protocol(config)
     folder.mkdir(parents=True, exist_ok=False)
@@ -65,7 +92,9 @@ def execute_one(task, index, folder, skill, config, backend_factory=make_backend
             installation = access.install(backend.env, snapshot, access_options, folder)
         else:
             backend = backend_factory(task, folder, config)
-            install_skill(backend.env, skill, directory_schema=directory_schema(config))
+            schema = directory_schema(config)
+            install_skill(backend.env, installable_skill(runtime_skill or skill, schema, folder / 'skill-install'),
+                          directory_schema=schema)
         model = model_factory(config["model"])
         model.stream_log = folder / 'model-stream.jsonl'
         settings = yaml.safe_load((UPSTREAM / "third_party/src/minisweagent/config/extra/swebench.yaml").read_text(encoding="utf-8"))["agent"]

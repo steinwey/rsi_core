@@ -54,7 +54,12 @@ def main():
         from rsi.experiment.checkpoints import resume_request
         from rsi.agent.runner import run_experiment
         from rsi.experiment.tracking import summary_metrics
-        state, config, groups = resume_request(args.resume)
+        config = read_json(args.resume / 'config.json')
+        if config.get('repository_skill', {}).get('enabled', False):
+            groups = [read_json(args.resume / 'task-manifest.json')]
+            state = read_json(args.resume / 'repository-state.json')
+        else:
+            state, config, groups = resume_request(args.resume)
         if framework and framework != config['skill_update_method']:
             parser.error('Resume must use the saved framework')
         pending = groups[0][len(state['completed']):]

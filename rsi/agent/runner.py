@@ -24,18 +24,29 @@ from rsi.skills import structural
 from rsi.skills import structural
 from rsi.core.common import digest
 from rsi.skills.routing import route as route_skill
+from rsi.skills.solver_route import routing_mode
 
 
-def run_group(task, folder, skill, config, *, backend_factory=make_backend, model_factory=Model, counter_factory=None):
+def run_group(task, folder, skill, config, *, backend_factory=make_backend, model_factory=Model, counter_factory=None, task_route=None, runtime_skill=None):
     mode = validate_execution_mode(config)
     count = config['rollouts']
     workers = min(count, config.get('rollout_workers', count))
     folder = Path(folder)
-    folder.mkdir(parents=True, exist_ok=False)
+    folder.mkdir(parents=True, exist_ok=task_route is not None)
     # Only the raw, pre-prepare prompt is visible to retrieval. No scoring fields are passed.
-    routing = None
+    # Experience mode is prepared by the repository runner. This branch must not
+    # fall through into whole-file routing, whose top_k does not apply to blocks.
+    skill_mode = routing_mode(config)
+    routing = task_route
     execution_options = {}
-    if config.get('skill_routing', {}).get('enabled', False):
+    if skill_mode == 'experience':
+        if task_route is None or runtime_skill is None:
+            raise ValueError('Experience routing is prepared before the rollout group')
+        execution_options['skill_context'] = routing.context
+        execution_options['runtime_skill'] = runtime_skill
+    elif task_route is not None:
+        raise ValueError('Task route requires repository_skill mode and runtime directory')
+    elif skill_mode == 'files':
         routing = route_skill({'id': task['id'], 'prompt': task['prompt']}, skill, config,
                              folder=folder, counter_factory=counter_factory)
         execution_options['skill_context'] = routing.context
@@ -152,6 +163,11 @@ def run_group(task, folder, skill, config, *, backend_factory=make_backend, mode
 
 def run_experiment(tasks, config, output=None, *, runs_dir=None, label=None, resume=False,
                    backend_factory=make_backend, model_factory=Model, counter_factory=None):
+    if routing_mode(config) == 'experience':
+        from rsi.agent.repository_runner import run_repository_experiment
+        return run_repository_experiment(tasks, config, output, runs_dir=runs_dir, label=label,
+            resume=resume, backend_factory=backend_factory, model_factory=model_factory,
+            counter_factory=counter_factory)
     schema = directory_schema(config)
     maintenance = maintenance_settings(config)
     from rsi.benchmarks.evo_swe import validate_order

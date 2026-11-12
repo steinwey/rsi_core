@@ -1,4 +1,8 @@
-"""Whole-file budgets with explicit strict/estimated counter selection."""
+"""Token counting and the solver-visible Skill wrapper.
+
+Counters and `render_context` are shared. `select_context` packs whole
+reference files and runs only in file routing mode.
+"""
 from dataclasses import dataclass
 from typing import Protocol
 

@@ -200,6 +200,22 @@ class RouteTests(unittest.TestCase):
 
 
 class RoutingConfigTests(unittest.TestCase):
+    def test_routing_mode_keeps_file_and_experience_selection_apart(self):
+        from rsi.skills.solver_route import routing_mode
+        self.assertEqual(routing_mode({}), 'full')
+        self.assertEqual(routing_mode({'skill_routing': {'enabled': True}}), 'files')
+        self.assertEqual(routing_mode({'repository_skill': {'enabled': True},
+                                       'skill_routing': {'enabled': True, 'top_k': 2}}), 'experience')
+
+    def test_experience_mode_does_not_fall_through_to_file_routing(self):
+        with tempfile.TemporaryDirectory() as tmp, \
+                patch('rsi.agent.runner.route_skill', side_effect=AssertionError('file route')), \
+                self.assertRaisesRegex(ValueError, 'Experience routing is prepared'):
+            run_group({'id': 't', 'prompt': 'p', 'benchmark': 'swe'}, Path(tmp) / 'task', None,
+                      {'execution_mode': 'single', 'rollouts': 1,
+                       'repository_skill': {'enabled': True},
+                       'skill_routing': {'enabled': True, 'top_k': 2}})
+
     def test_defaults_and_no_input_mutation(self):
         config = {}; result = settings(config)
         self.assertFalse(result['enabled']); self.assertEqual(result['top_k'], 2)

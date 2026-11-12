@@ -1,4 +1,9 @@
-"""Deterministic pre-solve BM25 over a verified managed snapshot; no model calls."""
+"""Shared BM25, plus the file routing mode.
+
+`retrieve_bm25` and `settings` are also used when packing experience blocks.
+`route` itself only packs whole reference files. The mode switch is
+`solver_route.routing_mode`.
+"""
 import json
 import math
 import re

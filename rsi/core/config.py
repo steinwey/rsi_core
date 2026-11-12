@@ -158,6 +158,12 @@ def load_config(path, *, framework=None):
     if config.get('skill_access', {}).get('enabled'):
         from rsi.skills.access import settings as access_settings
         config['skill_access'] = access_settings(config)
+    config.setdefault('repository_skill', {'enabled': False})
+    if config['repository_skill'].get('enabled'):
+        from rsi.skills.repository_skill import options as repository_settings
+        config['repository_skill'] = repository_settings(config)
+        if config['skill_update_method'] != 'trace2skill':
+            raise ValueError('Repository Skill v1 requires Trace2Skill')
     blocks = model_configs(config)
     for block in (*blocks.values(), config.get("wandb") or {}):
         if isinstance(block, dict) and any(key in block for key in ("api_key", "key")):
