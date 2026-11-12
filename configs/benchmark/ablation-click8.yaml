@@ -1,0 +1,9 @@
+# Eight Click tasks from the 2026-11-10 failure retest, with the EvoArena
+# evaluation set. Pass --config to select the ablation agent file.
+config: ../agent/ablation-g1-current.yaml
+tasks: ../../tasks/click-failures-except-000.json
+rollouts: 1
+parallel: false
+swe_dataset: D:\RSI\datasets\evoarena-swe\evaluation-e77c3282aa468ee5.json
+swe_split: test
+fixed_skill: true
