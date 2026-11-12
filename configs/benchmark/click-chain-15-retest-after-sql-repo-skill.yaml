@@ -1,0 +1,10 @@
+config: ../agent/click15-deepseek-repo-skill-frozen.yaml
+tasks: ../../tasks/click-chain-15.json
+rollouts: 1
+parallel: false
+swe_dataset: D:\RSI\datasets\evoarena-swe\evaluation-e77c3282aa468ee5.json
+swe_split: test
+fixed_skill: true
+initial_skill: D:\RSI-core-skill-routing\runs\20261108-140343__monitored__3c7e67\skills\versions\8b42e14a480767f5
+label: click15-deepseek-v41-flash-repo-skill-retest-after-sql
+wandb: false

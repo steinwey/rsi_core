@@ -1,0 +1,86 @@
+[
+  {
+    "id": "evo-f881cb75-003",
+    "benchmark": "swe",
+    "dataset_fingerprint": "28713d66e270a8eb",
+    "instance": {
+      "instance_id": "evo-f881cb75-003",
+      "repo": "pallets/click",
+      "version": "lc-0017-target",
+      "base_commit": "1458800409ed12076f18451889b0857db36aa522",
+      "image": "rsi-evo/pallets__click_lc_0017_63ea71f9:1458800409ed",
+      "problem_statement": "Implement this click project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Document and fix command sanitizing with `shlex.split`"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a",
+    "chain": {
+      "id": "pallets__click_multistep_v25_L15_s0",
+      "index": 3,
+      "length": 15,
+      "source_instance_id": "pallets__click_lc_0017_63ea71f9"
+    }
+  },
+  {
+    "id": "evo-f881cb75-004",
+    "benchmark": "swe",
+    "dataset_fingerprint": "49a1013d1450dd04",
+    "instance": {
+      "instance_id": "evo-f881cb75-004",
+      "repo": "pallets/click",
+      "version": "lc-0020-target",
+      "base_commit": "1339fd3323357119a9c7a6326c788f80295954ce",
+      "image": "rsi-evo/pallets__click_lc_0020_ac2dd7aa:1339fd332335",
+      "problem_statement": "Implement this click project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Allow debugger interactions in tests"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a",
+    "chain": {
+      "id": "pallets__click_multistep_v25_L15_s0",
+      "index": 4,
+      "length": 15,
+      "source_instance_id": "pallets__click_lc_0020_ac2dd7aa"
+    }
+  },
+  {
+    "id": "evo-f881cb75-006",
+    "benchmark": "swe",
+    "dataset_fingerprint": "ba68e2805928382e",
+    "instance": {
+      "instance_id": "evo-f881cb75-006",
+      "repo": "pallets/click",
+      "version": "lc-0030-target",
+      "base_commit": "60cad4ad6583bf885c62d6f4597f3555d1ee1a0f",
+      "image": "rsi-evo/pallets__click_lc_0030_8c95c73b:60cad4ad6583",
+      "problem_statement": "Implement this click project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Reconcile default value passing and default activation"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a",
+    "chain": {
+      "id": "pallets__click_multistep_v25_L15_s0",
+      "index": 6,
+      "length": 15,
+      "source_instance_id": "pallets__click_lc_0030_8c95c73b"
+    }
+  },
+  {
+    "id": "evo-f881cb75-012",
+    "benchmark": "swe",
+    "dataset_fingerprint": "8d4c67601f69387c",
+    "instance": {
+      "instance_id": "evo-f881cb75-012",
+      "repo": "pallets/click",
+      "version": "lc-0055-target",
+      "base_commit": "fc6c7c47edd6110b6bd5a1a5297b2035214b0cd1",
+      "image": "rsi-evo/pallets__click_lc_0055_c943271a:fc6c7c47edd6",
+      "problem_statement": "Implement this click project-evolution milestone as one coherent step. Preserve existing public behavior except where this milestone intentionally changes it. Keep the implementation focused and add or preserve regression coverage for the changed behavior.\n\nMilestone goal:\n- Show custom error message in prompt with `hide_input=True`"
+    },
+    "evaluation_dataset": "D:\\RSI\\datasets\\evoarena-swe\\evaluation-e77c3282aa468ee5.json",
+    "evaluation_sha256": "8bfa86d0019e34fcca7f21d7ff4aa1b415ccf25ea96e1c40767c20dd6a7f497a",
+    "chain": {
+      "id": "pallets__click_multistep_v25_L15_s0",
+      "index": 12,
+      "length": 15,
+      "source_instance_id": "pallets__click_lc_0055_c943271a"
+    }
+  }
+]

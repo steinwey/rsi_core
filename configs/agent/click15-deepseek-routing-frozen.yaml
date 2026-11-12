@@ -1,0 +1,117 @@
+# Frozen single-route retest. Strict routing stays on; split and merge stay off.
+# Thinking stays off. Step limit stays 100. Skill is not updated.
+# top_k 6 loads every reference of skill 312bab2087d4fa80.
+# Token budget stays at the loader maximum, 1000000.
+provider: qwen-token-plan
+allowed_models:
+- deepseek-v4.1-flash
+- qwen3.8-max
+model:
+  name: deepseek-v4.1-flash
+  provider: qwen-token-plan
+  custom_llm_provider: openai
+  api_base: https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
+  api_key_env: QWEN_TOKEN_PLAN_API_KEY
+  extra_body: &id002
+    enable_thinking: false
+  reasoning_effort: none
+  temperature: 0.0
+  max_tokens: 4096
+  timeout: 120
+  num_retries: 2
+  rate_limit_retry_delay: 60
+judge_model:
+  name: qwen3.8-max
+  provider: qwen-token-plan
+  custom_llm_provider: openai
+  api_base: https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
+  api_key_env: QWEN_TOKEN_PLAN_API_KEY
+  extra_body: &id001
+    enable_thinking: false
+  temperature: 0.0
+  max_tokens: 8192
+  timeout: 180
+  num_retries: 2
+  rate_limit_retry_delay: 60
+rollouts: 1
+rollout_workers: 1
+step_limit: 100
+action_format_max_consecutive: 3
+action_format_repair_enabled: true
+cost_limit: 3.0
+command_timeout: 180
+image_pull_timeout: 7200
+rollout_timeout: 1800
+evaluation_timeout: 1800
+swe_dataset: SWE-bench/SWE-bench_Verified
+swe_split: test
+gate_image: python:3.12-slim
+terminal_artifacts: []
+evolve: false
+wandb:
+  project: rsi
+  enabled: false
+execution_mode: single
+skill_update_method: trace2skill
+skill_error_model:
+  name: qwen3.8-max
+  provider: qwen-token-plan
+  custom_llm_provider: openai
+  api_base: https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
+  api_key_env: QWEN_TOKEN_PLAN_API_KEY
+  extra_body: *id001
+  temperature: 0.0
+  max_tokens: 8192
+  timeout: 180
+  num_retries: 2
+  rate_limit_retry_delay: 60
+skill_success_model:
+  name: qwen3.8-max
+  provider: qwen-token-plan
+  custom_llm_provider: openai
+  api_base: https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
+  api_key_env: QWEN_TOKEN_PLAN_API_KEY
+  extra_body: *id001
+  temperature: 0.0
+  max_tokens: 8192
+  timeout: 180
+  num_retries: 2
+  rate_limit_retry_delay: 60
+trace2skill:
+  analysis_max_turns: 20
+  timeout: 1800
+  max_workers: 2
+  merge_batch_size: 5
+  max_merge_levels: 3
+skill_editor_model:
+  name: qwen3.8-max
+  provider: qwen-token-plan
+  custom_llm_provider: openai
+  api_base: https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
+  api_key_env: QWEN_TOKEN_PLAN_API_KEY
+  extra_body:
+    enable_thinking: false
+  temperature: 0.0
+  max_tokens: 8192
+  timeout: 180
+  num_retries: 2
+  rate_limit_retry_delay: 60
+reasoningbank:
+  timeout: 1800
+  max_repair_rounds: 3
+skill_routing:
+  enabled: true
+  retrieval_method: bm25
+  top_k: 6
+  max_initial_skill_tokens: 1000000
+  allow_zero_matches: true
+  budget_mode: strict
+  bm25:
+    k1: 1.2
+    b: 0.75
+skill_maintenance:
+  enabled: false
+reference_maintenance:
+  enabled: false
+skill_directory:
+  schema: 1
