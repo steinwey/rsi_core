@@ -260,6 +260,7 @@ def _continue_experiment(tasks, config, output, seed, store, state, backend_fact
                     write_json(folder / 'supervision.json', supervision)
                     proposal = evolve_skill(task, results, skill, config, model_factory, folder=folder,
                                       supervision=supervision, prepared_evidence=evidence)
+                    completion = proposal.get('completion') or ('complete' if proposal['changes'] else 'no_changes')
                     if proposal['changes']:
                         changes, managed = proposal['changes'], None
                         if store.maintenance['enabled']:
@@ -270,14 +271,20 @@ def _continue_experiment(tasks, config, output, seed, store, state, backend_fact
                         candidate, diff = store.propose(changes, managed_changes=managed, expected_base_version=skill.name)
                         gate = document_gate(candidate, store.fixed_files, check_consistency=True, directory_schema=store.directory_schema, maintenance=store.maintenance)
                         accepted = gate['passed'] and candidate != skill
-                        update = {'accepted': accepted, 'decision': 'document_checks_passed' if accepted else 'unchanged_candidate',
+                        decision = 'unchanged_candidate' if not accepted else (
+                            'partial_write' if completion == 'partial' else 'document_checks_passed')
+                        update = {'accepted': accepted, 'decision': decision, 'completion': completion,
                                   'reason': proposal['reason'], 'document_gate': gate,
                                   'evidence_rollouts': proposal['evidence_rollouts']}
                         if accepted:
                             after_version = candidate.name
                         (folder / 'skill.diff').write_text(diff, encoding='utf-8')
+                    elif completion == 'partial':
+                        update = {'accepted': False, 'decision': 'partial_write', 'completion': completion,
+                                  'reason': proposal['reason'], 'evidence_rollouts': proposal.get('evidence_rollouts')}
                     else:
-                        update = {'accepted': False, 'decision': 'no_changes', 'reason': proposal['reason']}
+                        update = {'accepted': False, 'decision': 'no_changes', 'completion': completion,
+                                  'reason': proposal['reason']}
             except SkillProposalRejected as exc:
                 update = {'accepted': False, 'decision': 'checks_failed', 'reason': str(exc)}
             except Exception as exc:

@@ -22,6 +22,7 @@ from rsi.skills.trace2skill.prompts import EDITOR_REFERENCE_PLACEMENT, analysis_
 from rsi.skills.trace2skill.reports import extract_report
 from rsi.skills.trace2skill.upstream import load
 from rsi.skills.trace2skill.validation import FailureValidation, filter_for_editor, sha
+from rsi.skills.trace2skill.writeback import attach_durable_write
 
 
 def guard_editor_writes(evolver, work_skill, schema):
@@ -253,6 +254,7 @@ def evolve_skill(task, results, skill, config, model_factory=Model, *, folder, s
                     return False, str(exc)
             return passed, message
         evolver._evolver.validate_skill = validate_work_skill
+        attach_durable_write(evolver, task=task, folder=root)
         outcome = evolver.run(actionable)
         if abort_event.is_set():
             raise RuntimeError('Trace2Skill editor/model failed; task not committed')
@@ -283,9 +285,13 @@ def evolve_skill(task, results, skill, config, model_factory=Model, *, folder, s
         if not validation_result['passed']:
             raise RuntimeError('Trace2Skill final document validation failed; see final-document-validation.json')
         reason, changelog = outcome['reasoning'], outcome['changelog']
+        completion = getattr(evolver, 'write_completion', None) or ('complete' if changed else 'no_changes')
+        if any(item.get('status') == 'pending_integration' for item in getattr(evolver, 'write_receipts', [])):
+            completion = 'partial'
         proposal = {'changes': {k: updated.get(k) for k in state.keys() | updated.keys() if state.get(k) != updated.get(k)},
                     'reason': reason, 'evidence_rollouts': [r['rollout'] for r in results],
-                    'changelog': changelog, 'method': 'trace2skill',
+                    'changelog': changelog, 'model_changelog': list(getattr(evolver, 'model_changelog', [])),
+                    'completion': completion, 'method': 'trace2skill',
                     'validation_scope': 'document_consistency', 'effectiveness_evaluated': False}
         write_json(Path(folder) / 'proposal.json', proposal)
         status = 'completed'
