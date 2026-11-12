@@ -119,7 +119,8 @@ def evolve_skill(task, results, skill, config, model_factory=Model, *, folder, s
             contexts[f"{task['id']}:rollout-{route}"] = {
                 'instance_id': task['id'], 'analysis_run_id': validation.run_id,
                 'validation_path': path / 'validation.json', 'final_patch': validation.final_patch}
-        data = {'task': task['prompt'], 'trajectory': {'rollout': route, 'messages': result['messages'], 'artifact': result['artifact'], 'status': result['status']},
+        from rsi.skills.trace2skill.pathology import trajectory_messages
+        data = {'task': task['prompt'], 'trajectory': {'rollout': route, 'messages': trajectory_messages(result), 'artifact': result['artifact'], 'status': result['status']},
                 'formal_feedback': grade, 'current_skill': original}
         write_json(path / 'input.json', data)
         try:

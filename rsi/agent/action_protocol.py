@@ -126,7 +126,7 @@ def validate_action_protocol(config):
 
 
 class GuardedAgent(DefaultAgent):
-    def __init__(self, *args, action_format_limit=3, action_log=None, action_repair=None, **kwargs):
+    def __init__(self, *args, action_format_limit=3, action_log=None, action_repair=None, pathology=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.action_format_limit = action_format_limit
         self.action_log = Path(action_log) if action_log else None
@@ -135,6 +135,7 @@ class GuardedAgent(DefaultAgent):
         self.pending_action = None
         self.action_repair = action_repair
         self.repair_calls = 0
+        self.pathology = pathology
 
     @property
     def budget_calls(self):
@@ -254,6 +255,9 @@ class GuardedAgent(DefaultAgent):
             feedback = (f'Action rejected ({error}); this command was NOT executed. '
                         f'Consecutive format failures: {self.format_consecutive}/{self.action_format_limit}. '
                         'Preserve your intended operation and correct the format. ' + detail + ' Required fix: ' + fix)
+            if self.pathology is not None:
+                self.pathology.observe_unexecuted(truncated=error == 'output_truncated',
+                                                  parse_failed=error != 'output_truncated')
             if self.format_consecutive >= self.action_format_limit:
                 raise ActionFormatFailed(feedback + ' This route is now stopped; do not continue refinement.')
             raise FormatError(feedback)
@@ -270,3 +274,30 @@ class GuardedAgent(DefaultAgent):
             if event is not None:
                 event['executed'] = True
                 self.record_action(event)
+
+    def get_observation(self, response):
+        if self.pathology is None:
+            return super().get_observation(response)
+        action = self.parse_action(response)
+        if self.pathology.will_skip(action['action']):
+            note = self.pathology.commit_skip(action['action'])
+            self._close_pending(False)
+            if hasattr(self.env, 'record_skipped'):
+                self.env.record_skipped(action['action'], note)
+            self.add_message('user', note, monitor_note=note)
+            return {'output': '', 'returncode': None}
+        output = self.execute_action(action)
+        observation = self.render_template(self.config.action_observation_template, output=output)
+        note = getattr(self.env, 'last_monitor_note', None)
+        if note:
+            observation = observation.rstrip('\n') + '\n' + note
+            self.add_message('user', observation, monitor_note=note)
+        else:
+            self.add_message('user', observation)
+        return output
+
+    def _close_pending(self, executed):
+        event, self.pending_action = self.pending_action, None
+        if event is not None:
+            event['executed'] = executed
+            self.record_action(event)

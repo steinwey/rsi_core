@@ -64,7 +64,7 @@ def execute_one(task, index, folder, skill, config, backend_factory=make_backend
     validate_action_protocol(config)
     folder.mkdir(parents=True, exist_ok=False)
     start = time.monotonic()
-    backend = agent = model = env = action_formatter = None
+    backend = agent = model = env = action_formatter = pathology = None
     from rsi.skills import access
     access_options = access.settings(config)
     snapshot = installation = None
@@ -135,9 +135,13 @@ def execute_one(task, index, folder, skill, config, backend_factory=make_backend
             assert agent is not None
             return len(agent.messages) - 1
         env = RecordingEnvironment(backend.env, folder, message_index)
+        from rsi.agent.pathology_session import open_pathology
+        pathology = open_pathology(config, folder)
+        if pathology is not None:
+            env.after_output = pathology.after_output
         agent = TimedAgent(model, env, action_format_limit=config.get('action_format_max_consecutive', 3),
                            action_repair=repair_action if config.get('action_format_repair_enabled', False) else None,
-                           action_log=folder / 'action-protocol.jsonl', **settings)
+                           action_log=folder / 'action-protocol.jsonl', pathology=pathology, **settings)
         guide = skill_context.text if skill_context is not None else skill_prompt(skill)
         result["status"], result["submission"] = agent.run(task["prompt"], rsi_skill=guide)
         if installation:
@@ -147,6 +151,8 @@ def execute_one(task, index, folder, skill, config, backend_factory=make_backend
     except Exception as exc:
         result["error"] = f"{type(exc).__name__}: {exc}"
     finally:
+        if pathology is not None:
+            pathology.write()
         if snapshot and backend is None:
             snapshot.cleanup()
         if installation:

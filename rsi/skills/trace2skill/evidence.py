@@ -22,7 +22,8 @@ class EvidenceReader:
         """Read trajectory, patch, grade, or command:N output by character offset."""
         if start < 0 or not 1 <= chars <= 12000:
             raise ValueError('start must be nonnegative; chars must be 1..12000')
-        values = {'trajectory': self.result['messages'], 'patch': self.result['artifact'], 'grade': self.grade}
+        from rsi.skills.trace2skill.pathology import trajectory_messages
+        values = {'trajectory': trajectory_messages(self.result), 'patch': self.result['artifact'], 'grade': self.grade}
         if kind.startswith('command:'):
             number = int(kind.split(':', 1)[1])
             commands = self.folder.parent.parent / f"rollout-{self.result['rollout']}" / 'commands'

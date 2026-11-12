@@ -158,6 +158,8 @@ def load_config(path, *, framework=None):
     if config.get('skill_access', {}).get('enabled'):
         from rsi.skills.access import settings as access_settings
         config['skill_access'] = access_settings(config)
+    from rsi.skills.trace2skill.pathology import pathology_settings
+    config['pathology'] = pathology_settings(config.get('pathology'))
     config.setdefault('repository_skill', {'enabled': False})
     if config['repository_skill'].get('enabled'):
         from rsi.skills.repository_skill import options as repository_settings

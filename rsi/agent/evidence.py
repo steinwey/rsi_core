@@ -55,6 +55,8 @@ class RecordingEnvironment:
         self.message_index = message_index
         self.count = 0
         self.script_calls = []
+        self.after_output = None
+        self.last_monitor_note = None
 
     def __getattr__(self, name):
         return getattr(self.env, name)
@@ -66,11 +68,13 @@ class RecordingEnvironment:
     def get_template_vars(self):
         return self.env.get_template_vars()
 
-    def _save(self, command, cwd, output, returncode=None, error=None, stderr=None):
+    def _save(self, command, cwd, output, returncode=None, error=None, stderr=None, monitor_note=None):
         self.count += 1
         self.folder.mkdir(parents=True, exist_ok=True)
         record = {"sequence": self.count, "assistant_message": self.message_index(),
                   "command": command, "cwd": cwd, "returncode": returncode, "error": error}
+        if monitor_note:
+            record["monitor_note"] = monitor_note
         scripts = script_invocations(command)
         if scripts:
             self.script_calls.append({"message": record["assistant_message"], "sequence": self.count,
@@ -100,8 +104,15 @@ class RecordingEnvironment:
                     exc.output = (text[:5000] + f"\n<elided_chars>{len(text) - 10000} characters elided</elided_chars>\n"
                                   + text[-5000:]).encode("utf-8")
             raise
-        self._save(command, cwd, output.get("output", ""), output.get("returncode"))
+        note = self.after_output(command, output) if self.after_output else None
+        self.last_monitor_note = note
+        self._save(command, cwd, output.get("output", ""), output.get("returncode"), monitor_note=note)
         return output
+
+    def record_skipped(self, command, monitor_note, cwd=""):
+        """Archive a command the sandbox never ran. The output file stays empty."""
+        self.last_monitor_note = monitor_note
+        self._save(command, cwd, "", returncode=None, monitor_note=monitor_note)
 
 
 VERSION = "steps-limit-v1"

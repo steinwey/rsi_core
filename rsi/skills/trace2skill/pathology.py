@@ -1,4 +1,7 @@
-"""Deterministic idle-loop pathology scan. No model calls and no runtime hook."""
+"""Deterministic idle-loop pathology scan. No model calls.
+
+The offline scan and PathologyTracker share chain continuation, flag runs, and stall.
+The agent runtime lives outside this module and calls the tracker."""
 import hashlib
 import json
 import re
@@ -247,6 +250,59 @@ def _finding(kind, start, end, count, threshold, evidence):
     high = count >= max(threshold * 2, threshold + 1) if kind != 'zero_edit_stall' else count >= threshold
     return {'type': kind, 'start_step': start, 'end_step': end, 'severity': 'high' if high else 'medium',
             'evidence': evidence}
+
+
+def pathology_settings(raw=None):
+    """Normalize the runtime switch. Missing config is off and changes nothing."""
+    if raw is None:
+        raw = {}
+    if not isinstance(raw, dict):
+        raise ValueError('pathology must be a mapping')
+    unknown = set(raw) - {'mode', 'k1', 'hard_stop'}
+    if unknown:
+        raise ValueError('Unknown pathology fields: ' + ', '.join(sorted(map(str, unknown))))
+    mode = raw.get('mode', 'off')
+    if mode not in ('off', 'shadow', 'advise', 'enforce'):
+        raise ValueError('pathology.mode must be off, shadow, advise or enforce')
+    k1 = raw.get('k1', 3)
+    if type(k1) is not int or k1 < 1:
+        raise ValueError('pathology.k1 must be a positive integer')
+    hard_stop = raw.get('hard_stop', None)
+    if hard_stop is not None and (type(hard_stop) is not int or hard_stop < 1):
+        raise ValueError('pathology.hard_stop must be a positive integer or null')
+    return {'mode': mode, 'k1': k1, 'hard_stop': hard_stop}
+
+
+def hard_stop_for(model_name, configured=None):
+    """Explicit H wins. Null looks up the calibration table and otherwise stays off."""
+    if configured is not None:
+        return configured
+    return HARD_STOP_DEFAULTS.get(model_name, HARD_STOP_FALLBACK)
+
+
+def strip_monitor_notes(messages):
+    """Drop injected monitor lines. Messages without a note are returned unchanged."""
+    if not any(isinstance(message, dict) and message.get('monitor_note') for message in messages):
+        return messages
+    cleaned = []
+    for message in messages:
+        note = message.get('monitor_note') if isinstance(message, dict) else None
+        if not note:
+            cleaned.append(message)
+            continue
+        content = message.get('content') or ''
+        suffix = '\n' + note
+        if content.endswith(suffix):
+            content = content[:-len(suffix)]
+        elif content == note:
+            content = ''
+        cleaned.append({key: value for key, value in message.items() if key != 'monitor_note'} | {'content': content})
+    return cleaned
+
+
+def trajectory_messages(result):
+    """Trace2Skill trajectory text, with monitor lines removed."""
+    return strip_monitor_notes(result.get('messages') or [])
 
 
 def load_rollout_steps(rollout):
